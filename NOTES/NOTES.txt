@@ -1,12 +1,12 @@
 
 
 TODO:
-    X sketch out UX
-    - sketch out API and data flow
-    - sketch out backend game state modeling
-    - sketch out Unity client architecture
+    X sketch out game UX
+    X sketch out API and data flow
+    X sketch out backend game state and entity modeling
     - POC server deployment to cloud service and deployment process
-    - implement messaging mock API
+    - stub out Unity game client architecture
+    - POC client<->server communication with mocks
     - implement players joining game, seeing each other's movement
     - implement food spawning, consumption, and player size increase
     - implement player eat player and player respawn
@@ -14,7 +14,7 @@ TODO:
     - implement winning player and other player ranking
 
 
-/////////// UX ///////////
+/////////// GAME UX ///////////
 
 1. player enters name to join active game
 2. players eat food go grow bigger
@@ -25,25 +25,86 @@ TODO:
 7. at the end of each round, winner is declared and player's rank is displayed
 
 
-/////////// SCHEMAS ///////////
+/////////// MESSAGE API ///////////
 
-Message Schema:
+Client Messages:
+    CLIENT_MESSAGE_TYPE_PLAYER_ENTER
+    CLIENT_MESSAGE_TYPE_PLAYER_EXIT
+    CLIENT_MESSAGE_TYPE_PLAYER_POSITION
+    CLIENT_MESSAGE_TYPE_PLAYER_EAT_FOOD
+    CLIENT_MESSAGE_TYPE_PLAYER_EAT_PLAYER
+    CLIENT_MESSAGE_TYPE_MINE_DAMAGE_PLAYER
+
+Server Messages:
+    SERVER_MESSAGE_TYPE_GAME_STATE
+    SERVER_MESSAGE_TYPE_PLAYER_ENTER
+    SERVER_MESSAGE_TYPE_PLAYER_EXIT
+    SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE
+    SERVER_MESSAGE_TYPE_FOOD_STATE_UPDATE
+    SERVER_MESSAGE_TYPE_MINE_STATE_UPDATE
+    SERVER_MESSAGE_TYPE_ROUND_TIME_TO_START
+    SERVER_MESSAGE_TYPE_ROUND_START
+    SERVER_MESSAGE_TYPE_ROUND_END
+
+
+/////////// API PAYLOAD SCHEMAS ///////////
+
+Message:
+(Generic for all client and server messages)
 {
     messageType: <string>,
     payload_key <string>: payload_value <any>
 }
 
-Game State Schema:
+
+/////////// MODEL SCHEMAS ///////////
+
+Game State:
 {
-    players: [<Player>, ...]
+    players: {<str_UUID>: <Player>, ...},
+    food: {<str_UUID>: <Food>, ...},
+    mines: {<str_UUID>: <Mine>, ...},
+    roundHistory: {<str_UUID>: <Round>, ...},
+    roundCurrent: <Round>
 }
 
-Player Schema:
+Player:
 {
-    id: <UUID_str>,
+    id: <str_UUID>,
+    active: <bool>,
     position: {
         x: <float>,
         y: <float>
-    }
+    },
+    size: <int>
 }
 
+Food:
+{
+    id: <str_UUID>,
+    active: <bool>,
+    position: {
+        x: <float>,
+        y: <float>
+    },
+}
+
+Mine:
+{
+    id: <str_UUID>,
+    active: <bool>,
+    position: {
+        x: <float>,
+        y: <float>
+    },
+}
+
+Round:
+{
+    id: <str_UUID>,
+    timeToStart: <int_sec>,
+    timeStart: <int_unix_ts>,
+    timeToEnd: <int_sec>,
+    timeEnd: <int_unix_ts>,
+    playerIdToScore: {<str_UUID>: <int>, ...}
+}
