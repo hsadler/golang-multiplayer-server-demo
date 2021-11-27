@@ -1,0 +1,20 @@
+
+Message Schema:
+{
+    messageType: <string>,
+    payload_key <string>: payload_value <any>
+}
+
+Game State Schema:
+{
+    players: [<Player>, ...]
+}
+
+Player Schema:
+{
+    id: <UUID_str>,
+    position: {
+        x: <float>,
+        y: <float>
+    }
+}
