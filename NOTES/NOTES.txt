@@ -1,7 +1,7 @@
 
 
 TODO:
-    - sketch out UX
+    X sketch out UX
     - sketch out API and data flow
     - sketch out backend game state modeling
     - sketch out Unity client architecture
@@ -14,7 +14,18 @@ TODO:
     - implement winning player and other player ranking
 
 
-// SCHEMAS
+/////////// UX ///////////
+
+1. player enters name to join active game
+2. players eat food go grow bigger
+3. bigger players can eat smaller players
+4. players who are eaten respawn
+5. players need to avoid mines which cause damage and therefor size decrease
+6. each round has a time limit
+7. at the end of each round, winner is declared and player's rank is displayed
+
+
+/////////// SCHEMAS ///////////
 
 Message Schema:
 {
