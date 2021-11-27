@@ -1,12 +1,6 @@
 
-build-python-game-server:
-	docker build -t python-gameserver:latest ./PythonGameServer
+build:
+	docker build -t golang-multiplayer-server:latest ./GameServer
 
-up-python-game-server:	
-	docker-compose -f ./PythonGameServer/docker-compose.yaml up
-
-build-golang-game-server:
-	docker build -t golang-gameserver:latest ./GolangGameServer
-
-up-golang-game-server:
-	docker-compose -f ./GolangGameServer/docker-compose.yaml up
+up:
+	docker-compose -f ./GameServer/docker-compose.yaml up
