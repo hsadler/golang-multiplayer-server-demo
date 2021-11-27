@@ -1,4 +1,4 @@
-# Unity Websocket Multiplayer
+# Golang Multiplayer Server Demo
 
 A demo game using Unity for the game client and Golang for a websocket server.
 

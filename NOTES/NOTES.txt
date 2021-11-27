@@ -1,0 +1,38 @@
+
+
+TODO:
+    - sketch out UX
+    - sketch out API and data flow
+    - sketch out backend game state modeling
+    - sketch out Unity client architecture
+    - POC server deployment to cloud service and deployment process
+    - implement messaging mock API
+    - implement players joining game, seeing each other's movement
+    - implement food spawning, consumption, and player size increase
+    - implement player eat player and player respawn
+    - implement time per round and game reset
+    - implement winning player and other player ranking
+
+
+// SCHEMAS
+
+Message Schema:
+{
+    messageType: <string>,
+    payload_key <string>: payload_value <any>
+}
+
+Game State Schema:
+{
+    players: [<Player>, ...]
+}
+
+Player Schema:
+{
+    id: <UUID_str>,
+    position: {
+        x: <float>,
+        y: <float>
+    }
+}
+
