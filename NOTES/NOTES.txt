@@ -4,9 +4,9 @@ TODO:
     X sketch out game UX
     X sketch out API and data flow
     X sketch out backend game state and entity modeling
-    - POC server deployment to cloud service and deployment process
-    - stub out Unity game client architecture
+    X POC server deployment to cloud service and deployment process
     - POC client<->server communication with mocks
+    - stub out Unity game client architecture
     - implement players joining game, seeing each other's movement
     - implement food spawning, consumption, and player size increase
     - implement player eat player and player respawn

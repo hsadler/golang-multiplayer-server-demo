@@ -8,8 +8,8 @@ public class SceneManagerScript : MonoBehaviour
     public GameObject playerPrefab;
 
     private WebSocket ws;
-    private string gameServerUrl = "ws://localhost:5000";
-    //private string gameServerUrl = "ws://0.tcp.ngrok.io:16554"; // example ngrok URL
+    private string gameServerUrl = "ws://localhost:5000"; // local game server
+    //private string gameServerUrl = "ws://golang-multiplayer-server-demo.herokuapp.com/:80"; // heroku game server
 
     private Player mainPlayerModel;
     private GameObject mainPlayerGO;

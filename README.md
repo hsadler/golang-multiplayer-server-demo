@@ -13,6 +13,7 @@ A demo game using Unity for the game client and Golang for a websocket server.
 
 1. Build and spin-up the Golang game server.
 ```sh
+cd GameServer/
 make build
 make up
 ```

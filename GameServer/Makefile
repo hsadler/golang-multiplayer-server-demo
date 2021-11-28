@@ -4,3 +4,18 @@ build:
 
 up:
 	docker-compose -f docker-compose.dev.yaml up
+
+deploy: heroku-push heroku-release
+
+prod-info:
+	heroku apps:info golang-multiplayer-server-demo
+
+prod-logs:
+	heroku logs -a golang-multiplayer-server-demo --tail
+
+heroku-push:
+	heroku container:push web -a golang-multiplayer-server-demo
+
+heroku-release:
+	heroku container:release web -a golang-multiplayer-server-demo
+

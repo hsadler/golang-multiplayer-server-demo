@@ -35,8 +35,6 @@ func (h *Hub) Run() {
 			for c := range h.Clients {
 				c.Send <- message
 			}
-		default:
-			// fmt.Println("nothing for hub to process...")
 		}
 	}
 }
@@ -76,8 +74,8 @@ func (cl *Client) RecieveMessages() {
 			break
 		}
 		// log message received
-		fmt.Println("client message received:")
-		ConsoleLogJsonByteArray(message)
+		// fmt.Println("client message received:")
+		// ConsoleLogJsonByteArray(message)
 		// route message to handler
 		messageTypeToHandler := map[string]func(map[string]interface{}){
 			"CLIENT_MESSAGE_TYPE_PLAYER_ENTER":  cl.HandlePlayerEnter,
@@ -153,8 +151,6 @@ func (cl *Client) SendMessages() {
 				return
 			}
 			SendJsonMessage(cl.Ws, message)
-		default:
-			// fmt.Println("no message to send...")
 		}
 	}
 }
@@ -193,8 +189,8 @@ func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) *Player 
 func SendJsonMessage(ws *websocket.Conn, messageJson []byte) {
 	ws.WriteMessage(1, messageJson)
 	// log that message was sent
-	fmt.Println("server message sent:")
-	ConsoleLogJsonByteArray(messageJson)
+	// fmt.Println("server message sent:")
+	// ConsoleLogJsonByteArray(messageJson)
 }
 
 type PlayerMessage struct {
@@ -237,7 +233,11 @@ func main() {
 		go cl.SendMessages()
 		h.Add <- cl
 	})
-	addr := flag.String("addr", "0.0.0.0:5000", "http service address")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "5000"
+	}
+	addr := flag.String("addr", "0.0.0.0:"+port, "http service address")
 	err := http.ListenAndServe(*addr, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
