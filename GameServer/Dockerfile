@@ -11,7 +11,7 @@ COPY . /go/src/
 WORKDIR /go/src/
 
 # build the server executable
-RUN go build server.go
+RUN go build
 
 # start the server
 CMD ./server

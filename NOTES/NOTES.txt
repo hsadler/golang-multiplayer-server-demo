@@ -5,6 +5,7 @@ TODO:
     X sketch out API and data flow
     X sketch out backend game state and entity modeling
     X POC server deployment to cloud service and deployment process
+    X breakup server into file components
     - POC client<->server communication with mocks
     - stub out Unity game client architecture
     - implement players joining game, seeing each other's movement
