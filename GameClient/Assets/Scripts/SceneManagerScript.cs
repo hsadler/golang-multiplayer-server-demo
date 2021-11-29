@@ -19,11 +19,6 @@ public class SceneManagerScript : MonoBehaviour
 
     private Queue<string> gameServerMessageQueue = new Queue<string>();
 
-    private const string SERVER_MESSAGE_TYPE_PLAYER_ENTER = "SERVER_MESSAGE_TYPE_PLAYER_ENTER";
-    private const string SERVER_MESSAGE_TYPE_PLAYER_EXIT = "SERVER_MESSAGE_TYPE_PLAYER_EXIT";
-    private const string SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE = "SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE";
-    private const string SERVER_MESSAGE_TYPE_GAME_STATE = "SERVER_MESSAGE_TYPE_GAME_STATE";
-
     // UNITY HOOKS
 
     private void Start()
@@ -99,19 +94,19 @@ public class SceneManagerScript : MonoBehaviour
         // parse message type
         string messageType = JsonUtility.FromJson<ServerMessageGeneric>(messageJSON).messageType;
         // route message to handler based on message type
-        if (messageType == SERVER_MESSAGE_TYPE_PLAYER_ENTER)
+        if (messageType == Constants.SERVER_MESSAGE_TYPE_PLAYER_ENTER)
         {
             this.HandlePlayerEnterServerMessage(messageJSON);
         }
-        else if (messageType == SERVER_MESSAGE_TYPE_PLAYER_EXIT)
+        else if (messageType == Constants.SERVER_MESSAGE_TYPE_PLAYER_EXIT)
         {
             this.HandlePlayerExitServerMessage(messageJSON);
         }
-        else if (messageType == SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE)
+        else if (messageType == Constants.SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE)
         {
             this.HandlePlayerUpdateServerMessage(messageJSON);
         }
-        else if (messageType == SERVER_MESSAGE_TYPE_GAME_STATE)
+        else if (messageType == Constants.SERVER_MESSAGE_TYPE_GAME_STATE)
         {
             this.HandleGameStateServerMessage(messageJSON);
         }

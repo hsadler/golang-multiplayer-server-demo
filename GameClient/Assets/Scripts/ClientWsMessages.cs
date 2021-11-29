@@ -4,7 +4,7 @@
 public class ClientMessagePlayerEnter
 {
 
-    public string messageType = "CLIENT_MESSAGE_TYPE_PLAYER_ENTER";
+    public string messageType = Constants.CLIENT_MESSAGE_TYPE_PLAYER_ENTER;
     public Player player;
 
     public ClientMessagePlayerEnter(Player playerModel)
@@ -18,7 +18,7 @@ public class ClientMessagePlayerEnter
 public class ClientMessagePlayerPosition
 {
 
-    public string messageType = "CLIENT_MESSAGE_TYPE_PLAYER_POSITION";
+    public string messageType = Constants.CLIENT_MESSAGE_TYPE_PLAYER_POSITION;
     public Player player;
 
     public ClientMessagePlayerPosition(Player playerModel)
