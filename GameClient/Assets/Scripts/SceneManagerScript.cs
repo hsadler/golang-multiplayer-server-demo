@@ -94,21 +94,47 @@ public class SceneManagerScript : MonoBehaviour
         // parse message type
         string messageType = JsonUtility.FromJson<ServerMessageGeneric>(messageJSON).messageType;
         // route message to handler based on message type
-        if (messageType == Constants.SERVER_MESSAGE_TYPE_PLAYER_ENTER)
+        switch (messageType)
         {
-            this.HandlePlayerEnterServerMessage(messageJSON);
+            case Constants.SERVER_MESSAGE_TYPE_GAME_STATE:
+                this.HandleGameStateServerMessage(messageJSON);
+                break;
+            case Constants.SERVER_MESSAGE_TYPE_PLAYER_ENTER:
+                this.HandlePlayerEnterServerMessage(messageJSON);
+                break;
+            case Constants.SERVER_MESSAGE_TYPE_PLAYER_EXIT:
+                this.HandlePlayerExitServerMessage(messageJSON);
+                break;
+            case Constants.SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE:
+                this.HandlePlayerStateUpdateServerMessage(messageJSON);
+                break;
+            case Constants.SERVER_MESSAGE_TYPE_FOOD_STATE_UPDATE:
+                this.HandleFoodStateUpdateServerMessage(messageJSON);
+                break;
+            case Constants.SERVER_MESSAGE_TYPE_MINE_STATE_UPDATE:
+                this.HandleMineStateUpdateServerMessage(messageJSON);
+                break;
+            case Constants.SERVER_MESSAGE_TYPE_ROUND_TIME_TO_START:
+                this.HandleRoundTimeToStartServerMessage(messageJSON);
+                break;
+            case Constants.SERVER_MESSAGE_TYPE_ROUND_START:
+                this.HandleRoundStartServerMessage(messageJSON);
+                break;
+            case Constants.SERVER_MESSAGE_TYPE_ROUND_END:
+                this.HandleRoundEndServerMessage(messageJSON);
+                break;
+            default:
+                Debug.LogWarning("Server message not processed: " + messageJSON);
+                break;
         }
-        else if (messageType == Constants.SERVER_MESSAGE_TYPE_PLAYER_EXIT)
+    }
+
+    private void HandleGameStateServerMessage(string messageJSON)
+    {
+        var gameStateMessage = JsonUtility.FromJson<ServerMessageGameState>(messageJSON);
+        foreach (Player player in gameStateMessage.gameState.players) 
         {
-            this.HandlePlayerExitServerMessage(messageJSON);
-        }
-        else if (messageType == Constants.SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE)
-        {
-            this.HandlePlayerUpdateServerMessage(messageJSON);
-        }
-        else if (messageType == Constants.SERVER_MESSAGE_TYPE_GAME_STATE)
-        {
-            this.HandleGameStateServerMessage(messageJSON);
+            this.AddOtherPlayerFromPlayerModel(player);   
         }
     }
 
@@ -129,7 +155,7 @@ public class SceneManagerScript : MonoBehaviour
         }
     }
 
-    private void HandlePlayerUpdateServerMessage(string messageJSON)
+    private void HandlePlayerStateUpdateServerMessage(string messageJSON)
     {
         var playerUpdateMessage = JsonUtility.FromJson<ServerMessagePlayerUpdate>(messageJSON);
         Player playerModel = playerUpdateMessage.player;
@@ -144,13 +170,29 @@ public class SceneManagerScript : MonoBehaviour
         }
     }
 
-    private void HandleGameStateServerMessage(string messageJSON)
+    private void HandleFoodStateUpdateServerMessage(string messageJSON)
     {
-        var gameStateMessage = JsonUtility.FromJson<ServerMessageGameState>(messageJSON);
-        foreach (Player player in gameStateMessage.gameState.players) 
-        {
-            this.AddOtherPlayerFromPlayerModel(player);   
-        }
+        // stub
+    }
+
+    private void HandleMineStateUpdateServerMessage(string messageJSON)
+    {
+        // stub
+    }
+
+    private void HandleRoundTimeToStartServerMessage(string messageJSON)
+    {
+        // stub
+    }
+
+    private void HandleRoundStartServerMessage(string messageJSON)
+    {
+        // stub
+    }
+
+    private void HandleRoundEndServerMessage(string messageJSON)
+    {
+        // stub
     }
 
     private void AddOtherPlayerFromPlayerModel(Player otherPlayerModel)

@@ -73,6 +73,7 @@ Player:
 {
     id: <str_UUID>,
     active: <bool>,
+    name: <string>,
     position: {
         x: <float>,
         y: <float>
