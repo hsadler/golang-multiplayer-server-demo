@@ -15,13 +15,13 @@ public class ClientMessagePlayerEnter
 }
 
 [Serializable]
-public class ClientMessagePlayerUpdate
+public class ClientMessagePlayerPosition
 {
 
-    public string messageType = "CLIENT_MESSAGE_TYPE_PLAYER_UPDATE";
+    public string messageType = "CLIENT_MESSAGE_TYPE_PLAYER_POSITION";
     public Player player;
 
-    public ClientMessagePlayerUpdate(Player playerModel)
+    public ClientMessagePlayerPosition(Player playerModel)
     {
         this.player = playerModel;
     }

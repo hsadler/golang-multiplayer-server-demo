@@ -21,7 +21,7 @@ public class SceneManagerScript : MonoBehaviour
 
     private const string SERVER_MESSAGE_TYPE_PLAYER_ENTER = "SERVER_MESSAGE_TYPE_PLAYER_ENTER";
     private const string SERVER_MESSAGE_TYPE_PLAYER_EXIT = "SERVER_MESSAGE_TYPE_PLAYER_EXIT";
-    private const string SERVER_MESSAGE_TYPE_PLAYER_UPDATE = "SERVER_MESSAGE_TYPE_PLAYER_UPDATE";
+    private const string SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE = "SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE";
     private const string SERVER_MESSAGE_TYPE_GAME_STATE = "SERVER_MESSAGE_TYPE_GAME_STATE";
 
     // UNITY HOOKS
@@ -51,13 +51,13 @@ public class SceneManagerScript : MonoBehaviour
 
     public void SyncPlayerState(GameObject playerGO)
     {
-        // send "player update" message to server
+        // send "player position" message to server
         this.mainPlayerModel.position = new Position(
             playerGO.transform.position.x,
             playerGO.transform.position.y
         );
-        var playerUpdateMessage = new ClientMessagePlayerUpdate(this.mainPlayerModel);
-        this.ws.Send(JsonUtility.ToJson(playerUpdateMessage));
+        var playerUpdateMessage = new ClientMessagePlayerPosition(this.mainPlayerModel);
+        this.SendWebsocketClientMessage(JsonUtility.ToJson(playerUpdateMessage));
     }
 
     // IMPLEMENTATION METHODS
@@ -85,7 +85,7 @@ public class SceneManagerScript : MonoBehaviour
         this.mainPlayerModel = new Player(uuid, pos);
         // send "player enter" message to server
         var playerEnterMessage = new ClientMessagePlayerEnter(this.mainPlayerModel);
-        this.ws.Send(JsonUtility.ToJson(playerEnterMessage));
+        this.SendWebsocketClientMessage(JsonUtility.ToJson(playerEnterMessage));
     }
 
     private void QueueServerMessage(object sender, MessageEventArgs e) 
@@ -107,7 +107,7 @@ public class SceneManagerScript : MonoBehaviour
         {
             this.HandlePlayerExitServerMessage(messageJSON);
         }
-        else if (messageType == SERVER_MESSAGE_TYPE_PLAYER_UPDATE)
+        else if (messageType == SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE)
         {
             this.HandlePlayerUpdateServerMessage(messageJSON);
         }
@@ -181,6 +181,12 @@ public class SceneManagerScript : MonoBehaviour
             otherPlayerScript.isMainPlayer = false;
             this.playerIdToOtherPlayerGO.Add(otherPlayerModel.id, otherPlayerGO);
         }
+    }
+
+    private void SendWebsocketClientMessage(string messageJson)
+    {
+        Debug.Log("Client message sent: " + messageJson);
+        this.ws.Send(messageJson);
     }
 
 }

@@ -34,9 +34,9 @@ func (cl *Client) RecieveMessages() {
 		// ConsoleLogJsonByteArray(message)
 		// route message to handler
 		messageTypeToHandler := map[string]func(map[string]interface{}){
-			"CLIENT_MESSAGE_TYPE_PLAYER_ENTER":  cl.HandlePlayerEnter,
-			"CLIENT_MESSAGE_TYPE_PLAYER_UPDATE": cl.HandlePlayerUpdate,
-			"CLIENT_MESSAGE_TYPE_PLAYER_EXIT":   cl.HandlePlayerExit,
+			CLIENT_MESSAGE_TYPE_PLAYER_ENTER:    cl.HandlePlayerEnter,
+			CLIENT_MESSAGE_TYPE_PLAYER_EXIT:     cl.HandlePlayerExit,
+			CLIENT_MESSAGE_TYPE_PLAYER_POSITION: cl.HandlePlayerPosition,
 		}
 		var mData map[string]interface{}
 		if err := json.Unmarshal(message, &mData); err != nil {
@@ -55,7 +55,7 @@ func (cl *Client) SendGameState() {
 		}
 	}
 	messageData := GameStateMessage{
-		MessageType: "SERVER_MESSAGE_TYPE_GAME_STATE",
+		MessageType: SERVER_MESSAGE_TYPE_GAME_STATE,
 		GameState: &GameStateJsonSerializable{
 			Players: allPlayers,
 		},
@@ -68,18 +68,7 @@ func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
 	player := NewPlayerFromMap(mData["player"].(map[string]interface{}), cl.Ws)
 	cl.Player = player
 	message := PlayerMessage{
-		MessageType: "SERVER_MESSAGE_TYPE_PLAYER_ENTER",
-		Player:      player,
-	}
-	serialized, _ := json.Marshal(message)
-	cl.Hub.Broadcast <- serialized
-}
-
-func (cl *Client) HandlePlayerUpdate(mData map[string]interface{}) {
-	player := NewPlayerFromMap(mData["player"].(map[string]interface{}), cl.Ws)
-	cl.Player = player
-	message := PlayerMessage{
-		MessageType: "SERVER_MESSAGE_TYPE_PLAYER_UPDATE",
+		MessageType: SERVER_MESSAGE_TYPE_PLAYER_ENTER,
 		Player:      player,
 	}
 	serialized, _ := json.Marshal(message)
@@ -88,12 +77,23 @@ func (cl *Client) HandlePlayerUpdate(mData map[string]interface{}) {
 
 func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
 	message := PlayerMessage{
-		MessageType: "SERVER_MESSAGE_TYPE_PLAYER_EXIT",
+		MessageType: SERVER_MESSAGE_TYPE_PLAYER_EXIT,
 		Player:      cl.Player,
 	}
 	serialized, _ := json.Marshal(message)
 	cl.Hub.Broadcast <- serialized
 	cl.Hub.Remove <- cl
+}
+
+func (cl *Client) HandlePlayerPosition(mData map[string]interface{}) {
+	player := NewPlayerFromMap(mData["player"].(map[string]interface{}), cl.Ws)
+	cl.Player = player
+	message := PlayerMessage{
+		MessageType: SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE,
+		Player:      player,
+	}
+	serialized, _ := json.Marshal(message)
+	cl.Hub.Broadcast <- serialized
 }
 
 func (cl *Client) SendMessages() {

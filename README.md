@@ -7,6 +7,7 @@ A demo game using Unity for the game client and Golang for a websocket server.
 - Unity Editor: `version 2020.3.21f1`
 - Docker
 - Docker Compose
+- make
 
 
 ### Running Locally
@@ -19,3 +20,14 @@ make up
 ```
 
 2. Open the Unity editor and run the game.
+
+
+### Deployment
+
+Deploy to Heroku. View app info. View logs.
+```sh
+cd GameServer/
+make prod-deploy
+make prod-info
+make prod-logs
+```
