@@ -51,8 +51,11 @@ public class SceneManagerScript : MonoBehaviour
             playerGO.transform.position.x,
             playerGO.transform.position.y
         );
-        var playerUpdateMessage = new ClientMessagePlayerPosition(this.mainPlayerModel);
-        this.SendWebsocketClientMessage(JsonUtility.ToJson(playerUpdateMessage));
+        var playerPositionMessage = new ClientMessagePlayerPosition(
+            this.mainPlayerModel.id,
+            this.mainPlayerModel.position
+        );
+        this.SendWebsocketClientMessage(JsonUtility.ToJson(playerPositionMessage));
     }
 
     // IMPLEMENTATION METHODS
