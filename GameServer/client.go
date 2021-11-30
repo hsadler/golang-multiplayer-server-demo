@@ -34,9 +34,12 @@ func (cl *Client) RecieveMessages() {
 		// ConsoleLogJsonByteArray(message)
 		// route message to handler
 		messageTypeToHandler := map[string]func(map[string]interface{}){
-			CLIENT_MESSAGE_TYPE_PLAYER_ENTER:    cl.HandlePlayerEnter,
-			CLIENT_MESSAGE_TYPE_PLAYER_EXIT:     cl.HandlePlayerExit,
-			CLIENT_MESSAGE_TYPE_PLAYER_POSITION: cl.HandlePlayerPosition,
+			CLIENT_MESSAGE_TYPE_PLAYER_ENTER:       cl.HandlePlayerEnter,
+			CLIENT_MESSAGE_TYPE_PLAYER_EXIT:        cl.HandlePlayerExit,
+			CLIENT_MESSAGE_TYPE_PLAYER_POSITION:    cl.HandlePlayerPosition,
+			CLIENT_MESSAGE_TYPE_PLAYER_EAT_FOOD:    cl.HandlePlayerEatFood,
+			CLIENT_MESSAGE_TYPE_PLAYER_EAT_PLAYER:  cl.HandlePlayerEatPlayer,
+			CLIENT_MESSAGE_TYPE_MINE_DAMAGE_PLAYER: cl.HandleMineDamagePlayer,
 		}
 		var mData map[string]interface{}
 		if err := json.Unmarshal(message, &mData); err != nil {
@@ -94,6 +97,18 @@ func (cl *Client) HandlePlayerPosition(mData map[string]interface{}) {
 	}
 	serialized, _ := json.Marshal(message)
 	cl.Hub.Broadcast <- serialized
+}
+
+func (cl *Client) HandlePlayerEatFood(mData map[string]interface{}) {
+	// STUB
+}
+
+func (cl *Client) HandlePlayerEatPlayer(mData map[string]interface{}) {
+	// STUB
+}
+
+func (cl *Client) HandleMineDamagePlayer(mData map[string]interface{}) {
+	// STUB
 }
 
 func (cl *Client) SendMessages() {
