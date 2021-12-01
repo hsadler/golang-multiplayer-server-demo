@@ -10,7 +10,9 @@ TODO:
         X add new stub message handlers to client
         X add new stub message handlers to server
         X add new client message classes to client
-        - add new server message structs to server
+        X add new server message structs to server
+        - finalize server models schemas
+        - finalize server message schemas
         - add mock message sending to server 
         - add mock message sending to client
     - add server logging for dev mode only

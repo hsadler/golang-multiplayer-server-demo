@@ -2,9 +2,18 @@ package main
 
 import "github.com/gorilla/websocket"
 
-// TODO: update all game entities to current schema
+// TODO: finalize game entity schemas
 
 //////////////// MAIN MODELS ////////////////
+
+// game state
+type GameState struct {
+	Players      map[string]*Player `json:"players"`
+	Foods        map[string]*Food   `json:"foods"`
+	Mines        map[string]*Mine   `json:"mines"`
+	RoundHistory map[string]*Round  `json:"roundHistory"`
+	RoundCurrent *Round             `json:"roundCurrent"`
+}
 
 // round
 type Round struct {

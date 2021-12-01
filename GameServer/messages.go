@@ -28,6 +28,8 @@ func SendJsonMessage(ws *websocket.Conn, messageJson []byte) {
 	// ConsoleLogJsonByteArray(messageJson)
 }
 
+// TODO: finalize server message schemas
+
 // game state message
 type GameStateJsonSerializable struct {
 	Players []*Player `json:"players"`
