@@ -28,16 +28,58 @@ func SendJsonMessage(ws *websocket.Conn, messageJson []byte) {
 	// ConsoleLogJsonByteArray(messageJson)
 }
 
-type PlayerMessage struct {
+// game state message
+type GameStateJsonSerializable struct {
+	Players []*Player `json:"players"`
+}
+type GameStateMessage struct {
+	MessageType string                     `json:"messageType"`
+	GameState   *GameStateJsonSerializable `json:"gameState"`
+}
+
+// player enter message
+type PlayerEnterMessage struct {
 	MessageType string  `json:"messageType"`
 	Player      *Player `json:"player"`
 }
 
-type GameStateJsonSerializable struct {
-	Players []*Player `json:"players"`
+// player exit message
+type PlayerExitMessage struct {
+	MessageType string `json:"messageType"`
+	PlayerId    string `json:"playerId"`
 }
 
-type GameStateMessage struct {
-	MessageType string                     `json:"messageType"`
-	GameState   *GameStateJsonSerializable `json:"gameState"`
+// player state update message
+type PlayerStateUpdateMessage struct {
+	MessageType string  `json:"messageType"`
+	Player      *Player `json:"player"`
+}
+
+// food state update message
+type FoodStateUpdateMessage struct {
+	MessageType string `json:"messageType"`
+	Food        *Food  `json:"food"`
+}
+
+// mine state update message
+type MineStateUpdateMessage struct {
+	MessageType string `json:"messageType"`
+	Mine        *Mine  `json:"mine"`
+}
+
+// round time to start message
+type RoundTimeToStartMessage struct {
+	MessageType string `json:"messageType"`
+	Seconds     int    `json:"second"`
+}
+
+// round start message
+type RoundStartMessage struct {
+	MessageType string `json:"messageType"`
+}
+
+// round end message
+type RoundEndMessage struct {
+	MessageType string `json:"messageType"`
+	Round       *Round `json:"round"`
 }

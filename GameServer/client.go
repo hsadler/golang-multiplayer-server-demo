@@ -70,7 +70,7 @@ func (cl *Client) SendGameState() {
 func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
 	player := NewPlayerFromMap(mData["player"].(map[string]interface{}), cl.Ws)
 	cl.Player = player
-	message := PlayerMessage{
+	message := PlayerEnterMessage{
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_ENTER,
 		Player:      player,
 	}
@@ -79,9 +79,9 @@ func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
 }
 
 func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
-	message := PlayerMessage{
+	message := PlayerExitMessage{
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_EXIT,
-		Player:      cl.Player,
+		PlayerId:    cl.Player.Id,
 	}
 	serialized, _ := json.Marshal(message)
 	cl.Hub.Broadcast <- serialized
@@ -91,7 +91,7 @@ func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
 func (cl *Client) HandlePlayerPosition(mData map[string]interface{}) {
 	player := NewPlayerFromMap(mData["player"].(map[string]interface{}), cl.Ws)
 	cl.Player = player
-	message := PlayerMessage{
+	message := PlayerStateUpdateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE,
 		Player:      player,
 	}
