@@ -8,10 +8,11 @@ import (
 )
 
 type Client struct {
-	Hub    *Hub
-	Ws     *websocket.Conn
-	Player *Player
-	Send   chan []byte
+	Hub       *Hub
+	GameState *GameState
+	Ws        *websocket.Conn
+	Player    *Player
+	Send      chan []byte
 }
 
 func (cl *Client) RecieveMessages() {
@@ -51,17 +52,9 @@ func (cl *Client) RecieveMessages() {
 }
 
 func (cl *Client) SendGameState() {
-	allPlayers := make([]*Player, 0)
-	for client := range cl.Hub.Clients {
-		if client.Player != nil {
-			allPlayers = append(allPlayers, client.Player)
-		}
-	}
 	messageData := GameStateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_GAME_STATE,
-		GameState: &GameStateJsonSerializable{
-			Players: allPlayers,
-		},
+		GameState:   cl.GameState,
 	}
 	serialized, _ := json.Marshal(messageData)
 	cl.Send <- serialized

@@ -4,17 +4,6 @@ import "github.com/gorilla/websocket"
 
 //////////////// MAIN MODELS ////////////////
 
-// game state
-type GameState struct {
-	Players                  map[string]*Player `json:"players"`
-	Foods                    map[string]*Food   `json:"foods"`
-	Mines                    map[string]*Mine   `json:"mines"`
-	RoundHistory             map[string]*Round  `json:"roundHistory"`
-	RoundCurrent             *Round             `json:"roundCurrent"`
-	SecondsToCurrentRoundEnd int                `json:"secondsToCurrentRoundEnd"`
-	SecondsToNextRoundStart  int                `json:"secondsToNextRoundStart"`
-}
-
 // round
 type Round struct {
 	Id              string         `json:"id"`

@@ -7,6 +7,15 @@ type Hub struct {
 	Broadcast chan []byte
 }
 
+func NewHub() *Hub {
+	return &Hub{
+		Clients:   make(map[*Client]bool),
+		Add:       make(chan *Client),
+		Remove:    make(chan *Client),
+		Broadcast: make(chan []byte),
+	}
+}
+
 func (h *Hub) Run() {
 	for {
 		select {
@@ -20,14 +29,5 @@ func (h *Hub) Run() {
 				c.Send <- message
 			}
 		}
-	}
-}
-
-func NewHub() *Hub {
-	return &Hub{
-		Clients:   make(map[*Client]bool),
-		Add:       make(chan *Client),
-		Remove:    make(chan *Client),
-		Broadcast: make(chan []byte),
 	}
 }

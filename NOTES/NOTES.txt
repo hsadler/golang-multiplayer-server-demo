@@ -12,7 +12,7 @@ TODO:
         X add new client message classes to client
         X add new server message structs to server
         X finalize server models schemas
-        - refactor server to use new GameState struct for model
+        - refactor server to use new GameState struct as game model
         - finalize server message schemas
         - add mock message sending to server 
         - add mock message sending to client

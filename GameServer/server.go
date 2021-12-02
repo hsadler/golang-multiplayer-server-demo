@@ -15,6 +15,9 @@ func main() {
 	// create and run hub singleton
 	h := NewHub()
 	go h.Run()
+	// create and run game-state singleton
+	gs := NewGameState()
+	go gs.Run()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		upgrader := websocket.Upgrader{} // use default options
 		ws, err := upgrader.Upgrade(w, r, nil)
@@ -24,10 +27,11 @@ func main() {
 		}
 		// create client, run processes, and add to hub
 		cl := &Client{
-			Hub:    h,
-			Ws:     ws,
-			Player: nil,
-			Send:   make(chan []byte, 256),
+			Hub:       h,
+			GameState: gs,
+			Ws:        ws,
+			Player:    nil,
+			Send:      make(chan []byte, 256),
 		}
 		go cl.RecieveMessages()
 		go cl.SendMessages()

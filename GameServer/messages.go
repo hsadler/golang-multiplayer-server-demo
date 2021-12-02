@@ -35,8 +35,8 @@ type GameStateJsonSerializable struct {
 	Players []*Player `json:"players"`
 }
 type GameStateMessage struct {
-	MessageType string                     `json:"messageType"`
-	GameState   *GameStateJsonSerializable `json:"gameState"`
+	MessageType string     `json:"messageType"`
+	GameState   *GameState `json:"gameState"`
 }
 
 type PlayerEnterMessage struct {
