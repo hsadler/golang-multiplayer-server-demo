@@ -30,7 +30,7 @@ func SendJsonMessage(ws *websocket.Conn, messageJson []byte) {
 
 // TODO: finalize server message schemas
 
-// game state message
+// TODO: deprecate GameStateJsonSerializable in favor of game model struct
 type GameStateJsonSerializable struct {
 	Players []*Player `json:"players"`
 }
@@ -39,48 +39,40 @@ type GameStateMessage struct {
 	GameState   *GameStateJsonSerializable `json:"gameState"`
 }
 
-// player enter message
 type PlayerEnterMessage struct {
 	MessageType string  `json:"messageType"`
 	Player      *Player `json:"player"`
 }
 
-// player exit message
 type PlayerExitMessage struct {
 	MessageType string `json:"messageType"`
 	PlayerId    string `json:"playerId"`
 }
 
-// player state update message
 type PlayerStateUpdateMessage struct {
 	MessageType string  `json:"messageType"`
 	Player      *Player `json:"player"`
 }
 
-// food state update message
 type FoodStateUpdateMessage struct {
 	MessageType string `json:"messageType"`
 	Food        *Food  `json:"food"`
 }
 
-// mine state update message
 type MineStateUpdateMessage struct {
 	MessageType string `json:"messageType"`
 	Mine        *Mine  `json:"mine"`
 }
 
-// round time to start message
 type RoundTimeToStartMessage struct {
 	MessageType string `json:"messageType"`
 	Seconds     int    `json:"second"`
 }
 
-// round start message
 type RoundStartMessage struct {
 	MessageType string `json:"messageType"`
 }
 
-// round end message
 type RoundEndMessage struct {
 	MessageType string `json:"messageType"`
 	Round       *Round `json:"round"`

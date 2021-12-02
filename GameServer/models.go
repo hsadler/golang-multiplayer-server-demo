@@ -2,28 +2,34 @@ package main
 
 import "github.com/gorilla/websocket"
 
-// TODO: finalize game entity schemas
-
 //////////////// MAIN MODELS ////////////////
 
 // game state
 type GameState struct {
-	Players      map[string]*Player `json:"players"`
-	Foods        map[string]*Food   `json:"foods"`
-	Mines        map[string]*Mine   `json:"mines"`
-	RoundHistory map[string]*Round  `json:"roundHistory"`
-	RoundCurrent *Round             `json:"roundCurrent"`
+	Players                  map[string]*Player `json:"players"`
+	Foods                    map[string]*Food   `json:"foods"`
+	Mines                    map[string]*Mine   `json:"mines"`
+	RoundHistory             map[string]*Round  `json:"roundHistory"`
+	RoundCurrent             *Round             `json:"roundCurrent"`
+	SecondsToCurrentRoundEnd int                `json:"secondsToCurrentRoundEnd"`
+	SecondsToNextRoundStart  int                `json:"secondsToNextRoundStart"`
 }
 
 // round
 type Round struct {
+	Id              string         `json:"id"`
+	PlayerIdToScore map[string]int `json:"playerIdToScore"`
+	TimeStart       int            `json:"timeStart"`
+	TimeEnd         int            `json:"timeEnd"`
 }
 
 // player
 type Player struct {
 	Id       string    `json:"id"`
 	Active   bool      `json:"active"`
+	Name     string    `json:"name"`
 	Position *Position `json:"position"`
+	Size     int       `json:"size"`
 }
 
 func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) *Player {
@@ -42,12 +48,14 @@ func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) *Player 
 // food
 type Food struct {
 	Id       string    `json:"id"`
+	Active   bool      `json:"active"`
 	Position *Position `json:"position"`
 }
 
 // mine
 type Mine struct {
 	Id       string    `json:"id"`
+	Active   bool      `json:"active"`
 	Position *Position `json:"position"`
 }
 

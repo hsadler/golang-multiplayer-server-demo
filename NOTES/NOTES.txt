@@ -11,7 +11,8 @@ TODO:
         X add new stub message handlers to server
         X add new client message classes to client
         X add new server message structs to server
-        - finalize server models schemas
+        X finalize server models schemas
+        - refactor server to use new GameState struct for model
         - finalize server message schemas
         - add mock message sending to server 
         - add mock message sending to client
@@ -72,10 +73,20 @@ Message:
 Game State:
 {
     players: {<str_UUID>: <Player>, ...},
-    food: {<str_UUID>: <Food>, ...},
+    foods: {<str_UUID>: <Food>, ...},
     mines: {<str_UUID>: <Mine>, ...},
     roundHistory: {<str_UUID>: <Round>, ...},
-    roundCurrent: <Round>
+    roundCurrent: <Round>,
+    secondsToCurrentRoundEnd: <int_sec>,
+    secondsToNextRoundStart: <int_sec>
+}
+
+Round:
+{
+    id: <str_UUID>,
+    playerIdToScore: {<str_UUID>: <int>, ...},
+    timeStart: <int_unix_ts>,
+    timeEnd: <int_unix_ts>
 }
 
 Player:
@@ -108,14 +119,4 @@ Mine:
         x: <float>,
         y: <float>
     },
-}
-
-Round:
-{
-    id: <str_UUID>,
-    timeToStart: <int_sec>,
-    timeStart: <int_unix_ts>,
-    timeToEnd: <int_sec>,
-    timeEnd: <int_unix_ts>,
-    playerIdToScore: {<str_UUID>: <int>, ...}
 }
