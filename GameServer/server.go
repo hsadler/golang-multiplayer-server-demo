@@ -12,12 +12,12 @@ import (
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
-	// create and run hub singleton
+	// create hub singleton and run
 	h := NewHub()
 	go h.Run()
-	// create and run game-state singleton
-	gs := NewGameState()
-	go gs.Run()
+	// create and run game-state-manager singleton and run
+	gsm := NewGameStateManager()
+	go gsm.RunRoundTicker()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		upgrader := websocket.Upgrader{} // use default options
 		ws, err := upgrader.Upgrade(w, r, nil)
@@ -28,7 +28,7 @@ func main() {
 		// create client, run processes, and add to hub
 		cl := &Client{
 			Hub:       h,
-			GameState: gs,
+			GameState: gsm.GameState,
 			Ws:        ws,
 			Player:    nil,
 			Send:      make(chan []byte, 256),

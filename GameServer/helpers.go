@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"os"
+
+	"github.com/google/uuid"
 )
 
 func ConsoleLogJsonByteArray(message []byte) {
@@ -11,4 +13,8 @@ func ConsoleLogJsonByteArray(message []byte) {
 	var out bytes.Buffer
 	json.Indent(&out, message, "", "  ")
 	out.WriteTo(os.Stdout)
+}
+
+func NewUUID() string {
+	return uuid.New().String()
 }
