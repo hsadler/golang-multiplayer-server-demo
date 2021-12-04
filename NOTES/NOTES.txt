@@ -6,19 +6,18 @@ TODO:
     X sketch out backend game state and entity modeling
     X POC server deployment to cloud service and deployment process
     X breakup server into file components
-    - POC client<->server communication with mocks:
-        X add new stub message handlers to client
-        X add new stub message handlers to server
-        X add new client message classes to client
-        X add new server message structs to server
-        X finalize server models schemas
-        X move server executable builds to a /build directory
-        X refactor server to use new GameState struct as game model
-        X add server logging control
-        X finalize server message schemas
-        - add mock message sending to server 
-        - add mock message sending to client
-        - implement round end and new round start
+    X add new stub message handlers to client
+    X add new stub message handlers to server
+    X add new client message classes to client
+    X add new server message structs to server
+    X finalize server models schemas
+    X move server executable builds to a /build directory
+    X refactor server to use new GameState struct as game model
+    X add server logging control
+    X finalize server message schemas
+    X mock implement round end and new round start
+    X refactor player enter position to be server authoritative
+    - POC Unity game client conformint to updated game server API
     - stub out Unity game client architecture
     - implement players joining game, seeing each other's movement
     - implement food spawning, consumption, and player size increase

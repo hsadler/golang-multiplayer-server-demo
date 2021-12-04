@@ -31,6 +31,12 @@ func (gs *GameState) RunListeners() {
 		case p := <-gs.UpdatePlayerState:
 			fmt.Println("Updating player state in game state:", p)
 			gs.Players[p.Id] = p
+		case f := <-gs.UpdateFoodState:
+			fmt.Println("Updating food state in game state:", f)
+			gs.Foods[f.Id] = f
+		case m := <-gs.UpdateMineState:
+			fmt.Println("Updating mine state in game state:", m)
+			gs.Mines[m.Id] = m
 		}
 	}
 }
