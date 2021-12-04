@@ -12,24 +12,44 @@ import (
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
-	// create hub singleton and run
-	h := NewHub()
-	go h.Run()
-	// create and run game-state-manager singleton and run
-	gsm := NewGameStateManager()
+	// create hub singleton and run the channel listeners
+	h := &Hub{
+		Clients:   make(map[*Client]bool),
+		Add:       make(chan *Client),
+		Remove:    make(chan *Client),
+		Broadcast: make(chan []byte),
+	}
+	go h.RunListeners()
+	// create game-state and game-state-manager singleton
+	// run the round management process
+	gs := &GameState{
+		Players:      make(map[string]*Player),
+		Foods:        make(map[string]*Food),
+		Mines:        make(map[string]*Mine),
+		RoundHistory: make(map[string]*Round),
+		RoundCurrent: nil,
+	}
+	gsm := &GameStateManager{
+		Hub:                      h,
+		GameState:                gs,
+		RoundIsInProgress:        false,
+		SecondsToCurrentRoundEnd: 0,
+		SecondsToNextRoundStart:  SECONDS_BETWEEN_ROUNDS,
+	}
 	go gsm.RunRoundTicker()
 	// handle client connections
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		upgrader := websocket.Upgrader{} // use default options
+		// upgrade request to websocket and use default options
+		upgrader := websocket.Upgrader{}
 		ws, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			log.Print("upgrade:", err)
+			log.Print("request upgrade error:", err)
 			return
 		}
 		// create client, run processes, and add to hub
 		cl := &Client{
 			Hub:       h,
-			GameState: gsm.GameState,
+			GameState: gs,
 			Ws:        ws,
 			Player:    nil,
 			Send:      make(chan []byte, 256),
@@ -38,6 +58,7 @@ func main() {
 		go cl.SendMessages()
 		h.Add <- cl
 	})
+	// run the server
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "5000"
@@ -45,6 +66,6 @@ func main() {
 	addr := flag.String("addr", "0.0.0.0:"+port, "http service address")
 	err := http.ListenAndServe(*addr, nil)
 	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+		log.Fatal("ListenAndServe:", err)
 	}
 }

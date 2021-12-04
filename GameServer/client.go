@@ -31,7 +31,7 @@ func (cl *Client) RecieveMessages() {
 			break
 		}
 		// log message received
-		ConsoleLogJsonByteArray("client message received:", message)
+		LogJson("client message received:", message)
 		// route message to handler
 		messageTypeToHandler := map[string]func(map[string]interface{}){
 			CLIENT_MESSAGE_TYPE_PLAYER_ENTER:       cl.HandlePlayerEnter,

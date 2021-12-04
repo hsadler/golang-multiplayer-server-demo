@@ -6,21 +6,11 @@ import (
 )
 
 type GameStateManager struct {
+	Hub                      *Hub
 	GameState                *GameState
 	RoundIsInProgress        bool
-	SecondsToCurrentRoundEnd int
 	SecondsToNextRoundStart  int
-}
-
-func NewGameStateManager() *GameStateManager {
-	gs := NewGameState()
-	gsm := &GameStateManager{
-		GameState:                gs,
-		RoundIsInProgress:        false,
-		SecondsToCurrentRoundEnd: 0,
-		SecondsToNextRoundStart:  SECONDS_BETWEEN_ROUNDS,
-	}
-	return gsm
+	SecondsToCurrentRoundEnd int
 }
 
 func (gsm *GameStateManager) RunRoundTicker() {
@@ -55,17 +45,6 @@ type GameState struct {
 	Mines        map[string]*Mine   `json:"mines"`
 	RoundHistory map[string]*Round  `json:"roundHistory"`
 	RoundCurrent *Round             `json:"roundCurrent"`
-}
-
-func NewGameState() *GameState {
-	gs := &GameState{
-		Players:      make(map[string]*Player),
-		Foods:        make(map[string]*Food),
-		Mines:        make(map[string]*Mine),
-		RoundHistory: make(map[string]*Round),
-		RoundCurrent: nil,
-	}
-	return gs
 }
 
 func (gs *GameState) EndCurrentRound() {

@@ -9,11 +9,11 @@ import (
 	"github.com/google/uuid"
 )
 
-func ConsoleLogJsonByteArray(logHeader string, message []byte) {
+func LogJson(logHeader string, messageJson []byte) {
 	if DO_LOGGING {
 		fmt.Println(logHeader)
 		var out bytes.Buffer
-		json.Indent(&out, message, "", "  ")
+		json.Indent(&out, messageJson, "", "  ")
 		out.WriteTo(os.Stdout)
 	}
 }

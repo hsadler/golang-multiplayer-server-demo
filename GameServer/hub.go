@@ -7,16 +7,7 @@ type Hub struct {
 	Broadcast chan []byte
 }
 
-func NewHub() *Hub {
-	return &Hub{
-		Clients:   make(map[*Client]bool),
-		Add:       make(chan *Client),
-		Remove:    make(chan *Client),
-		Broadcast: make(chan []byte),
-	}
-}
-
-func (h *Hub) Run() {
+func (h *Hub) RunListeners() {
 	for {
 		select {
 		case client := <-h.Add:
