@@ -117,14 +117,14 @@ public class SceneManagerScript : MonoBehaviour
             case Constants.SERVER_MESSAGE_TYPE_MINE_STATE_UPDATE:
                 this.HandleMineStateUpdateServerMessage(messageJSON);
                 break;
-            case Constants.SERVER_MESSAGE_TYPE_ROUND_TIME_TO_START:
-                this.HandleRoundTimeToStartServerMessage(messageJSON);
+            case Constants.SERVER_MESSAGE_TYPE_SECONDS_TO_NEXT_ROUND_START:
+                this.HandleSecondsToNextRoundStartServerMessage(messageJSON);
                 break;
-            case Constants.SERVER_MESSAGE_TYPE_ROUND_START:
-                this.HandleRoundStartServerMessage(messageJSON);
+            case Constants.SERVER_MESSAGE_TYPE_SECONDS_TO_CURRENT_ROUND_END:
+                this.HandleSecondsToCurrentRoundEndServerMessage(messageJSON);
                 break;
-            case Constants.SERVER_MESSAGE_TYPE_ROUND_END:
-                this.HandleRoundEndServerMessage(messageJSON);
+            case Constants.SERVER_MESSAGE_TYPE_ROUND_RESULT:
+                this.HandleRoundResultServerMessage(messageJSON);
                 break;
             default:
                 Debug.LogWarning("Server message not processed: " + messageJSON);
@@ -183,17 +183,17 @@ public class SceneManagerScript : MonoBehaviour
         // stub
     }
 
-    private void HandleRoundTimeToStartServerMessage(string messageJSON)
+    private void HandleSecondsToNextRoundStartServerMessage(string messageJSON)
     {
         // stub
     }
 
-    private void HandleRoundStartServerMessage(string messageJSON)
+    private void HandleSecondsToCurrentRoundEndServerMessage(string messageJSON)
     {
         // stub
     }
 
-    private void HandleRoundEndServerMessage(string messageJSON)
+    private void HandleRoundResultServerMessage(string messageJSON)
     {
         // stub
     }
