@@ -6,73 +6,75 @@ import (
 )
 
 type GameStateManager struct {
-	GameState *GameState
+	GameState                *GameState
+	RoundIsInProgress        bool
+	SecondsToCurrentRoundEnd int
+	SecondsToNextRoundStart  int
 }
 
 func NewGameStateManager() *GameStateManager {
 	gs := NewGameState()
 	gsm := &GameStateManager{
-		GameState: gs,
+		GameState:                gs,
+		RoundIsInProgress:        false,
+		SecondsToCurrentRoundEnd: 0,
+		SecondsToNextRoundStart:  SECONDS_BETWEEN_ROUNDS,
 	}
 	return gsm
 }
 
 func (gsm *GameStateManager) RunRoundTicker() {
-	gs := gsm.GameState
 	for range time.Tick(time.Second) {
-		if gs.RoundIsInProgress {
-			fmt.Println("Seconds left in round:", gs.SecondsToCurrentRoundEnd)
-			if gs.SecondsToCurrentRoundEnd == 0 {
-				gs.RoundIsInProgress = false
-				gs.SecondsToNextRoundStart = SECONDS_BETWEEN_ROUNDS
-				// TODO: end current round
+		if gsm.RoundIsInProgress {
+			fmt.Println("Seconds left in round:", gsm.SecondsToCurrentRoundEnd)
+			if gsm.SecondsToCurrentRoundEnd == 0 {
+				gsm.RoundIsInProgress = false
+				gsm.SecondsToNextRoundStart = SECONDS_BETWEEN_ROUNDS
+				gsm.GameState.EndCurrentRound()
 			} else {
 				// count down
-				gs.SecondsToCurrentRoundEnd -= 1
+				gsm.SecondsToCurrentRoundEnd -= 1
 			}
 		} else {
-			fmt.Println("Seconds until next round:", gs.SecondsToNextRoundStart)
-			if gs.SecondsToNextRoundStart == 0 {
-				gs.RoundIsInProgress = true
-				gs.SecondsToCurrentRoundEnd = SECONDS_PER_ROUND
-				// TODO: start next round
+			fmt.Println("Seconds until next round:", gsm.SecondsToNextRoundStart)
+			if gsm.SecondsToNextRoundStart == 0 {
+				gsm.RoundIsInProgress = true
+				gsm.SecondsToCurrentRoundEnd = SECONDS_PER_ROUND
+				gsm.GameState.StartNewRound()
 			} else {
 				// count down
-				gs.SecondsToNextRoundStart -= 1
+				gsm.SecondsToNextRoundStart -= 1
 			}
 		}
 	}
 }
 
 type GameState struct {
-	Players                  map[string]*Player `json:"players"`
-	Foods                    map[string]*Food   `json:"foods"`
-	Mines                    map[string]*Mine   `json:"mines"`
-	RoundHistory             map[string]*Round  `json:"roundHistory"`
-	RoundCurrent             *Round             `json:"roundCurrent"`
-	RoundIsInProgress        bool               `json:"roundIsInProgress"`
-	SecondsToCurrentRoundEnd int                `json:"secondsToCurrentRoundEnd"`
-	SecondsToNextRoundStart  int                `json:"secondsToNextRoundStart"`
+	Players      map[string]*Player `json:"players"`
+	Foods        map[string]*Food   `json:"foods"`
+	Mines        map[string]*Mine   `json:"mines"`
+	RoundHistory map[string]*Round  `json:"roundHistory"`
+	RoundCurrent *Round             `json:"roundCurrent"`
 }
 
 func NewGameState() *GameState {
 	gs := &GameState{
-		Players:                  make(map[string]*Player),
-		Foods:                    make(map[string]*Food),
-		Mines:                    make(map[string]*Mine),
-		RoundHistory:             make(map[string]*Round),
-		RoundCurrent:             nil,
-		RoundIsInProgress:        false,
-		SecondsToCurrentRoundEnd: 0,
-		SecondsToNextRoundStart:  0,
+		Players:      make(map[string]*Player),
+		Foods:        make(map[string]*Food),
+		Mines:        make(map[string]*Mine),
+		RoundHistory: make(map[string]*Round),
+		RoundCurrent: nil,
 	}
 	// TODO: do initialization of game state here
 	return gs
 }
 
+func (gs *GameState) EndCurrentRound() {
+	// stub
+	// - finalize RoundCurrent and store to RoundHistory
+}
+
 func (gs *GameState) StartNewRound() {
 	// stub
-	// logic:
-	// - finalize RoundCurrent and store to RoundHistory
 	// - create new round and assign to RoundCurrent
 }
