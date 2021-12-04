@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
@@ -18,8 +19,6 @@ type GameState struct {
 }
 
 func (gs *GameState) RunListeners() {
-	// TODO: add consumption/processing of all channels items
-	fmt.Println("Running channel listeners for GameState...")
 	for {
 		select {
 		case p := <-gs.AddPlayer:
@@ -50,6 +49,8 @@ func (gs *GameState) GetRoundResult() *Round {
 	r := &Round{
 		PlayerIdToScore: playerIdToScore,
 	}
+	res, _ := json.Marshal(r)
+	LogJson("round result:", res)
 	return r
 }
 
@@ -89,6 +90,8 @@ func (gs *GameState) InitNewRoundGameState() {
 	for _, p := range gs.Players {
 		p.Position = gs.GetNewSpawnPlayerPosition()
 	}
+	res, _ := json.Marshal(gs)
+	LogJson("initialized game-state:", res)
 }
 
 func (gs *GameState) GetNewSpawnPlayerPosition() *Position {
