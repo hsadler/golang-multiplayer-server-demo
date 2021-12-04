@@ -15,7 +15,16 @@ func LogJson(logHeader string, messageJson []byte) {
 		var out bytes.Buffer
 		json.Indent(&out, messageJson, "", "  ")
 		out.WriteTo(os.Stdout)
+		fmt.Println("======================")
 	}
+}
+
+func LogJsonForce(logHeader string, messageJson []byte) {
+	fmt.Println(logHeader)
+	var out bytes.Buffer
+	json.Indent(&out, messageJson, "", "  ")
+	out.WriteTo(os.Stdout)
+	fmt.Println("======================")
 }
 
 func GenUUID() string {

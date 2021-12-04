@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// TODO: change player to playerId here in order to keep player SOT in GameState only
 type Client struct {
 	Hub       *Hub
 	GameState *GameState
@@ -82,14 +83,22 @@ func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
 }
 
 func (cl *Client) HandlePlayerPosition(mData map[string]interface{}) {
-	player := NewPlayerFromMap(mData["player"].(map[string]interface{}), cl.Ws)
-	cl.Player = player
+	playerId := mData["playerId"].(string)
+	posMap := mData["position"].(map[string]interface{})
+	newPosition := &Position{
+		X: posMap["x"].(float64),
+		Y: posMap["y"].(float64),
+	}
+	player := cl.GameState.Players[playerId]
+	player.Position = newPosition
 	message := PlayerStateUpdateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE,
 		Player:      cl.Player,
 	}
 	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
-	cl.GameState.UpdatePlayerState <- cl.Player
+	cl.GameState.AddPlayer <- cl.Player
+	// d, _ := json.Marshal(cl.GameState)
+	// LogJsonForce("Game state after player position update", d)
 }
 
 func (cl *Client) HandlePlayerEatFood(mData map[string]interface{}) {

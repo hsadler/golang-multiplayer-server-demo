@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -16,7 +15,7 @@ type RoundManager struct {
 func (rm *RoundManager) RunRoundTicker() {
 	for range time.Tick(time.Second) {
 		if rm.RoundIsInProgress {
-			fmt.Println("Seconds left in round:", rm.SecondsToCurrentRoundEnd)
+			// fmt.Println("Seconds left in round:", rm.SecondsToCurrentRoundEnd)
 			if rm.SecondsToCurrentRoundEnd == 0 {
 				// end the current round
 				rm.RoundIsInProgress = false
@@ -30,7 +29,7 @@ func (rm *RoundManager) RunRoundTicker() {
 			message := NewSecondsToCurrentRoundEndMessage(rm.SecondsToCurrentRoundEnd)
 			SerializeAndScheduleServerMessage(message, rm.Hub.Broadcast)
 		} else {
-			fmt.Println("Seconds until next round:", rm.SecondsToNextRoundStart)
+			// fmt.Println("Seconds until next round:", rm.SecondsToNextRoundStart)
 			if rm.SecondsToNextRoundStart == 0 {
 				// initialize game state for the new round and broadcast
 				rm.RoundIsInProgress = true

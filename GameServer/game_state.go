@@ -21,21 +21,21 @@ type GameState struct {
 func (gs *GameState) RunListeners() {
 	for {
 		select {
-		case p := <-gs.AddPlayer:
-			fmt.Println("Adding player to game state:", p)
-			gs.Players[p.Id] = p
-		case p := <-gs.RemovePlayer:
-			fmt.Println("Removing player from game state:", p)
-			delete(gs.Players, p.Id)
-		case p := <-gs.UpdatePlayerState:
-			fmt.Println("Updating player state in game state:", p)
-			gs.Players[p.Id] = p
-		case f := <-gs.UpdateFoodState:
-			fmt.Println("Updating food state in game state:", f)
-			gs.Foods[f.Id] = f
-		case m := <-gs.UpdateMineState:
-			fmt.Println("Updating mine state in game state:", m)
-			gs.Mines[m.Id] = m
+		case player := <-gs.AddPlayer:
+			fmt.Println("Adding player to game state:", player)
+			gs.Players[player.Id] = player
+		case player := <-gs.RemovePlayer:
+			fmt.Println("Removing player from game state:", player)
+			delete(gs.Players, player.Id)
+		case player := <-gs.UpdatePlayerState:
+			fmt.Println("Updating player state in game state:", player)
+			gs.Players[player.Id] = player
+		case food := <-gs.UpdateFoodState:
+			fmt.Println("Updating food state in game state:", food)
+			gs.Foods[food.Id] = food
+		case mine := <-gs.UpdateMineState:
+			fmt.Println("Updating mine state in game state:", mine)
+			gs.Mines[mine.Id] = mine
 		}
 	}
 }

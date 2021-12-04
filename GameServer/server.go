@@ -22,11 +22,16 @@ func main() {
 	go h.RunListeners()
 	// create game-state and run channel listeners
 	gs := &GameState{
-		MapHeight: MAP_HEIGHT,
-		MapWidth:  MAP_WIDTH,
-		Players:   make(map[string]*Player),
-		Foods:     make(map[string]*Food),
-		Mines:     make(map[string]*Mine),
+		MapHeight:         MAP_HEIGHT,
+		MapWidth:          MAP_WIDTH,
+		Players:           make(map[string]*Player),
+		Foods:             make(map[string]*Food),
+		Mines:             make(map[string]*Mine),
+		AddPlayer:         make(chan *Player),
+		RemovePlayer:      make(chan *Player),
+		UpdatePlayerState: make(chan *Player),
+		UpdateFoodState:   make(chan *Food),
+		UpdateMineState:   make(chan *Mine),
 	}
 	go gs.RunListeners()
 	// create round-manager and run the round management process
