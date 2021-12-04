@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+
 	"github.com/gorilla/websocket"
 )
 
@@ -21,11 +23,18 @@ const SERVER_MESSAGE_TYPE_ROUND_TIME_TO_START string = "SERVER_MESSAGE_TYPE_ROUN
 const SERVER_MESSAGE_TYPE_ROUND_START string = "SERVER_MESSAGE_TYPE_ROUND_START"
 const SERVER_MESSAGE_TYPE_ROUND_END string = "SERVER_MESSAGE_TYPE_ROUND_END"
 
+func SerializeAndScheduleServerMessage(message interface{}, ch chan []byte) {
+	serialized, err := json.Marshal(message)
+	if err != nil {
+		panic(err)
+	}
+	ch <- serialized
+}
+
 func SendJsonMessage(ws *websocket.Conn, messageJson []byte) {
 	ws.WriteMessage(1, messageJson)
 	// log that message was sent
-	// fmt.Println("server message sent:")
-	// ConsoleLogJsonByteArray(messageJson)
+	ConsoleLogJsonByteArray("server message sent:", messageJson)
 }
 
 // TODO: finalize server message schemas

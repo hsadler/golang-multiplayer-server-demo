@@ -18,6 +18,7 @@ func main() {
 	// create and run game-state-manager singleton and run
 	gsm := NewGameStateManager()
 	go gsm.RunRoundTicker()
+	// handle client connections
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		upgrader := websocket.Upgrader{} // use default options
 		ws, err := upgrader.Upgrade(w, r, nil)

@@ -65,16 +65,15 @@ func NewGameState() *GameState {
 		RoundHistory: make(map[string]*Round),
 		RoundCurrent: nil,
 	}
-	// TODO: do initialization of game state here
 	return gs
 }
 
 func (gs *GameState) EndCurrentRound() {
-	// stub
+	// TODO: stub
 	// - finalize RoundCurrent and store to RoundHistory
 }
 
 func (gs *GameState) StartNewRound() {
-	// stub
+	// TODO: stub
 	// - create new round and assign to RoundCurrent
 }

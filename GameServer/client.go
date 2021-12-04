@@ -31,8 +31,7 @@ func (cl *Client) RecieveMessages() {
 			break
 		}
 		// log message received
-		// fmt.Println("client message received:")
-		// ConsoleLogJsonByteArray(message)
+		ConsoleLogJsonByteArray("client message received:", message)
 		// route message to handler
 		messageTypeToHandler := map[string]func(map[string]interface{}){
 			CLIENT_MESSAGE_TYPE_PLAYER_ENTER:       cl.HandlePlayerEnter,
@@ -52,12 +51,11 @@ func (cl *Client) RecieveMessages() {
 }
 
 func (cl *Client) SendGameState() {
-	messageData := GameStateMessage{
+	message := GameStateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_GAME_STATE,
 		GameState:   cl.GameState,
 	}
-	serialized, _ := json.Marshal(messageData)
-	cl.Send <- serialized
+	SerializeAndScheduleServerMessage(message, cl.Send)
 }
 
 func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
@@ -67,8 +65,7 @@ func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_ENTER,
 		Player:      player,
 	}
-	serialized, _ := json.Marshal(message)
-	cl.Hub.Broadcast <- serialized
+	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
 }
 
 func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
@@ -76,8 +73,7 @@ func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_EXIT,
 		PlayerId:    cl.Player.Id,
 	}
-	serialized, _ := json.Marshal(message)
-	cl.Hub.Broadcast <- serialized
+	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
 	cl.Hub.Remove <- cl
 }
 
@@ -88,31 +84,24 @@ func (cl *Client) HandlePlayerPosition(mData map[string]interface{}) {
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE,
 		Player:      player,
 	}
-	serialized, _ := json.Marshal(message)
-	cl.Hub.Broadcast <- serialized
+	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
 }
 
 func (cl *Client) HandlePlayerEatFood(mData map[string]interface{}) {
-	// STUB
+	// TODO: STUB
 }
 
 func (cl *Client) HandlePlayerEatPlayer(mData map[string]interface{}) {
-	// STUB
+	// TODO: STUB
 }
 
 func (cl *Client) HandleMineDamagePlayer(mData map[string]interface{}) {
-	// STUB
+	// TODO: STUB
 }
 
 func (cl *Client) SendMessages() {
-	for {
-		select {
-		case message, ok := <-cl.Send:
-			if !ok {
-				return
-			}
-			SendJsonMessage(cl.Ws, message)
-		}
+	for message := range cl.Send {
+		SendJsonMessage(cl.Ws, message)
 	}
 }
 
