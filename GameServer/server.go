@@ -23,11 +23,11 @@ func main() {
 	// create game-state and game-state-manager singleton
 	// run the round management process
 	gs := &GameState{
-		Players:      make(map[string]*Player),
-		Foods:        make(map[string]*Food),
-		Mines:        make(map[string]*Mine),
-		RoundHistory: make(map[string]*Round),
-		RoundCurrent: nil,
+		MapHeight: MAP_HEIGHT,
+		MapWidth:  MAP_WIDTH,
+		Players:   make(map[string]*Player),
+		Foods:     make(map[string]*Food),
+		Mines:     make(map[string]*Mine),
 	}
 	gsm := &GameStateManager{
 		Hub:                      h,

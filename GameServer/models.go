@@ -6,10 +6,7 @@ import "github.com/gorilla/websocket"
 
 // round
 type Round struct {
-	Id              string         `json:"id"`
 	PlayerIdToScore map[string]int `json:"playerIdToScore"`
-	TimeStart       int            `json:"timeStart"`
-	TimeEnd         int            `json:"timeEnd"`
 }
 
 // player

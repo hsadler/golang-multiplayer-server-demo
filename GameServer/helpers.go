@@ -18,6 +18,6 @@ func LogJson(logHeader string, messageJson []byte) {
 	}
 }
 
-func NewUUID() string {
+func GenUUID() string {
 	return uuid.New().String()
 }
