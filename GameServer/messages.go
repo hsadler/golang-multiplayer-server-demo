@@ -46,7 +46,7 @@ type GameStateMessage struct {
 	GameState   *GameState `json:"gameState"`
 }
 
-func (m *GameStateMessage) NewGameStateMessage(gs *GameState) *GameStateMessage {
+func NewGameStateMessage(gs *GameState) *GameStateMessage {
 	return &GameStateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_GAME_STATE,
 		GameState:   gs,
@@ -58,7 +58,7 @@ type PlayerEnterMessage struct {
 	Player      *Player `json:"player"`
 }
 
-func (m *PlayerEnterMessage) NewPlayerEnterMessage(p *Player) *PlayerEnterMessage {
+func NewPlayerEnterMessage(p *Player) *PlayerEnterMessage {
 	return &PlayerEnterMessage{
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_ENTER,
 		Player:      p,
@@ -70,7 +70,7 @@ type PlayerExitMessage struct {
 	PlayerId    string `json:"playerId"`
 }
 
-func (m *PlayerExitMessage) NewPlayerExitMessage(pId string) *PlayerExitMessage {
+func NewPlayerExitMessage(pId string) *PlayerExitMessage {
 	return &PlayerExitMessage{
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_EXIT,
 		PlayerId:    pId,
@@ -82,7 +82,7 @@ type PlayerStateUpdateMessage struct {
 	Player      *Player `json:"player"`
 }
 
-func (m *PlayerStateUpdateMessage) NewPlayerStateUpdateMessage(p *Player) *PlayerStateUpdateMessage {
+func NewPlayerStateUpdateMessage(p *Player) *PlayerStateUpdateMessage {
 	return &PlayerStateUpdateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE,
 		Player:      p,
@@ -94,7 +94,7 @@ type FoodStateUpdateMessage struct {
 	Food        *Food  `json:"food"`
 }
 
-func (m *FoodStateUpdateMessage) NewFoodStateUpdateMessage(f *Food) *FoodStateUpdateMessage {
+func NewFoodStateUpdateMessage(f *Food) *FoodStateUpdateMessage {
 	return &FoodStateUpdateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_FOOD_STATE_UPDATE,
 		Food:        f,
@@ -106,7 +106,7 @@ type MineStateUpdateMessage struct {
 	Mine        *Mine  `json:"mine"`
 }
 
-func (m *MineStateUpdateMessage) NewMineStateUpdateMessage(mine *Mine) *MineStateUpdateMessage {
+func NewMineStateUpdateMessage(mine *Mine) *MineStateUpdateMessage {
 	return &MineStateUpdateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_MINE_STATE_UPDATE,
 		Mine:        mine,
@@ -118,7 +118,7 @@ type SecondsToNextRoundStartMessage struct {
 	Seconds     int    `json:"seconds"`
 }
 
-func (m *SecondsToNextRoundStartMessage) NewSecondsToNextRoundStartMessage(s int) *SecondsToNextRoundStartMessage {
+func NewSecondsToNextRoundStartMessage(s int) *SecondsToNextRoundStartMessage {
 	return &SecondsToNextRoundStartMessage{
 		MessageType: SERVER_MESSAGE_TYPE_SECONDS_TO_NEXT_ROUND_START,
 		Seconds:     s,
@@ -130,7 +130,7 @@ type SecondsToCurrentRoundEndMessage struct {
 	Seconds     int    `json:"seconds"`
 }
 
-func (m *SecondsToCurrentRoundEndMessage) NewSecondsToCurrentRoundEndMessage(s int) *SecondsToCurrentRoundEndMessage {
+func NewSecondsToCurrentRoundEndMessage(s int) *SecondsToCurrentRoundEndMessage {
 	return &SecondsToCurrentRoundEndMessage{
 		MessageType: SERVER_MESSAGE_TYPE_SECONDS_TO_CURRENT_ROUND_END,
 		Seconds:     s,
@@ -142,7 +142,7 @@ type RoundResultMessage struct {
 	Round       *Round `json:"round"`
 }
 
-func (m *RoundResultMessage) NewRoundResultMessage(r *Round) *RoundResultMessage {
+func NewRoundResultMessage(r *Round) *RoundResultMessage {
 	return &RoundResultMessage{
 		MessageType: SERVER_MESSAGE_TYPE_ROUND_RESULT,
 		Round:       r,

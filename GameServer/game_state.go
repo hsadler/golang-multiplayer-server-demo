@@ -25,6 +25,8 @@ func (gsm *GameStateManager) RunRoundTicker() {
 				// count down
 				gsm.SecondsToCurrentRoundEnd -= 1
 			}
+			message := NewSecondsToCurrentRoundEndMessage(gsm.SecondsToCurrentRoundEnd)
+			SerializeAndScheduleServerMessage(message, gsm.Hub.Broadcast)
 		} else {
 			fmt.Println("Seconds until next round:", gsm.SecondsToNextRoundStart)
 			if gsm.SecondsToNextRoundStart == 0 {
@@ -35,6 +37,8 @@ func (gsm *GameStateManager) RunRoundTicker() {
 				// count down
 				gsm.SecondsToNextRoundStart -= 1
 			}
+			message := NewSecondsToNextRoundStartMessage(gsm.SecondsToNextRoundStart)
+			SerializeAndScheduleServerMessage(message, gsm.Hub.Broadcast)
 		}
 	}
 }

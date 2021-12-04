@@ -15,7 +15,7 @@ TODO:
         X move server executable builds to a /build directory
         X refactor server to use new GameState struct as game model
         X add server logging control
-        - finalize server message schemas
+        X finalize server message schemas
         - add mock message sending to server 
         - add mock message sending to client
         - implement round end and new round start
