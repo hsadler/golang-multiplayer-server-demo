@@ -88,7 +88,7 @@ public class SceneManagerScript : MonoBehaviour
 
     private void QueueServerMessage(object sender, MessageEventArgs e) 
     {
-        Debug.Log("Server message received: " + e.Data);
+        //Debug.Log("Server message received: " + e.Data);
         this.gameServerMessageQueue.Enqueue(e.Data);
     }
 
@@ -225,7 +225,7 @@ public class SceneManagerScript : MonoBehaviour
 
     private void SendWebsocketClientMessage(string messageJson)
     {
-        Debug.Log("Client message sent: " + messageJson);
+        //Debug.Log("Client message sent: " + messageJson);
         this.ws.Send(messageJson);
     }
 

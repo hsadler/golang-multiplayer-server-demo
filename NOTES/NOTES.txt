@@ -20,9 +20,9 @@ TODO:
     X POC Unity game client conform to updated game server API:
         X client player enter/exit -> server
         X client player position -> server
-        - server game state -> client
-        - server player position -> client
-    - move Player SOT to GameState, have Client hold PlayerId as a property
+        X server game state -> client
+        X server player position -> client
+    - BUG: move Player SOT to GameState, have Client hold PlayerId as a property
     - stub out Unity game client architecture
     - implement players joining game, seeing each other's movement
     - implement food spawning, consumption, and player size increase
