@@ -9,4 +9,4 @@ const MINE_COUNT int = 3
 const SECONDS_PER_ROUND int = 10
 const SECONDS_BETWEEN_ROUNDS int = 5
 
-const DO_LOGGING bool = false
+const DO_LOGGING bool = true

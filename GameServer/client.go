@@ -52,10 +52,7 @@ func (cl *Client) RecieveMessages() {
 }
 
 func (cl *Client) SendGameState() {
-	message := GameStateMessage{
-		MessageType: SERVER_MESSAGE_TYPE_GAME_STATE,
-		GameState:   cl.GameState,
-	}
+	message := NewGameStateMessage(cl.GameState.GetSerializable())
 	SerializeAndScheduleServerMessage(message, cl.Send)
 }
 
@@ -64,19 +61,13 @@ func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
 	player := NewPlayerFromMap(pData, cl.Ws)
 	player.Position = cl.GameState.GetNewSpawnPlayerPosition()
 	cl.Player = player
-	message := PlayerEnterMessage{
-		MessageType: SERVER_MESSAGE_TYPE_PLAYER_ENTER,
-		Player:      cl.Player,
-	}
+	message := NewPlayerEnterMessage(*cl.Player)
 	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
 	cl.GameState.AddPlayer <- cl.Player
 }
 
 func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
-	message := PlayerExitMessage{
-		MessageType: SERVER_MESSAGE_TYPE_PLAYER_EXIT,
-		PlayerId:    cl.Player.Id,
-	}
+	message := NewPlayerExitMessage(cl.Player.Id)
 	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
 	cl.GameState.RemovePlayer <- cl.Player
 	cl.Hub.Remove <- cl
@@ -91,14 +82,9 @@ func (cl *Client) HandlePlayerPosition(mData map[string]interface{}) {
 	}
 	player := cl.GameState.Players[playerId]
 	player.Position = newPosition
-	message := PlayerStateUpdateMessage{
-		MessageType: SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE,
-		Player:      cl.Player,
-	}
+	message := NewPlayerStateUpdateMessage(*cl.Player)
 	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
 	cl.GameState.AddPlayer <- cl.Player
-	// d, _ := json.Marshal(cl.GameState)
-	// LogJsonForce("Game state after player position update", d)
 }
 
 func (cl *Client) HandlePlayerEatFood(mData map[string]interface{}) {

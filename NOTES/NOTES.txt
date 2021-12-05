@@ -17,9 +17,11 @@ TODO:
     X finalize server message schemas
     X mock implement round end and new round start
     X refactor player enter position to be server authoritative
-    X POC Unity game client conformint to updated game server API:
-        X player enter/exit -> server
-        X player position -> server
+    X POC Unity game client conform to updated game server API:
+        X client player enter/exit -> server
+        X client player position -> server
+        - server game state -> client
+        - server player position -> client
     - move Player SOT to GameState, have Client hold PlayerId as a property
     - stub out Unity game client architecture
     - implement players joining game, seeing each other's movement

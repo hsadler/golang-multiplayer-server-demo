@@ -9,7 +9,7 @@ public class PlayerScript : MonoBehaviour
 
     // use for testing if you want to connect multiple players to the server and
     // see them moving
-    public bool autopilotOn = false;
+    public bool autopilotOn = true;
 
     private float moveSpeed = 5f;
 

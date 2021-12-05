@@ -42,24 +42,24 @@ func SendJsonMessage(ws *websocket.Conn, messageJson []byte) {
 // messages
 
 type GameStateMessage struct {
-	MessageType string     `json:"messageType"`
-	GameState   *GameState `json:"gameState"`
+	MessageType string                `json:"messageType"`
+	GameState   GameStateSerializable `json:"gameState"`
 }
 
-func NewGameStateMessage(gs *GameState) *GameStateMessage {
-	return &GameStateMessage{
+func NewGameStateMessage(gs GameStateSerializable) GameStateMessage {
+	return GameStateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_GAME_STATE,
 		GameState:   gs,
 	}
 }
 
 type PlayerEnterMessage struct {
-	MessageType string  `json:"messageType"`
-	Player      *Player `json:"player"`
+	MessageType string `json:"messageType"`
+	Player      Player `json:"player"`
 }
 
-func NewPlayerEnterMessage(p *Player) *PlayerEnterMessage {
-	return &PlayerEnterMessage{
+func NewPlayerEnterMessage(p Player) PlayerEnterMessage {
+	return PlayerEnterMessage{
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_ENTER,
 		Player:      p,
 	}
@@ -70,20 +70,20 @@ type PlayerExitMessage struct {
 	PlayerId    string `json:"playerId"`
 }
 
-func NewPlayerExitMessage(pId string) *PlayerExitMessage {
-	return &PlayerExitMessage{
+func NewPlayerExitMessage(pId string) PlayerExitMessage {
+	return PlayerExitMessage{
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_EXIT,
 		PlayerId:    pId,
 	}
 }
 
 type PlayerStateUpdateMessage struct {
-	MessageType string  `json:"messageType"`
-	Player      *Player `json:"player"`
+	MessageType string `json:"messageType"`
+	Player      Player `json:"player"`
 }
 
-func NewPlayerStateUpdateMessage(p *Player) *PlayerStateUpdateMessage {
-	return &PlayerStateUpdateMessage{
+func NewPlayerStateUpdateMessage(p Player) PlayerStateUpdateMessage {
+	return PlayerStateUpdateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_PLAYER_STATE_UPDATE,
 		Player:      p,
 	}
@@ -91,11 +91,11 @@ func NewPlayerStateUpdateMessage(p *Player) *PlayerStateUpdateMessage {
 
 type FoodStateUpdateMessage struct {
 	MessageType string `json:"messageType"`
-	Food        *Food  `json:"food"`
+	Food        Food   `json:"food"`
 }
 
-func NewFoodStateUpdateMessage(f *Food) *FoodStateUpdateMessage {
-	return &FoodStateUpdateMessage{
+func NewFoodStateUpdateMessage(f Food) FoodStateUpdateMessage {
+	return FoodStateUpdateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_FOOD_STATE_UPDATE,
 		Food:        f,
 	}
@@ -103,11 +103,11 @@ func NewFoodStateUpdateMessage(f *Food) *FoodStateUpdateMessage {
 
 type MineStateUpdateMessage struct {
 	MessageType string `json:"messageType"`
-	Mine        *Mine  `json:"mine"`
+	Mine        Mine   `json:"mine"`
 }
 
-func NewMineStateUpdateMessage(mine *Mine) *MineStateUpdateMessage {
-	return &MineStateUpdateMessage{
+func NewMineStateUpdateMessage(mine Mine) MineStateUpdateMessage {
+	return MineStateUpdateMessage{
 		MessageType: SERVER_MESSAGE_TYPE_MINE_STATE_UPDATE,
 		Mine:        mine,
 	}
@@ -118,8 +118,8 @@ type SecondsToNextRoundStartMessage struct {
 	Seconds     int    `json:"seconds"`
 }
 
-func NewSecondsToNextRoundStartMessage(s int) *SecondsToNextRoundStartMessage {
-	return &SecondsToNextRoundStartMessage{
+func NewSecondsToNextRoundStartMessage(s int) SecondsToNextRoundStartMessage {
+	return SecondsToNextRoundStartMessage{
 		MessageType: SERVER_MESSAGE_TYPE_SECONDS_TO_NEXT_ROUND_START,
 		Seconds:     s,
 	}
@@ -130,8 +130,8 @@ type SecondsToCurrentRoundEndMessage struct {
 	Seconds     int    `json:"seconds"`
 }
 
-func NewSecondsToCurrentRoundEndMessage(s int) *SecondsToCurrentRoundEndMessage {
-	return &SecondsToCurrentRoundEndMessage{
+func NewSecondsToCurrentRoundEndMessage(s int) SecondsToCurrentRoundEndMessage {
+	return SecondsToCurrentRoundEndMessage{
 		MessageType: SERVER_MESSAGE_TYPE_SECONDS_TO_CURRENT_ROUND_END,
 		Seconds:     s,
 	}
@@ -139,11 +139,11 @@ func NewSecondsToCurrentRoundEndMessage(s int) *SecondsToCurrentRoundEndMessage 
 
 type RoundResultMessage struct {
 	MessageType string `json:"messageType"`
-	Round       *Round `json:"round"`
+	Round       Round  `json:"round"`
 }
 
-func NewRoundResultMessage(r *Round) *RoundResultMessage {
-	return &RoundResultMessage{
+func NewRoundResultMessage(r Round) RoundResultMessage {
+	return RoundResultMessage{
 		MessageType: SERVER_MESSAGE_TYPE_ROUND_RESULT,
 		Round:       r,
 	}
