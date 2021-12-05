@@ -18,7 +18,7 @@ type Player struct {
 	Size     int       `json:"size"`
 }
 
-func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) *Player {
+func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) Player {
 	posMap := pData["position"].(map[string]interface{})
 	pos := Position{
 		X: posMap["x"].(float64),
@@ -28,7 +28,7 @@ func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) *Player 
 		Id:       pData["id"].(string),
 		Position: &pos,
 	}
-	return &player
+	return player
 }
 
 // food

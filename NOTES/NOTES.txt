@@ -22,7 +22,8 @@ TODO:
         X client player position -> server
         X server game state -> client
         X server player position -> client
-    - BUG: move Player SOT to GameState, have Client hold PlayerId as a property
+    X BUG: move Player SOT to GameState, have Client hold PlayerId as a property
+    X add mutex to GameState for reads and writes
     - stub out Unity game client architecture
     - implement players joining game, seeing each other's movement
     - implement food spawning, consumption, and player size increase

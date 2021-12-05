@@ -12,7 +12,7 @@ type Client struct {
 	Hub       *Hub
 	GameState *GameState
 	Ws        *websocket.Conn
-	Player    *Player
+	PlayerId  string
 	Send      chan []byte
 }
 
@@ -60,31 +60,32 @@ func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
 	pData := mData["player"].(map[string]interface{})
 	player := NewPlayerFromMap(pData, cl.Ws)
 	player.Position = cl.GameState.GetNewSpawnPlayerPosition()
-	cl.Player = player
-	message := NewPlayerEnterMessage(*cl.Player)
+	cl.PlayerId = player.Id
+	cl.GameState.AddPlayer <- player
+	message := NewPlayerEnterMessage(player)
 	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
-	cl.GameState.AddPlayer <- cl.Player
 }
 
 func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
-	message := NewPlayerExitMessage(cl.Player.Id)
-	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
-	cl.GameState.RemovePlayer <- cl.Player
+	player := cl.GameState.FetchPlayer(cl.PlayerId)
+	cl.GameState.RemovePlayer <- player
 	cl.Hub.Remove <- cl
+	message := NewPlayerExitMessage(player.Id)
+	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
 }
 
 func (cl *Client) HandlePlayerPosition(mData map[string]interface{}) {
-	playerId := mData["playerId"].(string)
 	posMap := mData["position"].(map[string]interface{})
 	newPosition := &Position{
 		X: posMap["x"].(float64),
 		Y: posMap["y"].(float64),
 	}
-	player := cl.GameState.Players[playerId]
+	playerId := mData["playerId"].(string)
+	player := cl.GameState.FetchPlayer(playerId)
 	player.Position = newPosition
-	message := NewPlayerStateUpdateMessage(*cl.Player)
+	cl.GameState.UpdatePlayerState <- player
+	message := NewPlayerStateUpdateMessage(player)
 	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
-	cl.GameState.AddPlayer <- cl.Player
 }
 
 func (cl *Client) HandlePlayerEatFood(mData map[string]interface{}) {
