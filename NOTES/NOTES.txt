@@ -24,8 +24,13 @@ TODO:
         X server player position -> client
     X BUG: move Player SOT to GameState, have Client hold PlayerId as a property
     X add mutex to GameState for reads and writes
+    X implement players joining game, seeing each other's movement
+    - BUG: client disconnections not properly handled by server
+    - INVESTIGATE: 
+        - load testing client connections
+        - ping/pong needed for clients that start to fail
+    - refactor GameState to use sync.Map
     - stub out Unity game client architecture
-    - implement players joining game, seeing each other's movement
     - implement food spawning, consumption, and player size increase
     - implement player eat player and player respawn
     - implement time per round and game reset
