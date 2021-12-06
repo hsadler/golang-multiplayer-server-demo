@@ -7,7 +7,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// TODO: change player to playerId here in order to keep player SOT in GameState only
 type Client struct {
 	Hub       *Hub
 	GameState *GameState
