@@ -51,8 +51,11 @@ func (cl *Client) RecieveMessages() {
 }
 
 func (cl *Client) SendGameState() {
-	message := NewGameStateMessage(cl.GameState.GetSerializable())
+	gameState := cl.GameState.GetSerializable()
+	message := NewGameStateMessage(gameState)
 	SerializeAndScheduleServerMessage(message, cl.Send)
+	j, _ := json.Marshal(gameState)
+	LogJson("Sending game state:", j)
 }
 
 func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {

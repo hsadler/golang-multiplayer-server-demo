@@ -26,7 +26,7 @@ TODO:
     X add mutex to GameState for reads and writes
     X implement players joining game, seeing each other's movement
     X BUG: client disconnections not properly handled by server
-    - implement better GameState entity-map concurrency handling with a 
+    X implement better GameState entity-map concurrency handling with a 
         ConcurrentMap datastructure using a RWMutex
     - stub out Unity game client architecture
     - implement food spawning, consumption, and player size increase
