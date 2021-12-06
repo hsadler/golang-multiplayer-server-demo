@@ -150,11 +150,10 @@ public class SceneManagerScript : MonoBehaviour
     private void HandlePlayerExitServerMessage(string messageJSON)
     {
         var playerExitMessage = JsonUtility.FromJson<ServerMessagePlayerExit>(messageJSON);
-        string playerId = playerExitMessage.player.id;
-        if (this.playerIdToOtherPlayerGO.ContainsKey(playerId)) 
+        if (this.playerIdToOtherPlayerGO.ContainsKey(playerExitMessage.playerId)) 
         {
-            Object.Destroy(this.playerIdToOtherPlayerGO[playerId]);
-            this.playerIdToOtherPlayerGO.Remove(playerId);
+            Object.Destroy(this.playerIdToOtherPlayerGO[playerExitMessage.playerId]);
+            this.playerIdToOtherPlayerGO.Remove(playerExitMessage.playerId);
         }
     }
 

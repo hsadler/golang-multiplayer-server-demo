@@ -28,7 +28,7 @@ func (cl *Client) RecieveMessages() {
 		// read message
 		_, message, err := cl.Ws.ReadMessage()
 		if err != nil {
-			log.Println("read:", err)
+			log.Print("Message read error:", err)
 			break
 		}
 		// log message received
@@ -64,6 +64,7 @@ func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
 	cl.GameState.AddPlayer <- player
 	message := NewPlayerEnterMessage(player)
 	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
+	LogDataForce("Handling player enter:", player.Id)
 }
 
 func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
@@ -72,6 +73,7 @@ func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
 	cl.Hub.Remove <- cl
 	message := NewPlayerExitMessage(player.Id)
 	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
+	LogDataForce("Handling player exit:", player.Id)
 }
 
 func (cl *Client) HandlePlayerPosition(mData map[string]interface{}) {

@@ -51,7 +51,7 @@ func main() {
 		upgrader := websocket.Upgrader{}
 		ws, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			log.Print("request upgrade error:", err)
+			log.Print("Request upgrade error:", err)
 			return
 		}
 		// create client, run processes, and add to hub
@@ -74,6 +74,6 @@ func main() {
 	addr := flag.String("addr", "0.0.0.0:"+port, "http service address")
 	err := http.ListenAndServe(*addr, nil)
 	if err != nil {
-		log.Fatal("ListenAndServe:", err)
+		log.Fatal("Server start error:", err)
 	}
 }

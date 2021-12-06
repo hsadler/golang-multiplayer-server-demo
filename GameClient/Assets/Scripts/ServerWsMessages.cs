@@ -17,7 +17,7 @@ public class ServerMessagePlayerEnter
 public class ServerMessagePlayerExit
 {
     public string messageType;
-    public Player player;
+    public string playerId;
 }
 
 [Serializable]
