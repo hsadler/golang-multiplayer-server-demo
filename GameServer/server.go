@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sync"
 
 	"github.com/gorilla/websocket"
 )
@@ -21,21 +20,14 @@ func main() {
 		Broadcast: make(chan []byte),
 	}
 	go h.RunListeners()
-	// create game-state and run listeners for write channels
+	// create game-state
 	gs := &GameState{
-		MapHeight:         MAP_HEIGHT,
-		MapWidth:          MAP_WIDTH,
-		Players:           make(map[string]Player),
-		Foods:             make(map[string]Food),
-		Mines:             make(map[string]Mine),
-		AddPlayer:         make(chan Player),
-		RemovePlayer:      make(chan Player),
-		UpdatePlayerState: make(chan Player),
-		UpdateFoodState:   make(chan Food),
-		UpdateMineState:   make(chan Mine),
-		Mu:                &sync.RWMutex{},
+		MapHeight: MAP_HEIGHT,
+		MapWidth:  MAP_WIDTH,
+		Players:   NewCMap(),
+		Foods:     NewCMap(),
+		Mines:     NewCMap(),
 	}
-	go gs.RunWriteListeners()
 	// create round-manager and run the round management process
 	rm := &RoundManager{
 		Hub:                      h,

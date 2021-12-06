@@ -2,67 +2,21 @@ package main
 
 import (
 	"encoding/json"
-	"sync"
 )
 
 type GameState struct {
-	MapHeight         int
-	MapWidth          int
-	Players           map[string]Player
-	Foods             map[string]Food
-	Mines             map[string]Mine
-	AddPlayer         chan Player
-	RemovePlayer      chan Player
-	UpdatePlayerState chan Player
-	UpdateFoodState   chan Food
-	UpdateMineState   chan Mine
-	Mu                *sync.RWMutex
-}
-
-func (gs *GameState) RunWriteListeners() {
-	for {
-		select {
-		case player := <-gs.AddPlayer:
-			LogData("Adding player to game state:", player.Id)
-			gs.Mu.Lock()
-			gs.Players[player.Id] = player
-			gs.Mu.Unlock()
-		case player := <-gs.RemovePlayer:
-			LogData("Removing player from game state:", player.Id)
-			gs.Mu.Lock()
-			delete(gs.Players, player.Id)
-			gs.Mu.Unlock()
-		case player := <-gs.UpdatePlayerState:
-			LogData("Updating player state in game state:", player.Id)
-			gs.Mu.Lock()
-			gs.Players[player.Id] = player
-			gs.Mu.Unlock()
-		case food := <-gs.UpdateFoodState:
-			LogData("Updating food state in game state:", food.Id)
-			gs.Mu.Lock()
-			gs.Foods[food.Id] = food
-			gs.Mu.Unlock()
-		case mine := <-gs.UpdateMineState:
-			LogData("Updating mine state in game state:", mine.Id)
-			gs.Mu.Lock()
-			gs.Mines[mine.Id] = mine
-			gs.Mu.Unlock()
-		}
-	}
-}
-
-func (gs *GameState) FetchPlayer(playerId string) Player {
-	gs.Mu.RLock()
-	defer gs.Mu.RUnlock()
-	return gs.Players[playerId]
+	MapHeight int
+	MapWidth  int
+	Players   *CMap
+	Foods     *CMap
+	Mines     *CMap
 }
 
 func (gs *GameState) GetRoundResult() Round {
-	gs.Mu.RLock()
-	defer gs.Mu.RUnlock()
 	// aggregate game state to round object
 	playerIdToScore := make(map[string]int)
-	for _, player := range gs.Players {
+	for _, playerData := range gs.Players.Values() {
+		player := playerData.(Player)
 		playerIdToScore[player.Id] = player.Size
 	}
 	r := Round{
@@ -74,33 +28,31 @@ func (gs *GameState) GetRoundResult() Round {
 }
 
 func (gs *GameState) InitNewRoundGameState() {
-	gs.Mu.Lock()
-	defer gs.Mu.Unlock()
 	// food placement
-	foods := make(map[string]Food)
+	gs.Foods = NewCMap()
 	for i := 0; i < FOOD_COUNT; i++ {
 		f := Food{
 			Id:       GenUUID(),
 			Active:   true,
 			Position: gs.GetNewSpawnFoodPosition(),
 		}
-		foods[f.Id] = f
+		gs.Foods.Set(f.Id, f)
 	}
-	gs.Foods = foods
 	// mine placement
-	mines := make(map[string]Mine)
+	gs.Mines = NewCMap()
 	for i := 0; i < MINE_COUNT; i++ {
 		m := Mine{
 			Id:       GenUUID(),
 			Active:   true,
 			Position: gs.GetNewSpawnMinePosition(),
 		}
-		mines[m.Id] = m
+		gs.Mines.Set(m.Id, m)
 	}
-	gs.Mines = mines
 	// player placement
-	for _, p := range gs.Players {
-		p.Position = gs.GetNewSpawnPlayerPosition()
+	for _, pData := range gs.Players.Values() {
+		player := pData.(Player)
+		player.Position = gs.GetNewSpawnPlayerPosition()
+		gs.Players.Set(player.Id, player)
 	}
 }
 
@@ -140,19 +92,17 @@ type GameStateSerializable struct {
 }
 
 func (gs *GameState) GetSerializable() GameStateSerializable {
-	gs.Mu.RLock()
-	defer gs.Mu.RUnlock()
 	players := make([]Player, 0)
-	for _, p := range gs.Players {
-		players = append(players, p)
+	for _, p := range gs.Players.Values() {
+		players = append(players, p.(Player))
 	}
 	foods := make([]Food, 0)
-	for _, f := range gs.Foods {
-		foods = append(foods, f)
+	for _, f := range gs.Foods.Values() {
+		foods = append(foods, f.(Food))
 	}
 	mines := make([]Mine, 0)
-	for _, m := range gs.Mines {
-		mines = append(mines, m)
+	for _, m := range gs.Mines.Values() {
+		mines = append(mines, m.(Mine))
 	}
 	return GameStateSerializable{
 		MapHeight: gs.MapHeight,

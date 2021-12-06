@@ -20,6 +20,12 @@ func (m *CMap) Set(key string, val interface{}) {
 	m.data[key] = val
 }
 
+func (m *CMap) Delete(key string) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	delete(m.data, key)
+}
+
 func (m *CMap) Get(key string) interface{} {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
