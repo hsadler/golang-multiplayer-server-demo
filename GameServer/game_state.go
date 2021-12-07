@@ -56,31 +56,22 @@ func (gs *GameState) InitNewRoundGameState() {
 	}
 }
 
-func (gs *GameState) GetNewSpawnMinePosition() *Position {
+func (gs *GameState) GetNewSpawnMinePosition() Position {
 	// TODO: add randomization to mine position and ensure it has space
 	// away from mines
-	return &Position{
-		X: 0,
-		Y: 0,
-	}
+	return GenRandPosition(gs)
 }
 
-func (gs *GameState) GetNewSpawnFoodPosition() *Position {
+func (gs *GameState) GetNewSpawnFoodPosition() Position {
 	// TODO: add randomization to food position and ensure it has space
 	// away from mines
-	return &Position{
-		X: 0,
-		Y: 0,
-	}
+	return GenRandPosition(gs)
 }
 
-func (gs *GameState) GetNewSpawnPlayerPosition() *Position {
+func (gs *GameState) GetNewSpawnPlayerPosition() Position {
 	// TODO: add randomization to player position and ensure it has space
 	// away from mines and other players
-	return &Position{
-		X: 0,
-		Y: 0,
-	}
+	return GenRandPosition(gs)
 }
 
 type GameStateSerializable struct {

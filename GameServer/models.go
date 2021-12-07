@@ -11,11 +11,11 @@ type Round struct {
 
 // player
 type Player struct {
-	Id       string    `json:"id"`
-	Active   bool      `json:"active"`
-	Name     string    `json:"name"`
-	Position *Position `json:"position"`
-	Size     int       `json:"size"`
+	Id       string   `json:"id"`
+	Active   bool     `json:"active"`
+	Name     string   `json:"name"`
+	Position Position `json:"position"`
+	Size     int      `json:"size"`
 }
 
 func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) Player {
@@ -26,23 +26,23 @@ func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) Player {
 	}
 	player := Player{
 		Id:       pData["id"].(string),
-		Position: &pos,
+		Position: pos,
 	}
 	return player
 }
 
 // food
 type Food struct {
-	Id       string    `json:"id"`
-	Active   bool      `json:"active"`
-	Position *Position `json:"position"`
+	Id       string   `json:"id"`
+	Active   bool     `json:"active"`
+	Position Position `json:"position"`
 }
 
 // mine
 type Mine struct {
-	Id       string    `json:"id"`
-	Active   bool      `json:"active"`
-	Position *Position `json:"position"`
+	Id       string   `json:"id"`
+	Active   bool     `json:"active"`
+	Position Position `json:"position"`
 }
 
 //////////////// SUB MODELS ////////////////

@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"os"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -49,4 +51,16 @@ func LogJsonForce(logHeader string, messageJson []byte) {
 
 func GenUUID() string {
 	return uuid.New().String()
+}
+
+func RandFloat(min, max float64) float64 {
+	rand.Seed(time.Now().UnixNano())
+	return min + rand.Float64()*(max-min)
+}
+
+func GenRandPosition(gs *GameState) Position {
+	return Position{
+		X: RandFloat(-float64(gs.MapWidth/2), float64(gs.MapWidth/2)),
+		Y: RandFloat(-float64(gs.MapHeight/2), float64(gs.MapHeight/2)),
+	}
 }

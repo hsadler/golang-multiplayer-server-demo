@@ -55,7 +55,7 @@ func (cl *Client) SendGameState() {
 	message := NewGameStateMessage(gameState)
 	SerializeAndScheduleServerMessage(message, cl.Send)
 	j, _ := json.Marshal(gameState)
-	LogJson("Sending game state:", j)
+	LogJsonForce("Sending game state:", j)
 }
 
 func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
@@ -80,7 +80,7 @@ func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
 
 func (cl *Client) HandlePlayerPosition(mData map[string]interface{}) {
 	posMap := mData["position"].(map[string]interface{})
-	newPosition := &Position{
+	newPosition := Position{
 		X: posMap["x"].(float64),
 		Y: posMap["y"].(float64),
 	}
