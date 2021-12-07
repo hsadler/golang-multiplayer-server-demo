@@ -19,12 +19,27 @@ public class SceneManagerScript : MonoBehaviour
 
     private Queue<string> gameServerMessageQueue = new Queue<string>();
 
+    // the static reference to the singleton instance
+    public static SceneManagerScript instance { get; private set; }
+
+
     // UNITY HOOKS
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
         this.InitWebSocketClient();
-        //this.InitMainPlayer();
     }
 
     private void Update()
@@ -43,6 +58,27 @@ public class SceneManagerScript : MonoBehaviour
     }
 
     // INTERFACE METHODS
+
+    public void InitMainPlayer(string playerName)
+    {
+        // create player game object
+        var playerPos = Vector3.zero;
+        this.mainPlayerGO = Instantiate(this.playerPrefab, playerPos, Quaternion.identity);
+        var mainPlayerScript = this.mainPlayerGO.GetComponent<PlayerScript>();
+        mainPlayerScript.sceneManager = this;
+        mainPlayerScript.isMainPlayer = true;
+        // create player model
+        this.mainPlayerModel = new Player(
+            id: System.Guid.NewGuid().ToString(),
+            active: true,
+            name: playerName,
+            position: new Position(this.transform.position.x, this.transform.position.y),
+            size: 1
+        );
+        // send "player enter" message to server
+        var playerEnterMessage = new ClientMessagePlayerEnter(this.mainPlayerModel);
+        this.SendWebsocketClientMessage(JsonUtility.ToJson(playerEnterMessage));
+    }
 
     public void SyncPlayerState(GameObject playerGO)
     {
@@ -67,27 +103,6 @@ public class SceneManagerScript : MonoBehaviour
         this.ws.Connect();
         // add message handler callback
         this.ws.OnMessage += this.QueueServerMessage;
-    }
-
-    private void InitMainPlayer()
-    {
-        // create player game object
-        var playerPos = Vector3.zero;
-        this.mainPlayerGO = Instantiate(this.playerPrefab, playerPos, Quaternion.identity);
-        var mainPlayerScript = this.mainPlayerGO.GetComponent<PlayerScript>();
-        mainPlayerScript.sceneManager = this;
-        mainPlayerScript.isMainPlayer = true;
-        // create player model
-        this.mainPlayerModel = new Player(
-            id: System.Guid.NewGuid().ToString(),
-            active: true,
-            name: "mock_player_name",
-            position: new Position(this.transform.position.x, this.transform.position.y),
-            size: 1
-        );
-        // send "player enter" message to server
-        var playerEnterMessage = new ClientMessagePlayerEnter(this.mainPlayerModel);
-        this.SendWebsocketClientMessage(JsonUtility.ToJson(playerEnterMessage));
     }
 
     private void QueueServerMessage(object sender, MessageEventArgs e) 
