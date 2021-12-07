@@ -18,12 +18,18 @@ public class Player
 {
 
     public string id;
+    public bool active;
+    public string name;
     public Position position;
+    public int size;
 
-    public Player(string id, Position position)
+    public Player(string id, bool active, string name, Position position, int size)
     {
         this.id = id;
+        this.active = active;
+        this.name = name;
         this.position = position;
+        this.size = size;
     }
 
 }
@@ -33,11 +39,13 @@ public class Food
 {
 
     public string id;
+    public bool active;
     public Position position;
 
-    public Food(string id, Position position)
+    public Food(string id, bool active, Position position)
     {
         this.id = id;
+        this.active = active;
         this.position = position;
     }
 
@@ -48,11 +56,13 @@ public class Mine
 {
 
     public string id;
+    public bool active;
     public Position position;
 
-    public Mine(string id, Position position)
+    public Mine(string id, bool active, Position position)
     {
         this.id = id;
+        this.active = active;
         this.position = position;
     }
 

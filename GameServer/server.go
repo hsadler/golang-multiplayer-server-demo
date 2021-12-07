@@ -10,8 +10,7 @@ import (
 )
 
 func main() {
-	flag.Parse()
-	log.SetFlags(0)
+	log.SetFlags(log.LstdFlags)
 	// create hub and run the channel listeners
 	h := &Hub{
 		Clients:   make(map[*Client]bool),

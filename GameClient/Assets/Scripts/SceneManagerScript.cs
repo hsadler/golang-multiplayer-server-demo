@@ -24,7 +24,7 @@ public class SceneManagerScript : MonoBehaviour
     private void Start()
     {
         this.InitWebSocketClient();
-        this.InitMainPlayer();
+        //this.InitMainPlayer();
     }
 
     private void Update()
@@ -78,9 +78,13 @@ public class SceneManagerScript : MonoBehaviour
         mainPlayerScript.sceneManager = this;
         mainPlayerScript.isMainPlayer = true;
         // create player model
-        string uuid = System.Guid.NewGuid().ToString();
-        var pos = new Position(this.transform.position.x, this.transform.position.y);
-        this.mainPlayerModel = new Player(uuid, pos);
+        this.mainPlayerModel = new Player(
+            id: System.Guid.NewGuid().ToString(),
+            active: true,
+            name: "mock_player_name",
+            position: new Position(this.transform.position.x, this.transform.position.y),
+            size: 1
+        );
         // send "player enter" message to server
         var playerEnterMessage = new ClientMessagePlayerEnter(this.mainPlayerModel);
         this.SendWebsocketClientMessage(JsonUtility.ToJson(playerEnterMessage));
@@ -200,11 +204,10 @@ public class SceneManagerScript : MonoBehaviour
     private void AddOtherPlayerFromPlayerModel(Player otherPlayerModel)
     {
         // player is not main player and player is not currently tracked
-        if (
-            otherPlayerModel.id != this.mainPlayerModel.id
-            && !this.playerIdToOtherPlayerGO.ContainsKey(otherPlayerModel.id)
-        )
+        bool isMainPlayer = (this.mainPlayerModel != null && otherPlayerModel.id == this.mainPlayerModel.id);
+        if (!isMainPlayer && !this.playerIdToOtherPlayerGO.ContainsKey(otherPlayerModel.id))
         {
+            Debug.Log("adding other player: " + otherPlayerModel.id.ToString());
             var otherPlayerPosition = new Vector3(
                 otherPlayerModel.position.x,
                 otherPlayerModel.position.y,

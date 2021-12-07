@@ -28,11 +28,19 @@ TODO:
     X BUG: client disconnections not properly handled by server
     X implement better GameState entity-map concurrency handling with a 
         ConcurrentMap datastructure using a RWMutex
-    - stub out Unity game client architecture
-    - implement food spawning, consumption, and player size increase
-    - implement player eat player and player respawn
-    - implement time per round and game reset
-    - implement winning player and other player ranking
+    - implement basic Unity gameplay and architecture:
+        - player enter name to join
+        - player spawns at random location
+        - food visible
+        - mines visible
+        - map walls block player
+        - camera follows player
+        - camera zoomable
+    - implement full game features:
+        - food respawning, consumption, and player size increase
+        - player eat player and player respawn
+        - time per round and game reset
+        - winning player and other player ranking
 
 INVESTIGATE:
     - load testing client connections
