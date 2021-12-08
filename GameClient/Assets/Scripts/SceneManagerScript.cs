@@ -67,8 +67,16 @@ public class SceneManagerScript : MonoBehaviour
     public void InitMainPlayer(string playerName)
     {
         // create player game object
-        var playerPos = Vector3.zero;
-        this.mainPlayerGO = Instantiate(this.playerPrefab, playerPos, Quaternion.identity);
+        float randX = Random.Range(
+            Functions.GetBound(this.gameState, Vector3.down),
+            Functions.GetBound(this.gameState, Vector3.up)
+        );
+        float randY = Random.Range(
+            Functions.GetBound(this.gameState, Vector3.left),
+            Functions.GetBound(this.gameState, Vector3.right)
+        );
+        var randStartPos = new Vector3(randX, randY, 0);
+        this.mainPlayerGO = Instantiate(this.playerPrefab, randStartPos, Quaternion.identity);
         var mainPlayerScript = this.mainPlayerGO.GetComponent<PlayerScript>();
         mainPlayerScript.sceneManager = this;
         mainPlayerScript.isMainPlayer = true;
@@ -77,7 +85,7 @@ public class SceneManagerScript : MonoBehaviour
             id: System.Guid.NewGuid().ToString(),
             active: true,
             name: playerName,
-            position: new Position(this.transform.position.x, this.transform.position.y),
+            position: new Position(randStartPos.x, randStartPos.y),
             size: 1
         );
         // send "player enter" message to server
@@ -242,25 +250,25 @@ public class SceneManagerScript : MonoBehaviour
     {
         var wallTop = Instantiate(
             this.wallPrefab,
-            new Vector3(0, this.gameState.mapHeight / 2, 0),
+            new Vector3(0, Functions.GetBound(this.gameState, Vector3.up), 0),
             Quaternion.identity
         );
         wallTop.transform.localScale = new Vector3(this.gameState.mapWidth, 1, 0);
         var wallBottom = Instantiate(
             this.wallPrefab,
-            new Vector3(0, -this.gameState.mapHeight / 2, 0),
+            new Vector3(0, Functions.GetBound(this.gameState, Vector3.down), 0),
             Quaternion.identity
         );
         wallBottom.transform.localScale = new Vector3(this.gameState.mapWidth, 1, 0);
         var wallLeft = Instantiate(
             this.wallPrefab,
-            new Vector3(-this.gameState.mapWidth/2, 0, 0),
+            new Vector3(Functions.GetBound(this.gameState, Vector3.left), 0, 0),
             Quaternion.identity
         );
         wallLeft.transform.localScale = new Vector3(1, this.gameState.mapHeight, 0);
         var wallRight = Instantiate(
             this.wallPrefab,
-            new Vector3(this.gameState.mapWidth / 2, 0, 0),
+            new Vector3(Functions.GetBound(this.gameState, Vector3.right), 0, 0),
             Quaternion.identity
         );
         wallRight.transform.localScale = new Vector3(1, this.gameState.mapHeight, 0);

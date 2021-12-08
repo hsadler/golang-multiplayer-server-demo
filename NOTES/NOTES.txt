@@ -30,7 +30,7 @@ TODO:
         ConcurrentMap datastructure using a RWMutex
     - implement basic Unity gameplay and architecture:
         X player enter name to join
-        - player spawns at random location
+        X player spawns at random location
         - food visible
         - mines visible
         - map walls block player
