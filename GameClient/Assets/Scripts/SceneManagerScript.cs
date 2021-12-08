@@ -6,11 +6,16 @@ public class SceneManagerScript : MonoBehaviour
 {
 
     public GameObject playerPrefab;
+    public GameObject wallPrefab;
+
+    public GameObject giveNameUI;
 
     private WebSocket ws;
     private string gameServerUrl = "ws://localhost:5000"; // local game server
     //private string gameServerUrl = "ws://golang-multiplayer-server-demo.herokuapp.com/:80"; // heroku game server
 
+    private bool gameStateInitialized = false;
+    private GameState gameState;
     private Player mainPlayerModel;
     private GameObject mainPlayerGO;
 
@@ -154,9 +159,14 @@ public class SceneManagerScript : MonoBehaviour
     private void HandleGameStateServerMessage(string messageJSON)
     {
         var gameStateMessage = JsonUtility.FromJson<ServerMessageGameState>(messageJSON);
-        foreach (Player player in gameStateMessage.gameState.players) 
+        if (!this.gameStateInitialized)
         {
-            this.AddOtherPlayerFromPlayerModel(player);   
+            this.gameState = gameStateMessage.gameState;
+            this.InitGameState();
+            this.gameStateInitialized = true;
+        }
+        else {
+            this.ProcessGameStateUpdate(gameStateMessage.gameState);
         }
     }
 
@@ -213,6 +223,50 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleRoundResultServerMessage(string messageJSON)
     {
+        // stub
+    }
+
+    private void InitGameState() {
+        // make add name UI visible
+        this.giveNameUI.SetActive(true);
+        // add walls to scene
+        this.CreateWalls();
+        // add other players to scene
+        foreach (Player player in this.gameState.players)
+        {
+            this.AddOtherPlayerFromPlayerModel(player);
+        }
+    }
+
+    private void CreateWalls()
+    {
+        var wallTop = Instantiate(
+            this.wallPrefab,
+            new Vector3(0, this.gameState.mapHeight / 2, 0),
+            Quaternion.identity
+        );
+        wallTop.transform.localScale = new Vector3(this.gameState.mapWidth, 1, 0);
+        var wallBottom = Instantiate(
+            this.wallPrefab,
+            new Vector3(0, -this.gameState.mapHeight / 2, 0),
+            Quaternion.identity
+        );
+        wallBottom.transform.localScale = new Vector3(this.gameState.mapWidth, 1, 0);
+        var wallLeft = Instantiate(
+            this.wallPrefab,
+            new Vector3(-this.gameState.mapWidth/2, 0, 0),
+            Quaternion.identity
+        );
+        wallLeft.transform.localScale = new Vector3(1, this.gameState.mapHeight, 0);
+        var wallRight = Instantiate(
+            this.wallPrefab,
+            new Vector3(this.gameState.mapWidth / 2, 0, 0),
+            Quaternion.identity
+        );
+        wallRight.transform.localScale = new Vector3(1, this.gameState.mapHeight, 0);
+    }
+
+    private void ProcessGameStateUpdate(GameState gameState) {
         // stub
     }
 

@@ -29,7 +29,7 @@ TODO:
     X implement better GameState entity-map concurrency handling with a 
         ConcurrentMap datastructure using a RWMutex
     - implement basic Unity gameplay and architecture:
-        - player enter name to join
+        X player enter name to join
         - player spawns at random location
         - food visible
         - mines visible
