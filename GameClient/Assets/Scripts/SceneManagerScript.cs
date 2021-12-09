@@ -6,6 +6,8 @@ public class SceneManagerScript : MonoBehaviour
 {
 
     public GameObject playerPrefab;
+    public GameObject foodPrefab;
+    public GameObject minePrefab;
     public GameObject wallPrefab;
 
     public GameObject giveNameUI;
@@ -174,7 +176,7 @@ public class SceneManagerScript : MonoBehaviour
             this.gameStateInitialized = true;
         }
         else {
-            this.ProcessGameStateUpdate(gameStateMessage.gameState);
+            this.UpdateGameState(gameStateMessage.gameState);
         }
     }
 
@@ -235,8 +237,6 @@ public class SceneManagerScript : MonoBehaviour
     }
 
     private void InitGameState() {
-        // make add name UI visible
-        this.giveNameUI.SetActive(true);
         // add walls to scene
         this.CreateWalls();
         // add other players to scene
@@ -244,6 +244,23 @@ public class SceneManagerScript : MonoBehaviour
         {
             this.AddOtherPlayerFromPlayerModel(player);
         }
+        // add food to scene
+        foreach (Food food in this.gameState.foods) {
+            this.AddFoodFromFoodModel(food);
+        }
+        // add mines to scene
+        foreach (Mine mine in this.gameState.mines)
+        {
+            this.AddMineFromMineModel(mine);
+        }
+        // since scene is initialized, make add name UI visible so that player
+        // can join the game
+        this.giveNameUI.SetActive(true);
+    }
+
+    private void UpdateGameState(GameState gameState)
+    {
+        // stub
     }
 
     private void CreateWalls()
@@ -274,17 +291,13 @@ public class SceneManagerScript : MonoBehaviour
         wallRight.transform.localScale = new Vector3(1, this.gameState.mapHeight, 0);
     }
 
-    private void ProcessGameStateUpdate(GameState gameState) {
-        // stub
-    }
-
     private void AddOtherPlayerFromPlayerModel(Player otherPlayerModel)
     {
         // player is not main player and player is not currently tracked
         bool isMainPlayer = (this.mainPlayerModel != null && otherPlayerModel.id == this.mainPlayerModel.id);
         if (!isMainPlayer && !this.playerIdToOtherPlayerGO.ContainsKey(otherPlayerModel.id))
         {
-            Debug.Log("adding other player: " + otherPlayerModel.id.ToString());
+            //Debug.Log("adding other player: " + otherPlayerModel.id.ToString());
             var otherPlayerPosition = new Vector3(
                 otherPlayerModel.position.x,
                 otherPlayerModel.position.y,
@@ -300,6 +313,16 @@ public class SceneManagerScript : MonoBehaviour
             otherPlayerScript.isMainPlayer = false;
             this.playerIdToOtherPlayerGO.Add(otherPlayerModel.id, otherPlayerGO);
         }
+    }
+
+    private void AddFoodFromFoodModel(Food food)
+    {
+        // stub
+    }
+
+    private void AddMineFromMineModel(Mine mine)
+    {
+        // mine
     }
 
     private void SendWebsocketClientMessage(string messageJson)

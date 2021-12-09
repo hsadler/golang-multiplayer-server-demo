@@ -167,6 +167,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 8183878152535611979, guid: 7faa9f078d2a0497183243f4786e297d, type: 3}
+  foodPrefab: {fileID: 5127221545181972934, guid: 51fd466b3c0f84075959bd405f851236, type: 3}
+  minePrefab: {fileID: 8705671761516775288, guid: 8f26e893c6b9048bd8cf1cf6c52e14fd, type: 3}
   wallPrefab: {fileID: 5428814374305344099, guid: 3fc4d5a0af9674d60b58aa30e646d488, type: 3}
   giveNameUI: {fileID: 941135092}
 --- !u!1 &519420028
@@ -205,7 +207,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.31132078, g: 0.31132078, b: 0.31132078, a: 0}
+  m_BackGroundColor: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

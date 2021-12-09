@@ -36,6 +36,7 @@ type Food struct {
 	Id       string   `json:"id"`
 	Active   bool     `json:"active"`
 	Position Position `json:"position"`
+	Size     int      `json:"size"`
 }
 
 // mine
@@ -43,6 +44,7 @@ type Mine struct {
 	Id       string   `json:"id"`
 	Active   bool     `json:"active"`
 	Position Position `json:"position"`
+	Size     int      `json:"size"`
 }
 
 //////////////// SUB MODELS ////////////////

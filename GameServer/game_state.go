@@ -35,6 +35,7 @@ func (gs *GameState) InitNewRoundGameState() {
 			Id:       GenUUID(),
 			Active:   true,
 			Position: gs.GetNewSpawnFoodPosition(),
+			Size:     FOOD_SIZE,
 		}
 		gs.Foods.Set(f.Id, f)
 	}
@@ -45,6 +46,7 @@ func (gs *GameState) InitNewRoundGameState() {
 			Id:       GenUUID(),
 			Active:   true,
 			Position: gs.GetNewSpawnMinePosition(),
+			Size:     MINE_SIZE,
 		}
 		gs.Mines.Set(m.Id, m)
 	}

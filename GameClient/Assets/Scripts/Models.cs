@@ -41,12 +41,14 @@ public class Food
     public string id;
     public bool active;
     public Position position;
+    public int size;
 
-    public Food(string id, bool active, Position position)
+    public Food(string id, bool active, Position position, int size)
     {
         this.id = id;
         this.active = active;
         this.position = position;
+        this.size = size;
     }
 
 }
@@ -58,12 +60,14 @@ public class Mine
     public string id;
     public bool active;
     public Position position;
+    public int size;
 
-    public Mine(string id, bool active, Position position)
+    public Mine(string id, bool active, Position position, int size)
     {
         this.id = id;
         this.active = active;
         this.position = position;
+        this.size = size;
     }
 
 }
