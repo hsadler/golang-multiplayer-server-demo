@@ -23,6 +23,10 @@ public class SceneManagerScript : MonoBehaviour
 
     private IDictionary<string, GameObject> playerIdToOtherPlayerGO =
             new Dictionary<string, GameObject>();
+    private IDictionary<string, GameObject> foodIdToFoodGO =
+            new Dictionary<string, GameObject>();
+    private IDictionary<string, GameObject> mineIdToMineGO =
+            new Dictionary<string, GameObject>();
 
     private Queue<string> gameServerMessageQueue = new Queue<string>();
 
@@ -267,28 +271,28 @@ public class SceneManagerScript : MonoBehaviour
     {
         var wallTop = Instantiate(
             this.wallPrefab,
-            new Vector3(0, Functions.GetBound(this.gameState, Vector3.up), 0),
+            new Vector3(0, Functions.GetBound(this.gameState, Vector3.up)+1, 0),
             Quaternion.identity
         );
-        wallTop.transform.localScale = new Vector3(this.gameState.mapWidth, 1, 0);
+        wallTop.transform.localScale = new Vector3(this.gameState.mapWidth+3, 1, 0);
         var wallBottom = Instantiate(
             this.wallPrefab,
-            new Vector3(0, Functions.GetBound(this.gameState, Vector3.down), 0),
+            new Vector3(0, Functions.GetBound(this.gameState, Vector3.down)-1, 0),
             Quaternion.identity
         );
-        wallBottom.transform.localScale = new Vector3(this.gameState.mapWidth, 1, 0);
+        wallBottom.transform.localScale = new Vector3(this.gameState.mapWidth+3, 1, 0);
         var wallLeft = Instantiate(
             this.wallPrefab,
-            new Vector3(Functions.GetBound(this.gameState, Vector3.left), 0, 0),
+            new Vector3(Functions.GetBound(this.gameState, Vector3.left)-1, 0, 0),
             Quaternion.identity
         );
-        wallLeft.transform.localScale = new Vector3(1, this.gameState.mapHeight, 0);
+        wallLeft.transform.localScale = new Vector3(1, this.gameState.mapHeight+3, 0);
         var wallRight = Instantiate(
             this.wallPrefab,
-            new Vector3(Functions.GetBound(this.gameState, Vector3.right), 0, 0),
+            new Vector3(Functions.GetBound(this.gameState, Vector3.right)+1, 0, 0),
             Quaternion.identity
         );
-        wallRight.transform.localScale = new Vector3(1, this.gameState.mapHeight, 0);
+        wallRight.transform.localScale = new Vector3(1, this.gameState.mapHeight+3, 0);
     }
 
     private void AddOtherPlayerFromPlayerModel(Player otherPlayerModel)
@@ -317,12 +321,32 @@ public class SceneManagerScript : MonoBehaviour
 
     private void AddFoodFromFoodModel(Food food)
     {
-        // stub
+        var foodPosition = new Vector3(
+            food.position.x,
+            food.position.y,
+            0
+        );
+        GameObject foodGO = Instantiate(
+            this.foodPrefab,
+            foodPosition,
+            Quaternion.identity
+        );
+        this.foodIdToFoodGO.Add(food.id, foodGO);
     }
 
     private void AddMineFromMineModel(Mine mine)
     {
-        // mine
+        var minePosition = new Vector3(
+            mine.position.x,
+            mine.position.y,
+            0
+        );
+        GameObject mineGO = Instantiate(
+            this.minePrefab,
+            minePosition,
+            Quaternion.identity
+        );
+        this.mineIdToMineGO.Add(mine.id, mineGO);
     }
 
     private void SendWebsocketClientMessage(string messageJson)

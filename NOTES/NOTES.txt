@@ -31,8 +31,8 @@ TODO:
     - implement basic Unity gameplay and architecture:
         X player enter name to join
         X player spawns at random location
-        - food visible
-        - mines visible
+        X food visible
+        X mines visible
         - map walls block player
         - camera follows player
         - camera zoomable
