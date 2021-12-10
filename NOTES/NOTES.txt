@@ -28,14 +28,14 @@ TODO:
     X BUG: client disconnections not properly handled by server
     X implement better GameState entity-map concurrency handling with a 
         ConcurrentMap datastructure using a RWMutex
-    - implement basic Unity gameplay and architecture:
+    X implement basic Unity gameplay and architecture:
         X player enter name to join
         X player spawns at random location
         X food visible
         X mines visible
         X map walls block player
         X camera follows player
-        - camera zoomable
+        X camera zoomable
     - implement full game features:
         - food respawning, consumption, and player size increase
         - player eat player and player respawn

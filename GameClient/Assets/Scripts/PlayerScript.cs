@@ -12,6 +12,11 @@ public class PlayerScript : MonoBehaviour
     private bool autopilotOn = false;
 
     private float moveSpeed = 5f;
+    private GameObject camGO;
+    private Camera cam;
+    private float camZoomSpeed = 10f;
+    private float minCamZoom = 2f;
+    private float maxCamZoom = 30f;
 
     // autopilot movement for testing
     private List<Vector3> moveDirections = new List<Vector3> {
@@ -28,6 +33,8 @@ public class PlayerScript : MonoBehaviour
     {
         if (this.isMainPlayer)
         {
+            this.camGO = this.sceneManager.mainCameraGO;
+            this.cam = this.camGO.GetComponent<Camera>();
             this.MoveCameraToPlayer();
             // autopilot movement for testing
             InvokeRepeating("SetNextMoveDirectionIndex", 0f, 1f);
@@ -43,6 +50,7 @@ public class PlayerScript : MonoBehaviour
         if (this.isMainPlayer)
         {
             this.HandleMovement();
+            this.HandleCameraZoom();
         }
     }
 
@@ -89,11 +97,31 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    private void HandleCameraZoom()
+    {
+        int direction = 0;
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            direction = -1;
+        }
+        else if (Input.GetKey(KeyCode.DownArrow))
+        {
+            direction = 1;
+        }
+        if (direction != 0) {
+            float zoomChange = direction * this.camZoomSpeed * Time.deltaTime;
+            float newCameraSize = this.cam.orthographicSize + zoomChange;
+            if (newCameraSize > this.minCamZoom && newCameraSize < this.maxCamZoom) {
+                this.cam.orthographicSize = newCameraSize;
+            }
+        }
+    }
+
     private void MoveCameraToPlayer() {
-        this.sceneManager.mainCameraGO.transform.position = new Vector3(
+        this.camGO.transform.position = new Vector3(
             this.transform.position.x,
             this.transform.position.y,
-            this.sceneManager.mainCameraGO.transform.position.z
+            this.camGO.transform.position.z
         );
     }
 
