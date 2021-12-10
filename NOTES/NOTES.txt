@@ -33,7 +33,7 @@ TODO:
         X player spawns at random location
         X food visible
         X mines visible
-        - map walls block player
+        X map walls block player
         - camera follows player
         - camera zoomable
     - implement full game features:
