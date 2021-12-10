@@ -34,13 +34,17 @@ TODO:
         X food visible
         X mines visible
         X map walls block player
-        - camera follows player
+        X camera follows player
         - camera zoomable
     - implement full game features:
         - food respawning, consumption, and player size increase
         - player eat player and player respawn
+        - name on player
+        - map grid
         - time per round and game reset
         - winning player and other player ranking
+        - styling
+        - polish
 
 INVESTIGATE:
     - load testing client connections

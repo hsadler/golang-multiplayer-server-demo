@@ -10,16 +10,19 @@ public class SceneManagerScript : MonoBehaviour
     public GameObject minePrefab;
     public GameObject wallPrefab;
 
+    private GameObject mainPlayerGO;
+    public GameObject mainCameraGO;
     public GameObject giveNameUI;
 
     private WebSocket ws;
-    private string gameServerUrl = "ws://localhost:5000"; // local game server
-    //private string gameServerUrl = "ws://golang-multiplayer-server-demo.herokuapp.com/:80"; // heroku game server
+    // local game server
+    private string gameServerUrl = "ws://localhost:5000";
+    // heroku game server
+    //private string gameServerUrl = "ws://golang-multiplayer-server-demo.herokuapp.com/:80";
 
     private bool gameStateInitialized = false;
     private GameState gameState;
     private Player mainPlayerModel;
-    private GameObject mainPlayerGO;
 
     private IDictionary<string, GameObject> playerIdToOtherPlayerGO =
             new Dictionary<string, GameObject>();

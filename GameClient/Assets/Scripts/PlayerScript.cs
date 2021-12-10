@@ -26,12 +26,16 @@ public class PlayerScript : MonoBehaviour
 
     void Start()
     {
-        if (!this.isMainPlayer)
+        if (this.isMainPlayer)
+        {
+            this.MoveCameraToPlayer();
+            // autopilot movement for testing
+            InvokeRepeating("SetNextMoveDirectionIndex", 0f, 1f);
+        }
+        else
         {
             this.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
         }
-        // autopilot movement for testing
-        InvokeRepeating("SetNextMoveDirectionIndex", 0f, 1f);
     }
 
     void Update()
@@ -80,8 +84,17 @@ public class PlayerScript : MonoBehaviour
                 targetPos,
                 Time.deltaTime * this.moveSpeed
             );
+            this.MoveCameraToPlayer();
             this.sceneManager.SyncPlayerState(this.gameObject);
         }
+    }
+
+    private void MoveCameraToPlayer() {
+        this.sceneManager.mainCameraGO.transform.position = new Vector3(
+            this.transform.position.x,
+            this.transform.position.y,
+            this.sceneManager.mainCameraGO.transform.position.z
+        );
     }
 
     // autopilot movement for testing
@@ -90,7 +103,8 @@ public class PlayerScript : MonoBehaviour
         {
             this.currMoveDirIndex = 0;
         }
-        else {
+        else
+        {
             this.currMoveDirIndex += 1;
         }
     }
