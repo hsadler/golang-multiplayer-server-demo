@@ -44,10 +44,13 @@ TODO:
         - time per round and game reset
         - winning player and other player ranking
         - styling
-        - polish
+        - polish:
+            - name entry UI scale with screen size
 
 INVESTIGATE:
     - load testing client connections
+    - performance testing golang server performance
+    - performance testing websocket message latency
     - ping/pong needed for clients that start to fail
     - look into a proper logging library
 
