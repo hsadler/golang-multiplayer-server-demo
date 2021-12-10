@@ -16,7 +16,6 @@ public class GiveNameUIScript : MonoBehaviour
     private void AddPlayer(string playerName) {
         SceneManagerScript.instance.InitMainPlayer(playerName);
         this.gameObject.SetActive(false);
-
     }
 
 }

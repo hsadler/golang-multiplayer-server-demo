@@ -4,20 +4,15 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
 
-    public SceneManagerScript sceneManager;
+    public Player playerModel;
     public bool isMainPlayer;
 
+    // movement
+    private float moveSpeed = 5f;
+    // TESTING:
     // use for testing if you want to connect multiple players to the server and
     // see them moving
     private bool autopilotOn = false;
-
-    private float moveSpeed = 5f;
-    private GameObject camGO;
-    private Camera cam;
-    private float camZoomSpeed = 10f;
-    private float minCamZoom = 2f;
-    private float maxCamZoom = 30f;
-
     // autopilot movement for testing
     private List<Vector3> moveDirections = new List<Vector3> {
         Vector3.up,
@@ -27,13 +22,20 @@ public class PlayerScript : MonoBehaviour
     };
     private int currMoveDirIndex = 0;
 
+    // camera
+    private GameObject camGO;
+    private Camera cam;
+    private float camZoomSpeed = 10f;
+    private float minCamZoom = 2f;
+    private float maxCamZoom = 30f;
+
     // UNITY HOOKS
 
     void Start()
     {
         if (this.isMainPlayer)
         {
-            this.camGO = this.sceneManager.mainCameraGO;
+            this.camGO = SceneManagerScript.instance.mainCameraGO;
             this.cam = this.camGO.GetComponent<Camera>();
             this.MoveCameraToPlayer();
             // autopilot movement for testing
@@ -93,7 +95,7 @@ public class PlayerScript : MonoBehaviour
                 Time.deltaTime * this.moveSpeed
             );
             this.MoveCameraToPlayer();
-            this.sceneManager.SyncPlayerState(this.gameObject);
+            SceneManagerScript.instance.SyncPlayerState(this.gameObject);
         }
     }
 

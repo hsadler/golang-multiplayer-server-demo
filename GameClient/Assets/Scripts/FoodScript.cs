@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class FoodScript : MonoBehaviour
 {
-    // Start is called before the first frame update
+
+    public Food foodModel;
+
+    // UNITY HOOKS
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
     }
+
 }

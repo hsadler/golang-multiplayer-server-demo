@@ -43,9 +43,9 @@ TODO:
         - map grid
         - time per round and game reset
         - winning player and other player ranking
-        - styling
-        - polish:
-            - name entry UI scale with screen size
+    - styling
+    - polish:
+        - name entry UI scale with screen size
 
 INVESTIGATE:
     - load testing client connections

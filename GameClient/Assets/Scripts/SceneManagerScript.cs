@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WebSocketSharp;
@@ -23,6 +24,8 @@ public class SceneManagerScript : MonoBehaviour
     private bool gameStateInitialized = false;
     private GameState gameState;
     private Player mainPlayerModel;
+
+    private List<GameObject> wallGOs = new List<GameObject>();
 
     private IDictionary<string, GameObject> playerIdToOtherPlayerGO =
             new Dictionary<string, GameObject>();
@@ -86,9 +89,6 @@ public class SceneManagerScript : MonoBehaviour
         );
         var randStartPos = new Vector3(randX, randY, 0);
         this.mainPlayerGO = Instantiate(this.playerPrefab, randStartPos, Quaternion.identity);
-        var mainPlayerScript = this.mainPlayerGO.GetComponent<PlayerScript>();
-        mainPlayerScript.sceneManager = this;
-        mainPlayerScript.isMainPlayer = true;
         // create player model
         this.mainPlayerModel = new Player(
             id: System.Guid.NewGuid().ToString(),
@@ -97,6 +97,9 @@ public class SceneManagerScript : MonoBehaviour
             position: new Position(randStartPos.x, randStartPos.y),
             size: 1
         );
+        var mainPlayerScript = this.mainPlayerGO.GetComponent<PlayerScript>();
+        mainPlayerScript.playerModel = this.mainPlayerModel;
+        mainPlayerScript.isMainPlayer = true;
         // send "player enter" message to server
         var playerEnterMessage = new ClientMessagePlayerEnter(this.mainPlayerModel);
         this.SendWebsocketClientMessage(JsonUtility.ToJson(playerEnterMessage));
@@ -190,7 +193,10 @@ public class SceneManagerScript : MonoBehaviour
     private void HandlePlayerEnterServerMessage(string messageJSON)
     {
         var playerEnterMessage = JsonUtility.FromJson<ServerMessagePlayerEnter>(messageJSON);
-        this.AddOtherPlayerFromPlayerModel(playerEnterMessage.player);
+        bool isMainPlayer = (this.mainPlayerModel != null && playerEnterMessage.player.id == this.mainPlayerModel.id);
+        if (!isMainPlayer) {
+            this.AddOtherPlayerFromPlayerModel(playerEnterMessage.player);
+        }
     }
 
     private void HandlePlayerExitServerMessage(string messageJSON)
@@ -278,31 +284,34 @@ public class SceneManagerScript : MonoBehaviour
             Quaternion.identity
         );
         wallTop.transform.localScale = new Vector3(this.gameState.mapWidth+3, 1, 0);
+        this.wallGOs.Add(wallTop);
         var wallBottom = Instantiate(
             this.wallPrefab,
             new Vector3(0, Functions.GetBound(this.gameState, Vector3.down)-1, 0),
             Quaternion.identity
         );
         wallBottom.transform.localScale = new Vector3(this.gameState.mapWidth+3, 1, 0);
+        this.wallGOs.Add(wallBottom);
         var wallLeft = Instantiate(
             this.wallPrefab,
             new Vector3(Functions.GetBound(this.gameState, Vector3.left)-1, 0, 0),
             Quaternion.identity
         );
         wallLeft.transform.localScale = new Vector3(1, this.gameState.mapHeight+3, 0);
+        this.wallGOs.Add(wallLeft);
         var wallRight = Instantiate(
             this.wallPrefab,
             new Vector3(Functions.GetBound(this.gameState, Vector3.right)+1, 0, 0),
             Quaternion.identity
         );
         wallRight.transform.localScale = new Vector3(1, this.gameState.mapHeight+3, 0);
+        this.wallGOs.Add(wallRight);
     }
 
     private void AddOtherPlayerFromPlayerModel(Player otherPlayerModel)
     {
-        // player is not main player and player is not currently tracked
-        bool isMainPlayer = (this.mainPlayerModel != null && otherPlayerModel.id == this.mainPlayerModel.id);
-        if (!isMainPlayer && !this.playerIdToOtherPlayerGO.ContainsKey(otherPlayerModel.id))
+        // player is not currently tracked
+        if (!this.playerIdToOtherPlayerGO.ContainsKey(otherPlayerModel.id))
         {
             //Debug.Log("adding other player: " + otherPlayerModel.id.ToString());
             var otherPlayerPosition = new Vector3(
@@ -316,7 +325,7 @@ public class SceneManagerScript : MonoBehaviour
                 Quaternion.identity
             );
             var otherPlayerScript = otherPlayerGO.GetComponent<PlayerScript>();
-            otherPlayerScript.sceneManager = this;
+            otherPlayerScript.playerModel = otherPlayerModel;
             otherPlayerScript.isMainPlayer = false;
             this.playerIdToOtherPlayerGO.Add(otherPlayerModel.id, otherPlayerGO);
         }
@@ -335,6 +344,7 @@ public class SceneManagerScript : MonoBehaviour
             Quaternion.identity
         );
         this.foodIdToFoodGO.Add(food.id, foodGO);
+        foodGO.GetComponent<FoodScript>().foodModel = food;
     }
 
     private void AddMineFromMineModel(Mine mine)
@@ -350,6 +360,7 @@ public class SceneManagerScript : MonoBehaviour
             Quaternion.identity
         );
         this.mineIdToMineGO.Add(mine.id, mineGO);
+        mineGO.GetComponent<MineScript>().mineModel = mine;
     }
 
     private void SendWebsocketClientMessage(string messageJson)
