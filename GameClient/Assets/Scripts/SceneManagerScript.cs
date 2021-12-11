@@ -119,6 +119,23 @@ public class SceneManagerScript : MonoBehaviour
         this.SendWebsocketClientMessage(JsonUtility.ToJson(playerPositionMessage));
     }
 
+    public void SyncPlayerEatFood(Food foodModel) {
+        // TODO: stub
+        Debug.Log("player eat foodId: " + foodModel.id);
+    }
+
+    public void SyncPlayerHitMine(Mine mindModel)
+    {
+        // TODO: stub
+        Debug.Log("player hit mineId: " + mindModel.id);
+    }
+
+    public void SyncPlayerEatPlayer(Player otherPlayerModel)
+    {
+        // TODO: stub
+        Debug.Log("player eat playerId: " + otherPlayerModel.id);
+    }
+
     // IMPLEMENTATION METHODS
 
     private void InitWebSocketClient()

@@ -56,6 +56,28 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        // handle food collisions
+        if (other.CompareTag("Food")) {
+            Food foodModel = other.GetComponent<FoodScript>().foodModel;
+            SceneManagerScript.instance.SyncPlayerEatFood(foodModel);
+        }
+        // handle mine collisions
+        if (other.CompareTag("Mine")) {
+            Mine mineModel = other.GetComponent<MineScript>().mineModel;
+            SceneManagerScript.instance.SyncPlayerHitMine(mineModel);
+        }
+        // handle other player collisions
+        if (other.CompareTag("Player")) {
+            Player otherPlayerModel = other.GetComponent<PlayerScript>().playerModel;
+            // other player is smaller, so eat
+            if (otherPlayerModel.size < this.playerModel.size) {
+                SceneManagerScript.instance.SyncPlayerEatPlayer(otherPlayerModel);
+            }
+        }
+    }
+
     // IMPLEMENTATION METHODS
 
     private void HandleMovement()
