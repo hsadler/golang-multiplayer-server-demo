@@ -77,7 +77,12 @@ func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
 
 func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
 	// parse inputs
-	playerId := mData["playerId"].(string)
+	var playerId string
+	if mData["playerId"] == nil {
+		playerId = cl.PlayerId
+	} else {
+		playerId = mData["playerId"].(string)
+	}
 	// datastore load
 	playerData := cl.GameState.Players.Get(playerId)
 	if playerData != nil {
