@@ -62,7 +62,7 @@ public class SceneManagerScript : MonoBehaviour
     private void Update()
     {
         // process all queued server messages
-        while (this.gameServerMessageQueue.Count > 0) 
+        while (this.gameServerMessageQueue.Count > 0)
         {
             this.HandleServerMessage(this.gameServerMessageQueue.Dequeue());
         }
@@ -118,7 +118,8 @@ public class SceneManagerScript : MonoBehaviour
         this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
-    public void SyncPlayerEatFood(Food foodModel) {
+    public void SyncPlayerEatFood(Food foodModel)
+    {
         var m = new ClientMessagePlayerEatFood(
             this.mainPlayerModel.id,
             foodModel.id
@@ -155,7 +156,7 @@ public class SceneManagerScript : MonoBehaviour
         this.ws.OnMessage += this.QueueServerMessage;
     }
 
-    private void QueueServerMessage(object sender, MessageEventArgs e) 
+    private void QueueServerMessage(object sender, MessageEventArgs e)
     {
         //Debug.Log("Server message received: " + e.Data);
         this.gameServerMessageQueue.Enqueue(e.Data);
@@ -204,14 +205,13 @@ public class SceneManagerScript : MonoBehaviour
     private void HandleGameStateServerMessage(string messageJSON)
     {
         var gameStateMessage = JsonUtility.FromJson<ServerMessageGameState>(messageJSON);
+        this.gameState = gameStateMessage.gameState;
+        this.InitGameState();
         if (!this.gameStateInitialized)
         {
-            this.gameState = gameStateMessage.gameState;
-            this.InitGameState();
             this.gameStateInitialized = true;
-        }
-        else {
-            this.UpdateGameState(gameStateMessage.gameState);
+            // since scene is initialized, make add name UI visible so that player can join the game
+            this.giveNameUI.SetActive(true);
         }
     }
 
@@ -219,7 +219,8 @@ public class SceneManagerScript : MonoBehaviour
     {
         var playerEnterMessage = JsonUtility.FromJson<ServerMessagePlayerEnter>(messageJSON);
         bool isMainPlayer = (this.mainPlayerModel != null && playerEnterMessage.player.id == this.mainPlayerModel.id);
-        if (!isMainPlayer) {
+        if (!isMainPlayer)
+        {
             this.AddOtherPlayerFromPlayerModel(playerEnterMessage.player);
         }
     }
@@ -227,7 +228,7 @@ public class SceneManagerScript : MonoBehaviour
     private void HandlePlayerExitServerMessage(string messageJSON)
     {
         var playerExitMessage = JsonUtility.FromJson<ServerMessagePlayerExit>(messageJSON);
-        if (this.playerIdToOtherPlayerGO.ContainsKey(playerExitMessage.playerId)) 
+        if (this.playerIdToOtherPlayerGO.ContainsKey(playerExitMessage.playerId))
         {
             Object.Destroy(this.playerIdToOtherPlayerGO[playerExitMessage.playerId]);
             this.playerIdToOtherPlayerGO.Remove(playerExitMessage.playerId);
@@ -274,62 +275,66 @@ public class SceneManagerScript : MonoBehaviour
         // stub
     }
 
-    private void InitGameState() {
+    private void InitGameState()
+    {
+        // TODO: delete any exising walls
         // add walls to scene
         this.CreateWalls();
+
+        // TODO: do main player update
+
+        // TODO: delete existing other players
         // add other players to scene
         foreach (Player player in this.gameState.players)
         {
             this.AddOtherPlayerFromPlayerModel(player);
         }
+
+        // TODO: delete existing food
+
         // add food to scene
-        foreach (Food food in this.gameState.foods) {
+        foreach (Food food in this.gameState.foods)
+        {
             this.AddFoodFromFoodModel(food);
         }
+        // TODO: delete existing mines
+
         // add mines to scene
         foreach (Mine mine in this.gameState.mines)
         {
             this.AddMineFromMineModel(mine);
         }
-        // since scene is initialized, make add name UI visible so that player
-        // can join the game
-        this.giveNameUI.SetActive(true);
-    }
-
-    private void UpdateGameState(GameState gameState)
-    {
-        // stub
     }
 
     private void CreateWalls()
     {
         var wallTop = Instantiate(
             this.wallPrefab,
-            new Vector3(0, Functions.GetBound(this.gameState, Vector3.up)+1, 0),
+            new Vector3(0, Functions.GetBound(this.gameState, Vector3.up) + 1, 0),
             Quaternion.identity
         );
-        wallTop.transform.localScale = new Vector3(this.gameState.mapWidth+3, 1, 0);
+        wallTop.transform.localScale = new Vector3(this.gameState.mapWidth + 3, 1, 0);
         this.wallGOs.Add(wallTop);
         var wallBottom = Instantiate(
             this.wallPrefab,
-            new Vector3(0, Functions.GetBound(this.gameState, Vector3.down)-1, 0),
+            new Vector3(0, Functions.GetBound(this.gameState, Vector3.down) - 1, 0),
             Quaternion.identity
         );
-        wallBottom.transform.localScale = new Vector3(this.gameState.mapWidth+3, 1, 0);
+        wallBottom.transform.localScale = new Vector3(this.gameState.mapWidth + 3, 1, 0);
         this.wallGOs.Add(wallBottom);
         var wallLeft = Instantiate(
             this.wallPrefab,
-            new Vector3(Functions.GetBound(this.gameState, Vector3.left)-1, 0, 0),
+            new Vector3(Functions.GetBound(this.gameState, Vector3.left) - 1, 0, 0),
             Quaternion.identity
         );
-        wallLeft.transform.localScale = new Vector3(1, this.gameState.mapHeight+3, 0);
+        wallLeft.transform.localScale = new Vector3(1, this.gameState.mapHeight + 3, 0);
         this.wallGOs.Add(wallLeft);
         var wallRight = Instantiate(
             this.wallPrefab,
-            new Vector3(Functions.GetBound(this.gameState, Vector3.right)+1, 0, 0),
+            new Vector3(Functions.GetBound(this.gameState, Vector3.right) + 1, 0, 0),
             Quaternion.identity
         );
-        wallRight.transform.localScale = new Vector3(1, this.gameState.mapHeight+3, 0);
+        wallRight.transform.localScale = new Vector3(1, this.gameState.mapHeight + 3, 0);
         this.wallGOs.Add(wallRight);
     }
 

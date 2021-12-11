@@ -13,17 +13,17 @@ import (
 
 // logging helpers
 
-func LogData(logHeader string, logData interface{}) {
+func Log(logs ...interface{}) {
 	if DO_LOGGING {
 		fmt.Println("======================")
-		fmt.Println(logHeader, logData)
+		fmt.Println(logs...)
 		fmt.Println("======================")
 	}
 }
 
-func LogDataForce(logHeader string, logData interface{}) {
+func LogForce(logs ...interface{}) {
 	fmt.Println("======================")
-	fmt.Println(logHeader, logData)
+	fmt.Println(logs...)
 	fmt.Println("======================")
 }
 
