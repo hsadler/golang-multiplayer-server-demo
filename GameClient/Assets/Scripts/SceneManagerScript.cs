@@ -101,39 +101,47 @@ public class SceneManagerScript : MonoBehaviour
         mainPlayerScript.playerModel = this.mainPlayerModel;
         mainPlayerScript.isMainPlayer = true;
         // send "player enter" message to server
-        var playerEnterMessage = new ClientMessagePlayerEnter(this.mainPlayerModel);
-        this.SendWebsocketClientMessage(JsonUtility.ToJson(playerEnterMessage));
+        var m = new ClientMessagePlayerEnter(this.mainPlayerModel);
+        this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
     public void SyncPlayerState(GameObject playerGO)
     {
-        // send "player position" message to server
         this.mainPlayerModel.position = new Position(
             playerGO.transform.position.x,
             playerGO.transform.position.y
         );
-        var playerPositionMessage = new ClientMessagePlayerPosition(
+        var m = new ClientMessagePlayerPosition(
             this.mainPlayerModel.id,
             this.mainPlayerModel.position
         );
-        this.SendWebsocketClientMessage(JsonUtility.ToJson(playerPositionMessage));
+        this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
     public void SyncPlayerEatFood(Food foodModel) {
-        // TODO: stub
-        Debug.Log("player eat foodId: " + foodModel.id);
+        var m = new ClientMessagePlayerEatFood(
+            this.mainPlayerModel.id,
+            foodModel.id
+        );
+        this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
     public void SyncPlayerHitMine(Mine mindModel)
     {
-        // TODO: stub
-        Debug.Log("player hit mineId: " + mindModel.id);
+        var m = new ClientMessageMineDamagePlayer(
+            this.mainPlayerModel.id,
+            mindModel.id
+        );
+        this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
     public void SyncPlayerEatPlayer(Player otherPlayerModel)
     {
-        // TODO: stub
-        Debug.Log("player eat playerId: " + otherPlayerModel.id);
+        var m = new ClientMessagePlayerEatPlayer(
+            this.mainPlayerModel.id,
+            otherPlayerModel.id
+        );
+        this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
     // IMPLEMENTATION METHODS

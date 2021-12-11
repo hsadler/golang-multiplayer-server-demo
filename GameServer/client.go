@@ -95,11 +95,41 @@ func (cl *Client) HandlePlayerPosition(mData map[string]interface{}) {
 }
 
 func (cl *Client) HandlePlayerEatFood(mData map[string]interface{}) {
-	// TODO: STUB
+	// player grows in size
+	playerId := mData["playerId"].(string)
+	player := cl.GameState.Players.Get(playerId).(Player)
+	player.Size += 1
+	cl.GameState.Players.Set(playerId, player)
+	pmsg := NewPlayerStateUpdateMessage(player)
+	SerializeAndScheduleServerMessage(pmsg, cl.Hub.Broadcast)
+	// food position changes
+	foodId := mData["foodId"].(string)
+	food := cl.GameState.Foods.Get(foodId).(Food)
+	food.Position = cl.GameState.GetNewSpawnFoodPosition()
+	cl.GameState.Foods.Set(foodId, food)
+	fmsg := NewFoodStateUpdateMessage(food)
+	SerializeAndScheduleServerMessage(fmsg, cl.Hub.Broadcast)
 }
 
 func (cl *Client) HandlePlayerEatPlayer(mData map[string]interface{}) {
-	// TODO: STUB
+	// load players
+	playerId := mData["playerId"].(string)
+	player := cl.GameState.Players.Get(playerId).(Player)
+	otherPlayerId := mData["otherPlayerId"].(string)
+	otherPlayer := cl.GameState.Players.Get(otherPlayerId).(Player)
+	// player who ate other grows in size
+	player.Size += otherPlayer.Size
+	// player who got eaten respawns with reset size to 1
+	otherPlayer.Size = 1
+	otherPlayer.Position = cl.GameState.GetNewSpawnPlayerPosition()
+	// save players
+	cl.GameState.Players.Set(playerId, player)
+	cl.GameState.Players.Set(otherPlayerId, otherPlayer)
+	// broadcast player update messages
+	pmsg := NewPlayerStateUpdateMessage(player)
+	opmsg := NewPlayerStateUpdateMessage(otherPlayer)
+	SerializeAndScheduleServerMessage(pmsg, cl.Hub.Broadcast)
+	SerializeAndScheduleServerMessage(opmsg, cl.Hub.Broadcast)
 }
 
 func (cl *Client) HandleMineDamagePlayer(mData map[string]interface{}) {
