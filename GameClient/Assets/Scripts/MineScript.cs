@@ -17,6 +17,7 @@ public class MineScript : MonoBehaviour
 
     public void UpdateFromMineModel(Mine mModel)
     {
+        this.mineModel = mModel;
         this.transform.position = new Vector3(mineModel.position.x, mModel.position.y, 0);
         this.transform.localScale = new Vector3(mModel.size, mModel.size, 1);
         this.gameObject.SetActive(mModel.active);

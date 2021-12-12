@@ -17,6 +17,7 @@ public class FoodScript : MonoBehaviour
 
     public void UpdateFromFoodModel(Food fModel)
     {
+        this.foodModel = fModel;
         this.transform.position = new Vector3(fModel.position.x, fModel.position.y, 0);
         this.transform.localScale = new Vector3(fModel.size, fModel.size, 1);
         this.gameObject.SetActive(fModel.active);

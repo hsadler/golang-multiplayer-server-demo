@@ -123,8 +123,13 @@ func (cl *Client) HandlePlayerEatFood(mData map[string]interface{}) {
 	playerId := mData["playerId"].(string)
 	foodId := mData["foodId"].(string)
 	// datastore loads
-	player := cl.GameState.Players.Get(playerId).(Player)
-	food := cl.GameState.Foods.Get(foodId).(Food)
+	playerData := cl.GameState.Players.Get(playerId)
+	foodData := cl.GameState.Foods.Get(foodId)
+	if playerData == nil || foodData == nil {
+		return
+	}
+	player := playerData.(Player)
+	food := foodData.(Food)
 	// player grows in size
 	player.Size += 1
 	// food position changes
@@ -146,8 +151,13 @@ func (cl *Client) HandlePlayerEatPlayer(mData map[string]interface{}) {
 	playerId := mData["playerId"].(string)
 	otherPlayerId := mData["otherPlayerId"].(string)
 	// datastore loads
-	player := cl.GameState.Players.Get(playerId).(Player)
-	otherPlayer := cl.GameState.Players.Get(otherPlayerId).(Player)
+	playerData := cl.GameState.Players.Get(playerId)
+	otherPlayerData := cl.GameState.Players.Get(otherPlayerId)
+	if playerData == nil || otherPlayerData == nil {
+		return
+	}
+	player := playerData.(Player)
+	otherPlayer := otherPlayerData.(Player)
 	// player who ate other grows in size
 	player.Size += otherPlayer.Size
 	// player who got eaten respawns with reset size to 1
@@ -170,8 +180,13 @@ func (cl *Client) HandleMineDamagePlayer(mData map[string]interface{}) {
 	playerId := mData["playerId"].(string)
 	mineId := mData["mineId"].(string)
 	// datastore loads
-	player := cl.GameState.Players.Get(playerId).(Player)
-	mine := cl.GameState.Mines.Get(mineId).(Mine)
+	playerData := cl.GameState.Players.Get(playerId)
+	mineData := cl.GameState.Mines.Get(mineId)
+	if playerData == nil || mineData == nil {
+		return
+	}
+	player := playerData.(Player)
+	mine := mineData.(Mine)
 	// player loses size points
 	player.Size -= 3
 	// mine position changes

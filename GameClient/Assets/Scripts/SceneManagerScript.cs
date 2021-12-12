@@ -19,9 +19,9 @@ public class SceneManagerScript : MonoBehaviour
 
     private WebSocket ws;
     // local game server
-    private string gameServerUrl = "ws://localhost:5000";
+    //private string gameServerUrl = "ws://localhost:5000";
     // heroku game server
-    //private string gameServerUrl = "ws://golang-multiplayer-server-demo.herokuapp.com/:80";
+    private string gameServerUrl = "ws://golang-multiplayer-server-demo.herokuapp.com/:80";
 
     // game state
     private GameState gameState;
@@ -397,19 +397,13 @@ public class SceneManagerScript : MonoBehaviour
         // player is not currently tracked
         if (!this.playerIdToOtherPlayerGO.ContainsKey(otherPlayerModel.id))
         {
-            //Debug.Log("adding other player: " + otherPlayerModel.id.ToString());
-            var otherPlayerPosition = new Vector3(
-                otherPlayerModel.position.x,
-                otherPlayerModel.position.y,
-                0
-            );
             GameObject otherPlayerGO = Instantiate(
                 this.playerPrefab,
-                otherPlayerPosition,
+                Vector3.zero,
                 Quaternion.identity
             );
             var otherPlayerScript = otherPlayerGO.GetComponent<PlayerScript>();
-            otherPlayerScript.playerModel = otherPlayerModel;
+            otherPlayerScript.UpdateFromPlayerModel(otherPlayerModel);
             otherPlayerScript.isMainPlayer = false;
             this.playerIdToOtherPlayerGO.Add(otherPlayerModel.id, otherPlayerGO);
         }
@@ -417,34 +411,24 @@ public class SceneManagerScript : MonoBehaviour
 
     private void AddFoodFromFoodModel(Food food)
     {
-        var foodPosition = new Vector3(
-            food.position.x,
-            food.position.y,
-            0
-        );
         GameObject foodGO = Instantiate(
             this.foodPrefab,
-            foodPosition,
+            Vector3.zero,
             Quaternion.identity
         );
+        foodGO.GetComponent<FoodScript>().UpdateFromFoodModel(food);
         this.foodIdToFoodGO.Add(food.id, foodGO);
-        foodGO.GetComponent<FoodScript>().foodModel = food;
     }
 
     private void AddMineFromMineModel(Mine mine)
     {
-        var minePosition = new Vector3(
-            mine.position.x,
-            mine.position.y,
-            0
-        );
         GameObject mineGO = Instantiate(
             this.minePrefab,
-            minePosition,
+            Vector3.zero,
             Quaternion.identity
         );
+        mineGO.GetComponent<MineScript>().UpdateFromMineModel(mine);
         this.mineIdToMineGO.Add(mine.id, mineGO);
-        mineGO.GetComponent<MineScript>().mineModel = mine;
     }
 
     // websocket helpers
