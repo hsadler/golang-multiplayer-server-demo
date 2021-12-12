@@ -9,14 +9,16 @@ public class MineScript : MonoBehaviour
 
     // UNITY HOOKS
 
-    void Start()
+    void Start() { }
+
+    void Update() { }
+
+    // INTERFACE METHODS
+
+    public void UpdateFromMineModel(Mine m)
     {
-        
-    }
-    
-    void Update()
-    {
-        
+        // stub
+        Debug.Log("UpdateFromMineModel...");
     }
 
 }

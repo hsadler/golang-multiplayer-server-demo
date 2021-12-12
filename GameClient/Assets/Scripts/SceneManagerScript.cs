@@ -6,11 +6,13 @@ using WebSocketSharp;
 public class SceneManagerScript : MonoBehaviour
 {
 
+    // prefabs
     public GameObject playerPrefab;
     public GameObject foodPrefab;
     public GameObject minePrefab;
     public GameObject wallPrefab;
 
+    // game object refs
     private GameObject mainPlayerGO;
     public GameObject mainCameraGO;
     public GameObject giveNameUI;
@@ -21,18 +23,18 @@ public class SceneManagerScript : MonoBehaviour
     // heroku game server
     //private string gameServerUrl = "ws://golang-multiplayer-server-demo.herokuapp.com/:80";
 
-    private bool gameStateInitialized = false;
+    // game state
     private GameState gameState;
+    private bool gameStateInitialized = false;
+
+    // main player state
     private Player mainPlayerModel;
 
+    // env refs
     private List<GameObject> wallGOs = new List<GameObject>();
-
-    private IDictionary<string, GameObject> playerIdToOtherPlayerGO =
-            new Dictionary<string, GameObject>();
-    private IDictionary<string, GameObject> foodIdToFoodGO =
-            new Dictionary<string, GameObject>();
-    private IDictionary<string, GameObject> mineIdToMineGO =
-            new Dictionary<string, GameObject>();
+    private IDictionary<string, GameObject> playerIdToOtherPlayerGO;
+    private IDictionary<string, GameObject> foodIdToFoodGO;
+    private IDictionary<string, GameObject> mineIdToMineGO;
 
     private Queue<string> gameServerMessageQueue = new Queue<string>();
 
@@ -52,6 +54,7 @@ public class SceneManagerScript : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        this.InitEnvRefs();
     }
 
     private void Start()
@@ -105,6 +108,8 @@ public class SceneManagerScript : MonoBehaviour
         this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
+    // client-to-server sync methods
+
     public void SyncPlayerState(GameObject playerGO)
     {
         this.mainPlayerModel.position = new Position(
@@ -147,20 +152,7 @@ public class SceneManagerScript : MonoBehaviour
 
     // IMPLEMENTATION METHODS
 
-    private void InitWebSocketClient()
-    {
-        // create websocket connection
-        this.ws = new WebSocket(this.gameServerUrl);
-        this.ws.Connect();
-        // add message handler callback
-        this.ws.OnMessage += this.QueueServerMessage;
-    }
-
-    private void QueueServerMessage(object sender, MessageEventArgs e)
-    {
-        //Debug.Log("Server message received: " + e.Data);
-        this.gameServerMessageQueue.Enqueue(e.Data);
-    }
+    // game server message routing and handlers
 
     private void HandleServerMessage(string messageJSON)
     {
@@ -206,7 +198,11 @@ public class SceneManagerScript : MonoBehaviour
     {
         var gameStateMessage = JsonUtility.FromJson<ServerMessageGameState>(messageJSON);
         this.gameState = gameStateMessage.gameState;
-        this.InitGameState();
+        // sequence of biz-logic for every full game state update
+        this.DeleteEnvGameObjects();
+        this.InitEnvRefs();
+        this.UpdateFromGameState();
+        // if game not yet initialized, do so here 
         if (!this.gameStateInitialized)
         {
             this.gameStateInitialized = true;
@@ -218,8 +214,7 @@ public class SceneManagerScript : MonoBehaviour
     private void HandlePlayerEnterServerMessage(string messageJSON)
     {
         var playerEnterMessage = JsonUtility.FromJson<ServerMessagePlayerEnter>(messageJSON);
-        bool isMainPlayer = (this.mainPlayerModel != null && playerEnterMessage.player.id == this.mainPlayerModel.id);
-        if (!isMainPlayer)
+        if (!this.PlayerIsMainPlayer(playerEnterMessage.player))
         {
             this.AddOtherPlayerFromPlayerModel(playerEnterMessage.player);
         }
@@ -241,12 +236,7 @@ public class SceneManagerScript : MonoBehaviour
         Player playerModel = playerUpdateMessage.player;
         if (this.playerIdToOtherPlayerGO.ContainsKey(playerModel.id))
         {
-            var newPosition = new Vector3(
-                playerModel.position.x,
-                playerModel.position.y,
-                0
-            );
-            this.playerIdToOtherPlayerGO[playerModel.id].transform.position = newPosition;
+            this.playerIdToOtherPlayerGO[playerModel.id].GetComponent<PlayerScript>().UpdateFromPlayerModel(playerModel);
         }
     }
 
@@ -275,30 +265,62 @@ public class SceneManagerScript : MonoBehaviour
         // stub
     }
 
-    private void InitGameState()
+    // game data management
+
+    private void InitEnvRefs()
     {
-        // TODO: delete any exising walls
+        this.wallGOs = new List<GameObject>();
+        this.playerIdToOtherPlayerGO = new Dictionary<string, GameObject>();
+        this.foodIdToFoodGO = new Dictionary<string, GameObject>();
+        this.mineIdToMineGO = new Dictionary<string, GameObject>();
+    }
+
+    private void DeleteEnvGameObjects()
+    {
+        // delete any exising walls
+        foreach (GameObject wallGO in this.wallGOs)
+        {
+            Object.Destroy(wallGO);
+        }
+        // delete existing other players
+        foreach (GameObject otherPlayerGO in this.playerIdToOtherPlayerGO.Values)
+        {
+            Object.Destroy(otherPlayerGO);
+        }
+        // delete existing food
+        foreach (GameObject foodGO in this.foodIdToFoodGO.Values)
+        {
+            Object.Destroy(foodGO);
+        }
+        // delete existing mines
+        foreach (GameObject mineGO in this.mineIdToMineGO.Values)
+        {
+            Object.Destroy(mineGO);
+        }
+    }
+
+    private void UpdateFromGameState()
+    {
         // add walls to scene
         this.CreateWalls();
-
-        // TODO: do main player update
-
-        // TODO: delete existing other players
-        // add other players to scene
         foreach (Player player in this.gameState.players)
         {
-            this.AddOtherPlayerFromPlayerModel(player);
+            // do main player update
+            if (this.PlayerIsMainPlayer(player))
+            {
+                this.UpdateMainPlayerFromModel(player);
+            }
+            // add other players to scene
+            else
+            {
+                this.AddOtherPlayerFromPlayerModel(player);
+            }
         }
-
-        // TODO: delete existing food
-
         // add food to scene
         foreach (Food food in this.gameState.foods)
         {
             this.AddFoodFromFoodModel(food);
         }
-        // TODO: delete existing mines
-
         // add mines to scene
         foreach (Mine mine in this.gameState.mines)
         {
@@ -336,6 +358,11 @@ public class SceneManagerScript : MonoBehaviour
         );
         wallRight.transform.localScale = new Vector3(1, this.gameState.mapHeight + 3, 0);
         this.wallGOs.Add(wallRight);
+    }
+
+    private void UpdateMainPlayerFromModel(Player pModel)
+    {
+        this.mainPlayerGO.GetComponent<PlayerScript>().UpdateFromPlayerModel(pModel);
     }
 
     private void AddOtherPlayerFromPlayerModel(Player otherPlayerModel)
@@ -393,10 +420,34 @@ public class SceneManagerScript : MonoBehaviour
         mineGO.GetComponent<MineScript>().mineModel = mine;
     }
 
+    // websocket helpers
+
+    private void InitWebSocketClient()
+    {
+        // create websocket connection
+        this.ws = new WebSocket(this.gameServerUrl);
+        this.ws.Connect();
+        // add message handler callback
+        this.ws.OnMessage += this.QueueServerMessage;
+    }
+
+    private void QueueServerMessage(object sender, MessageEventArgs e)
+    {
+        //Debug.Log("Server message received: " + e.Data);
+        this.gameServerMessageQueue.Enqueue(e.Data);
+    }
+
     private void SendWebsocketClientMessage(string messageJson)
     {
         //Debug.Log("Client message sent: " + messageJson);
         this.ws.Send(messageJson);
+    }
+
+    // misc helpers
+
+    private bool PlayerIsMainPlayer(Player p)
+    {
+        return this.mainPlayerModel != null && p.id == this.mainPlayerModel.id;
     }
 
 }

@@ -9,14 +9,17 @@ public class FoodScript : MonoBehaviour
 
     // UNITY HOOKS
 
-    void Start()
+    void Start() { }
+
+    void Update() { }
+
+    // INTERFACE METHODS
+
+    public void UpdateFromFoodModel(Food f)
     {
-        
+        // stub
+        Debug.Log("UpdateFromFoodModel...");
     }
 
-    void Update()
-    {
-        
-    }
 
 }

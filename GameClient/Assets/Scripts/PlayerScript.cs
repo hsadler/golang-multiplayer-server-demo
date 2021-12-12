@@ -59,23 +59,37 @@ public class PlayerScript : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         // handle food collisions
-        if (other.CompareTag("Food")) {
+        if (other.CompareTag("Food"))
+        {
             Food foodModel = other.GetComponent<FoodScript>().foodModel;
             SceneManagerScript.instance.SyncPlayerEatFood(foodModel);
         }
         // handle mine collisions
-        if (other.CompareTag("Mine")) {
+        if (other.CompareTag("Mine"))
+        {
             Mine mineModel = other.GetComponent<MineScript>().mineModel;
             SceneManagerScript.instance.SyncPlayerHitMine(mineModel);
         }
         // handle other player collisions
-        if (other.CompareTag("Player")) {
+        if (other.CompareTag("Player"))
+        {
             Player otherPlayerModel = other.GetComponent<PlayerScript>().playerModel;
             // other player is smaller, so eat
-            if (otherPlayerModel.size < this.playerModel.size) {
+            if (otherPlayerModel.size < this.playerModel.size)
+            {
                 SceneManagerScript.instance.SyncPlayerEatPlayer(otherPlayerModel);
             }
         }
+    }
+
+    // INTERFACE METHODS
+
+    public void UpdateFromPlayerModel(Player p)
+    {
+        // stub
+        Debug.Log("UpdateFromPlayerModel...");
+        var newPosition = new Vector3(p.position.x, p.position.y, 0);
+        this.transform.position = newPosition;
     }
 
     // IMPLEMENTATION METHODS
@@ -106,7 +120,8 @@ public class PlayerScript : MonoBehaviour
                 targetPos += Vector3.down;
             }
         }
-        else if(this.autopilotOn) {
+        else if (this.autopilotOn)
+        {
             targetPos += this.moveDirections[this.currMoveDirIndex];
         }
         if (targetPos != this.transform.position)
@@ -132,16 +147,19 @@ public class PlayerScript : MonoBehaviour
         {
             direction = 1;
         }
-        if (direction != 0) {
+        if (direction != 0)
+        {
             float zoomChange = direction * this.camZoomSpeed * Time.deltaTime;
             float newCameraSize = this.cam.orthographicSize + zoomChange;
-            if (newCameraSize > this.minCamZoom && newCameraSize < this.maxCamZoom) {
+            if (newCameraSize > this.minCamZoom && newCameraSize < this.maxCamZoom)
+            {
                 this.cam.orthographicSize = newCameraSize;
             }
         }
     }
 
-    private void MoveCameraToPlayer() {
+    private void MoveCameraToPlayer()
+    {
         this.camGO.transform.position = new Vector3(
             this.transform.position.x,
             this.transform.position.y,
@@ -150,7 +168,8 @@ public class PlayerScript : MonoBehaviour
     }
 
     // autopilot movement for testing
-    private void SetNextMoveDirectionIndex() {
+    private void SetNextMoveDirectionIndex()
+    {
         if (this.currMoveDirIndex == 3)
         {
             this.currMoveDirIndex = 0;
