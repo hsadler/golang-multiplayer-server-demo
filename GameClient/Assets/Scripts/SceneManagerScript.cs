@@ -81,7 +81,7 @@ public class SceneManagerScript : MonoBehaviour
 
     public void InitMainPlayer(string playerName)
     {
-        // create player game object
+        // create player game object and give random start position
         float randX = Random.Range(
             Functions.GetBound(this.gameState, Vector3.down),
             Functions.GetBound(this.gameState, Vector3.up)
@@ -234,20 +234,51 @@ public class SceneManagerScript : MonoBehaviour
     {
         var playerUpdateMessage = JsonUtility.FromJson<ServerMessagePlayerUpdate>(messageJSON);
         Player playerModel = playerUpdateMessage.player;
-        if (this.playerIdToOtherPlayerGO.ContainsKey(playerModel.id))
+        if (playerModel.id == this.mainPlayerModel.id)
         {
-            this.playerIdToOtherPlayerGO[playerModel.id].GetComponent<PlayerScript>().UpdateFromPlayerModel(playerModel);
+            this.mainPlayerGO.GetComponent<PlayerScript>()
+                .UpdateFromPlayerModel(playerModel);
+        }
+        else if (this.playerIdToOtherPlayerGO.ContainsKey(playerModel.id))
+        {
+            this.playerIdToOtherPlayerGO[playerModel.id]
+                .GetComponent<PlayerScript>()
+                .UpdateFromPlayerModel(playerModel);
+        }
+        else
+        {
+            Debug.LogWarning("Received update message for player that doesn't exist: " + playerModel.id.ToString());
         }
     }
 
     private void HandleFoodStateUpdateServerMessage(string messageJSON)
     {
-        // stub
+        var foodUpdateMessage = JsonUtility.FromJson<ServerMessageFoodUpdate>(messageJSON);
+        Food foodModel = foodUpdateMessage.food;
+        if(this.foodIdToFoodGO.ContainsKey(foodModel.id))
+        {
+            this.foodIdToFoodGO[foodModel.id].GetComponent<FoodScript>()
+                .UpdateFromFoodModel(foodModel);
+        }
+        else
+        {
+            Debug.LogWarning("Received update message for food that doesn't exist: " + foodModel.id.ToString());
+        }
     }
 
     private void HandleMineStateUpdateServerMessage(string messageJSON)
     {
-        // stub
+        var mineUpdateMessage = JsonUtility.FromJson<ServerMessageMineUpdate>(messageJSON);
+        Mine mineModel = mineUpdateMessage.mine;
+        if (this.mineIdToMineGO.ContainsKey(mineModel.id))
+        {
+            this.mineIdToMineGO[mineModel.id].GetComponent<MineScript>()
+                .UpdateFromMineModel(mineModel);
+        }
+        else
+        {
+            Debug.LogWarning("Received update message for mine that doesn't exist: " + mineModel.id.ToString());
+        }
     }
 
     private void HandleSecondsToNextRoundStartServerMessage(string messageJSON)
@@ -308,7 +339,8 @@ public class SceneManagerScript : MonoBehaviour
             // do main player update
             if (this.PlayerIsMainPlayer(player))
             {
-                this.UpdateMainPlayerFromModel(player);
+                this.mainPlayerGO.GetComponent<PlayerScript>()
+                    .UpdateFromPlayerModel(player, forceMainPlayerPosition: true);
             }
             // add other players to scene
             else
@@ -358,11 +390,6 @@ public class SceneManagerScript : MonoBehaviour
         );
         wallRight.transform.localScale = new Vector3(1, this.gameState.mapHeight + 3, 0);
         this.wallGOs.Add(wallRight);
-    }
-
-    private void UpdateMainPlayerFromModel(Player pModel)
-    {
-        this.mainPlayerGO.GetComponent<PlayerScript>().UpdateFromPlayerModel(pModel);
     }
 
     private void AddOtherPlayerFromPlayerModel(Player otherPlayerModel)

@@ -15,10 +15,11 @@ public class FoodScript : MonoBehaviour
 
     // INTERFACE METHODS
 
-    public void UpdateFromFoodModel(Food f)
+    public void UpdateFromFoodModel(Food fModel)
     {
-        // stub
-        Debug.Log("UpdateFromFoodModel...");
+        this.transform.position = new Vector3(fModel.position.x, fModel.position.y, 0);
+        this.transform.localScale = new Vector3(fModel.size, fModel.size, 1);
+        this.gameObject.SetActive(fModel.active);
     }
 
 

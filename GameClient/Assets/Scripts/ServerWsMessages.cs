@@ -7,6 +7,13 @@ public class ServerMessageGeneric
 }
 
 [Serializable]
+public class ServerMessageGameState
+{
+    public string messageType;
+    public GameState gameState;
+}
+
+[Serializable]
 public class ServerMessagePlayerEnter
 {
     public string messageType;
@@ -28,8 +35,15 @@ public class ServerMessagePlayerUpdate
 }
 
 [Serializable]
-public class ServerMessageGameState
+public class ServerMessageFoodUpdate
 {
     public string messageType;
-    public GameState gameState;
+    public Food food;
+}
+
+[Serializable]
+public class ServerMessageMineUpdate
+{
+    public string messageType;
+    public Mine mine;
 }

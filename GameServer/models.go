@@ -26,7 +26,10 @@ func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) Player {
 	}
 	player := Player{
 		Id:       pData["id"].(string),
+		Active:   pData["active"].(bool),
+		Name:     pData["name"].(string),
 		Position: pos,
+		Size:     int(pData["size"].(float64)),
 	}
 	return player
 }

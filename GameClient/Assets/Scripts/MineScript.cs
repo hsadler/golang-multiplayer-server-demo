@@ -15,10 +15,11 @@ public class MineScript : MonoBehaviour
 
     // INTERFACE METHODS
 
-    public void UpdateFromMineModel(Mine m)
+    public void UpdateFromMineModel(Mine mModel)
     {
-        // stub
-        Debug.Log("UpdateFromMineModel...");
+        this.transform.position = new Vector3(mineModel.position.x, mModel.position.y, 0);
+        this.transform.localScale = new Vector3(mModel.size, mModel.size, 1);
+        this.gameObject.SetActive(mModel.active);
     }
 
 }
