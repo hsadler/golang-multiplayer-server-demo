@@ -19,9 +19,9 @@ public class SceneManagerScript : MonoBehaviour
 
     private WebSocket ws;
     // local game server
-    //private string gameServerUrl = "ws://localhost:5000";
+    private string gameServerUrl = "ws://localhost:5000";
     // heroku game server
-    private string gameServerUrl = "ws://golang-multiplayer-server-demo.herokuapp.com/:80";
+    //private string gameServerUrl = "ws://golang-multiplayer-server-demo.herokuapp.com/:80";
 
     // game state
     private GameState gameState;

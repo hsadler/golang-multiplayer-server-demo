@@ -37,8 +37,9 @@ TODO:
         X camera follows player
         X camera zoomable
     - implement full game features:
-        - BUG: game-state update client handling not correct
-        - food respawning, consumption, and player size increase
+        X BUG: game-state update client handling not correct
+        X food respawning, consumption, and player size increase
+        X BUG: other players grow when one player eats food
         - player eat player and player respawn
         - name on player
         - map grid
