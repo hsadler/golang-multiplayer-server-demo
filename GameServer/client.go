@@ -58,7 +58,7 @@ func (cl *Client) SendGameState() {
 	SerializeAndScheduleServerMessage(msg, cl.Send)
 	// logging
 	j, _ := json.Marshal(gameState)
-	LogForce("Sending game state:", j)
+	LogJsonForce("Sending game state:", j)
 }
 
 func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {

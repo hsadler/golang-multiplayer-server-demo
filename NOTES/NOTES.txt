@@ -36,10 +36,11 @@ TODO:
         X map walls block player
         X camera follows player
         X camera zoomable
-    - implement full game features:
+    - BUGS:
         X BUG: game-state update client handling not correct
+        - BUG: other players grow when one player eats food
+    - implement full game features:
         X food respawning, consumption, and player size increase
-        X BUG: other players grow when one player eats food
         - player eat player and player respawn
         - name on player
         - map grid

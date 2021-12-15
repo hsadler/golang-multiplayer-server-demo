@@ -125,6 +125,10 @@ public class SceneManagerScript : MonoBehaviour
 
     public void SyncPlayerEatFood(Food foodModel)
     {
+        Debug.Log(
+            "player: " + this.mainPlayerModel.id.ToString() + 
+            " ate food: " + foodModel.id.ToString()
+        );
         var m = new ClientMessagePlayerEatFood(
             this.mainPlayerModel.id,
             foodModel.id
@@ -236,11 +240,13 @@ public class SceneManagerScript : MonoBehaviour
         Player playerModel = playerUpdateMessage.player;
         if (playerModel.id == this.mainPlayerModel.id)
         {
+            // Debug.Log("updating main-player id: " + playerModel.id.ToString());
             this.mainPlayerGO.GetComponent<PlayerScript>()
                 .UpdateFromPlayerModel(playerModel);
         }
         else if (this.playerIdToOtherPlayerGO.ContainsKey(playerModel.id))
         {
+            // Debug.Log("updating other-player id: " + playerModel.id.ToString());
             this.playerIdToOtherPlayerGO[playerModel.id]
                 .GetComponent<PlayerScript>()
                 .UpdateFromPlayerModel(playerModel);
