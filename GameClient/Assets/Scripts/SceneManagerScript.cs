@@ -125,10 +125,10 @@ public class SceneManagerScript : MonoBehaviour
 
     public void SyncPlayerEatFood(Food foodModel)
     {
-        Debug.Log(
-            "player: " + this.mainPlayerModel.name.ToString() + 
-            " ate food: " + foodModel.id.ToString()
-        );
+        //Debug.Log(
+        //    "player: " + this.mainPlayerModel.name.ToString() + 
+        //    " ate food: " + foodModel.id.ToString()
+        //);
         var m = new ClientMessagePlayerEatFood(
             this.mainPlayerModel.id,
             foodModel.id

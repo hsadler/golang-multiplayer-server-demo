@@ -132,10 +132,8 @@ func (cl *Client) HandlePlayerEatFood(mData map[string]interface{}) {
 	food := foodData.(Food)
 	// player grows in size
 	player.Size += 1
-	// TESTING: FOOD DEACTIVATED
-	food.Active = false
 	// food position changes
-	// food.Position = cl.GameState.GetNewSpawnFoodPosition()
+	food.Position = cl.GameState.GetNewSpawnFoodPosition()
 	// datastore saves
 	cl.GameState.Players.Set(playerId, player)
 	cl.GameState.Foods.Set(foodId, food)

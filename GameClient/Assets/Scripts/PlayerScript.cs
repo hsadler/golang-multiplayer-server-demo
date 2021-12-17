@@ -58,26 +58,30 @@ public class PlayerScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // handle food collisions
-        if (other.CompareTag("Food"))
+        // only send events if player is the main player of the scene
+        if (this.isMainPlayer)
         {
-            Food foodModel = other.GetComponent<FoodScript>().foodModel;
-            SceneManagerScript.instance.SyncPlayerEatFood(foodModel);
-        }
-        // handle mine collisions
-        if (other.CompareTag("Mine"))
-        {
-            Mine mineModel = other.GetComponent<MineScript>().mineModel;
-            SceneManagerScript.instance.SyncPlayerHitMine(mineModel);
-        }
-        // handle other player collisions
-        if (other.CompareTag("Player"))
-        {
-            Player otherPlayerModel = other.GetComponent<PlayerScript>().playerModel;
-            // other player is smaller, so eat
-            if (otherPlayerModel.size < this.playerModel.size)
+            // handle food collisions
+            if (other.CompareTag("Food"))
             {
-                SceneManagerScript.instance.SyncPlayerEatPlayer(otherPlayerModel);
+                Food foodModel = other.GetComponent<FoodScript>().foodModel;
+                SceneManagerScript.instance.SyncPlayerEatFood(foodModel);
+            }
+            // handle mine collisions
+            if (other.CompareTag("Mine"))
+            {
+                Mine mineModel = other.GetComponent<MineScript>().mineModel;
+                SceneManagerScript.instance.SyncPlayerHitMine(mineModel);
+            }
+            // handle other player collisions
+            if (other.CompareTag("Player"))
+            {
+                Player otherPlayerModel = other.GetComponent<PlayerScript>().playerModel;
+                // other player is smaller, so eat
+                if (this.playerModel.size > otherPlayerModel.size)
+                {
+                    SceneManagerScript.instance.SyncPlayerEatPlayer(otherPlayerModel);
+                }
             }
         }
     }
