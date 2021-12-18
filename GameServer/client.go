@@ -189,6 +189,13 @@ func (cl *Client) HandleMineDamagePlayer(mData map[string]interface{}) {
 	mine := mineData.(Mine)
 	// player loses size points
 	player.Size -= 3
+	// if damage taken kills player, reset size and respawn
+	if player.Size < 1 {
+		player.Active = false
+		player.Size = 1
+		player.Position = cl.GameState.GetNewSpawnPlayerPosition()
+		player.TimeUntilRespawn = PLAYER_RESPAWN_SECONDS
+	}
 	// mine position changes
 	mine.Position = cl.GameState.GetNewSpawnMinePosition()
 	// datastore saves

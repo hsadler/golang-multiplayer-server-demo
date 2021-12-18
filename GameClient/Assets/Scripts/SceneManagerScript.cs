@@ -110,25 +110,17 @@ public class SceneManagerScript : MonoBehaviour
 
     // client-to-server sync methods
 
-    public void SyncPlayerState(GameObject playerGO)
+    public void SyncPlayerPosition(Player playerModel)
     {
-        this.mainPlayerModel.position = new Position(
-            playerGO.transform.position.x,
-            playerGO.transform.position.y
-        );
         var m = new ClientMessagePlayerPosition(
-            this.mainPlayerModel.id,
-            this.mainPlayerModel.position
+            playerModel.id,
+            playerModel.position
         );
         this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
     public void SyncPlayerEatFood(Food foodModel)
     {
-        //Debug.Log(
-        //    "player: " + this.mainPlayerModel.name.ToString() + 
-        //    " ate food: " + foodModel.id.ToString()
-        //);
         var m = new ClientMessagePlayerEatFood(
             this.mainPlayerModel.id,
             foodModel.id
@@ -147,6 +139,7 @@ public class SceneManagerScript : MonoBehaviour
 
     public void SyncPlayerEatPlayer(Player otherPlayerModel)
     {
+        Debug.Log("SyncPlayerEatPlayer()....");
         var m = new ClientMessagePlayerEatPlayer(
             this.mainPlayerModel.id,
             otherPlayerModel.id
@@ -240,13 +233,14 @@ public class SceneManagerScript : MonoBehaviour
         Player playerModel = playerUpdateMessage.player;
         if (playerModel.id == this.mainPlayerModel.id)
         {
-            // Debug.Log("updating main-player id: " + playerModel.id.ToString());
+            // Debug.Log("updating main-player: " + playerModel.name);
+            bool updatePlayerPosition = !playerModel.active;
             this.mainPlayerGO.GetComponent<PlayerScript>()
-                .UpdateFromPlayerModel(playerModel);
+                .UpdateFromPlayerModel(playerModel, updatePlayerPosition);
         }
         else if (this.playerIdToOtherPlayerGO.ContainsKey(playerModel.id))
         {
-            // Debug.Log("updating other-player id: " + playerModel.id.ToString());
+            // Debug.Log("updating other-player: " + playerModel.name);
             this.playerIdToOtherPlayerGO[playerModel.id]
                 .GetComponent<PlayerScript>()
                 .UpdateFromPlayerModel(playerModel);
@@ -346,7 +340,7 @@ public class SceneManagerScript : MonoBehaviour
             if (this.PlayerIsMainPlayer(player))
             {
                 this.mainPlayerGO.GetComponent<PlayerScript>()
-                    .UpdateFromPlayerModel(player, forceMainPlayerPosition: true);
+                    .UpdateFromPlayerModel(player);
             }
             // add other players to scene
             else

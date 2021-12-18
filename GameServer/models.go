@@ -11,11 +11,12 @@ type Round struct {
 
 // player
 type Player struct {
-	Id       string   `json:"id"`
-	Active   bool     `json:"active"`
-	Name     string   `json:"name"`
-	Position Position `json:"position"`
-	Size     int      `json:"size"`
+	Id               string   `json:"id"`
+	Active           bool     `json:"active"`
+	Name             string   `json:"name"`
+	Position         Position `json:"position"`
+	Size             int      `json:"size"`
+	TimeUntilRespawn int      `json:"timeUntilRespawn"`
 }
 
 func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) Player {
@@ -25,11 +26,12 @@ func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) Player {
 		Y: posMap["y"].(float64),
 	}
 	player := Player{
-		Id:       pData["id"].(string),
-		Active:   pData["active"].(bool),
-		Name:     pData["name"].(string),
-		Position: pos,
-		Size:     int(pData["size"].(float64)),
+		Id:               pData["id"].(string),
+		Active:           pData["active"].(bool),
+		Name:             pData["name"].(string),
+		Position:         pos,
+		Size:             int(pData["size"].(float64)),
+		TimeUntilRespawn: 0,
 	}
 	return player
 }

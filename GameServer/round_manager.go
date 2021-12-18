@@ -20,14 +20,19 @@ func (rm *RoundManager) RunRoundTicker() {
 				// end the current round
 				rm.RoundIsInProgress = false
 				rm.SecondsToNextRoundStart = SECONDS_BETWEEN_ROUNDS
-				message := NewRoundResultMessage(rm.GameState.GetRoundResult())
-				SerializeAndScheduleServerMessage(message, rm.Hub.Broadcast)
+				SerializeAndScheduleServerMessage(
+					NewRoundResultMessage(rm.GameState.GetRoundResult()),
+					rm.Hub.Broadcast,
+				)
 			} else {
 				// count down to round end
 				rm.SecondsToCurrentRoundEnd -= 1
+				// TODO: count down for any players waiting for respawn
 			}
-			message := NewSecondsToCurrentRoundEndMessage(rm.SecondsToCurrentRoundEnd)
-			SerializeAndScheduleServerMessage(message, rm.Hub.Broadcast)
+			SerializeAndScheduleServerMessage(
+				NewSecondsToCurrentRoundEndMessage(rm.SecondsToCurrentRoundEnd),
+				rm.Hub.Broadcast,
+			)
 		} else {
 			// LogForce("Seconds until next round:", rm.SecondsToNextRoundStart)
 			if rm.SecondsToNextRoundStart == 0 {
@@ -41,8 +46,10 @@ func (rm *RoundManager) RunRoundTicker() {
 				// count down to next round
 				rm.SecondsToNextRoundStart -= 1
 			}
-			message := NewSecondsToNextRoundStartMessage(rm.SecondsToNextRoundStart)
-			SerializeAndScheduleServerMessage(message, rm.Hub.Broadcast)
+			SerializeAndScheduleServerMessage(
+				NewSecondsToNextRoundStartMessage(rm.SecondsToNextRoundStart),
+				rm.Hub.Broadcast,
+			)
 		}
 	}
 }

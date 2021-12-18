@@ -38,7 +38,7 @@ TODO:
         X camera zoomable
     - BUGS:
         X BUG: game-state update client handling not correct
-        - BUG: other players grow when one player eats food
+        X BUG: other players grow when one player eats food
     - implement full game features:
         X food respawning, consumption, and player size increase
         - player eat player and player respawn

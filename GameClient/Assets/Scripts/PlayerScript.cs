@@ -88,16 +88,15 @@ public class PlayerScript : MonoBehaviour
 
     // INTERFACE METHODS
 
-    public void UpdateFromPlayerModel(Player pModel, bool forceMainPlayerPosition = false)
+    public void UpdateFromPlayerModel(Player pModel, bool updatePosition = true)
     {
         this.playerModel = pModel;
-        // only update the main player's postion if explicitly told to
-        if (!this.isMainPlayer || forceMainPlayerPosition)
+        this.transform.localScale = new Vector3(pModel.size, pModel.size, 1);
+        this.gameObject.SetActive(pModel.active);
+        if (updatePosition)
         {
             this.transform.position = new Vector3(pModel.position.x, pModel.position.y, 0);
         }
-        this.transform.localScale = new Vector3(pModel.size, pModel.size, 1);
-        this.gameObject.SetActive(pModel.active);
     }
 
     // IMPLEMENTATION METHODS
@@ -140,7 +139,7 @@ public class PlayerScript : MonoBehaviour
                 Time.deltaTime * this.moveSpeed
             );
             this.MoveCameraToPlayer();
-            SceneManagerScript.instance.SyncPlayerState(this.gameObject);
+            SceneManagerScript.instance.SyncPlayerPosition(this.playerModel);
         }
     }
 

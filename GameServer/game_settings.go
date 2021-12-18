@@ -3,6 +3,7 @@ package main
 const MAP_HEIGHT int = 40
 const MAP_WIDTH int = 40
 
+const PLAYER_RESPAWN_SECONDS = 3
 const FOOD_COUNT int = MAP_HEIGHT / 2
 const FOOD_SIZE int = 1
 const MINE_COUNT int = MAP_HEIGHT / 6
