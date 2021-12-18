@@ -22,14 +22,16 @@ public class Player
     public string name;
     public Position position;
     public int size;
+    public int timeUntilRespawn;
 
-    public Player(string id, bool active, string name, Position position, int size)
+    public Player(string id, bool active, string name, Position position, int size, int timeUntilRespawn)
     {
         this.id = id;
         this.active = active;
         this.name = name;
         this.position = position;
         this.size = size;
+        this.timeUntilRespawn = timeUntilRespawn;
     }
 
 }

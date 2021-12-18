@@ -27,7 +27,18 @@ func (rm *RoundManager) RunRoundTicker() {
 			} else {
 				// count down to round end
 				rm.SecondsToCurrentRoundEnd -= 1
-				// TODO: count down for any players waiting for respawn
+				// count down to respawn for players who are waiting
+				for _, pData := range rm.GameState.Players.Values() {
+					p := pData.(Player)
+					if !p.Active && p.TimeUntilRespawn > 0 {
+						p.TimeUntilRespawn -= 1
+						p.Active = p.TimeUntilRespawn == 0
+						SerializeAndScheduleServerMessage(
+							NewPlayerStateUpdateMessage(p),
+							rm.Hub.Broadcast,
+						)
+					}
+				}
 			}
 			SerializeAndScheduleServerMessage(
 				NewSecondsToCurrentRoundEndMessage(rm.SecondsToCurrentRoundEnd),

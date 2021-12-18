@@ -36,6 +36,12 @@ func NewPlayerFromMap(pData map[string]interface{}, ws *websocket.Conn) Player {
 	return player
 }
 
+func (p *Player) Respawn() {
+	p.Active = false
+	p.Size = 1
+	p.TimeUntilRespawn = PLAYER_RESPAWN_SECONDS
+}
+
 // food
 type Food struct {
 	Id       string   `json:"id"`

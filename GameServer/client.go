@@ -54,8 +54,7 @@ func (cl *Client) SendGameState() {
 	// load serializable game state
 	gameState := cl.GameState.GetSerializable()
 	// send message to client
-	msg := NewGameStateMessage(gameState)
-	SerializeAndScheduleServerMessage(msg, cl.Send)
+	SerializeAndScheduleServerMessage(NewGameStateMessage(gameState), cl.Send)
 	// logging
 	j, _ := json.Marshal(gameState)
 	LogJsonForce("Sending game state:", j)
@@ -70,8 +69,7 @@ func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
 	// commit datastore insert
 	cl.GameState.Players.Set(player.Id, player)
 	// broadcast message
-	message := NewPlayerEnterMessage(player)
-	SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
+	SerializeAndScheduleServerMessage(NewPlayerEnterMessage(player), cl.Hub.Broadcast)
 	// logging
 	LogForce("Handling player enter:", player.Name)
 }
@@ -91,8 +89,7 @@ func (cl *Client) HandlePlayerExit(mData map[string]interface{}) {
 		// commit datastore delete
 		cl.GameState.Players.Delete(player.Id)
 		// broadcast message
-		message := NewPlayerExitMessage(player.Id)
-		SerializeAndScheduleServerMessage(message, cl.Hub.Broadcast)
+		SerializeAndScheduleServerMessage(NewPlayerExitMessage(player.Id), cl.Hub.Broadcast)
 		LogForce("Handling player exit:", player.Name)
 	}
 	// schedule client removal from hub
@@ -114,8 +111,7 @@ func (cl *Client) HandlePlayerPosition(mData map[string]interface{}) {
 	// datastore save
 	cl.GameState.Players.Set(playerId, player)
 	// broadcast entity update message
-	msg := NewPlayerStateUpdateMessage(player)
-	SerializeAndScheduleServerMessage(msg, cl.Hub.Broadcast)
+	SerializeAndScheduleServerMessage(NewPlayerStateUpdateMessage(player), cl.Hub.Broadcast)
 }
 
 func (cl *Client) HandlePlayerEatFood(mData map[string]interface{}) {
@@ -138,10 +134,8 @@ func (cl *Client) HandlePlayerEatFood(mData map[string]interface{}) {
 	cl.GameState.Players.Set(playerId, player)
 	cl.GameState.Foods.Set(foodId, food)
 	// broadcast entity update messages
-	pmsg := NewPlayerStateUpdateMessage(player)
-	SerializeAndScheduleServerMessage(pmsg, cl.Hub.Broadcast)
-	fmsg := NewFoodStateUpdateMessage(food)
-	SerializeAndScheduleServerMessage(fmsg, cl.Hub.Broadcast)
+	SerializeAndScheduleServerMessage(NewPlayerStateUpdateMessage(player), cl.Hub.Broadcast)
+	SerializeAndScheduleServerMessage(NewFoodStateUpdateMessage(food), cl.Hub.Broadcast)
 	// logging
 	LogForce("Handling player-eat-food-message with player:", player.Name, "and foodId:", foodId)
 }
@@ -160,17 +154,14 @@ func (cl *Client) HandlePlayerEatPlayer(mData map[string]interface{}) {
 	otherPlayer := otherPlayerData.(Player)
 	// player who ate other grows in size
 	player.Size += otherPlayer.Size
-	// player who got eaten respawns with reset size to 1
-	otherPlayer.Size = 1
-	otherPlayer.Position = cl.GameState.GetNewSpawnPlayerPosition()
+	// player who got eaten respawns with size reset
+	otherPlayer.Respawn()
 	// datastore saves
 	cl.GameState.Players.Set(playerId, player)
 	cl.GameState.Players.Set(otherPlayerId, otherPlayer)
 	// broadcast entity update messages
-	pmsg := NewPlayerStateUpdateMessage(player)
-	SerializeAndScheduleServerMessage(pmsg, cl.Hub.Broadcast)
-	opmsg := NewPlayerStateUpdateMessage(otherPlayer)
-	SerializeAndScheduleServerMessage(opmsg, cl.Hub.Broadcast)
+	SerializeAndScheduleServerMessage(NewPlayerStateUpdateMessage(player), cl.Hub.Broadcast)
+	SerializeAndScheduleServerMessage(NewPlayerStateUpdateMessage(otherPlayer), cl.Hub.Broadcast)
 	// logging
 	LogForce("Handling player-eat-player-message with player:", player.Name, "and otherPlayer:", otherPlayer.Name)
 }
@@ -191,10 +182,7 @@ func (cl *Client) HandleMineDamagePlayer(mData map[string]interface{}) {
 	player.Size -= 3
 	// if damage taken kills player, reset size and respawn
 	if player.Size < 1 {
-		player.Active = false
-		player.Size = 1
-		player.Position = cl.GameState.GetNewSpawnPlayerPosition()
-		player.TimeUntilRespawn = PLAYER_RESPAWN_SECONDS
+		player.Respawn()
 	}
 	// mine position changes
 	mine.Position = cl.GameState.GetNewSpawnMinePosition()
@@ -202,10 +190,8 @@ func (cl *Client) HandleMineDamagePlayer(mData map[string]interface{}) {
 	cl.GameState.Players.Set(playerId, player)
 	cl.GameState.Mines.Set(mineId, mine)
 	// broadcast entity update messages
-	pmsg := NewPlayerStateUpdateMessage(player)
-	SerializeAndScheduleServerMessage(pmsg, cl.Hub.Broadcast)
-	mmsg := NewMineStateUpdateMessage(mine)
-	SerializeAndScheduleServerMessage(mmsg, cl.Hub.Broadcast)
+	SerializeAndScheduleServerMessage(NewPlayerStateUpdateMessage(player), cl.Hub.Broadcast)
+	SerializeAndScheduleServerMessage(NewMineStateUpdateMessage(mine), cl.Hub.Broadcast)
 	// logging
 	LogForce("Handling mine-damage-player-message with player:", player.Name, "and mineId:", mineId)
 }
