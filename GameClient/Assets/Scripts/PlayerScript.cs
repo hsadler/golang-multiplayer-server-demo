@@ -80,10 +80,18 @@ public class PlayerScript : MonoBehaviour
                 Mine mineModel = other.GetComponent<MineScript>().mineModel;
                 SceneManagerScript.instance.SyncPlayerHitMine(mineModel);
             }
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // only send events if player is the main player of the scene
+        if (this.isMainPlayer)
+        {
             // handle other player collisions
-            if (other.CompareTag("Player"))
-            {
-                Player otherPlayerModel = other.GetComponent<PlayerScript>().playerModel;
+            if (collision.gameObject.CompareTag("Player")) {
+                Player otherPlayerModel = collision.gameObject
+                    .GetComponent<PlayerScript>().playerModel;
                 // other player is smaller, so eat
                 if (this.playerModel.size > otherPlayerModel.size)
                 {

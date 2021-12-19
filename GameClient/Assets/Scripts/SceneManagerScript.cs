@@ -132,7 +132,6 @@ public class SceneManagerScript : MonoBehaviour
 
     public void SyncPlayerEatPlayer(Player otherPlayerModel)
     {
-        Debug.Log("SyncPlayerEatPlayer()....");
         var m = new ClientMessagePlayerEatPlayer(
             this.mainPlayerModel.id,
             otherPlayerModel.id
@@ -233,7 +232,7 @@ public class SceneManagerScript : MonoBehaviour
         // other players update
         else if (this.playerIdToOtherPlayerGO.ContainsKey(playerModel.id))
         {
-            Debug.Log("updating other-player: " + playerModel.name);
+            //Debug.Log("updating other-player: " + playerModel.name);
             this.playerIdToOtherPlayerGO[playerModel.id]
                 .GetComponent<PlayerScript>()
                 .UpdateFromPlayerModel(playerModel);
