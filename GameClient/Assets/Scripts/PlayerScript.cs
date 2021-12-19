@@ -51,7 +51,14 @@ public class PlayerScript : MonoBehaviour
     {
         if (this.isMainPlayer)
         {
-            this.HandleMovement();
+            if (this.playerModel.active) {
+                bool playerMoved = this.HandleMovement();
+                if(playerMoved)
+                {
+                    this.MoveCameraToPlayer();
+                    this.SyncMainPlayerPosition();
+                }
+            }
             this.HandleCameraZoom();
         }
     }
@@ -91,8 +98,8 @@ public class PlayerScript : MonoBehaviour
     public void UpdateFromPlayerModel(Player pModel)
     {
         this.playerModel = pModel;
-        this.transform.localScale = new Vector3(pModel.size, pModel.size, 1);
         this.gameObject.SetActive(pModel.active);
+        this.transform.localScale = new Vector3(pModel.size, pModel.size, 1);
         var newPosition = new Vector3(pModel.position.x, pModel.position.y, 0);
         // main player update
         if (this.isMainPlayer)
@@ -100,7 +107,6 @@ public class PlayerScript : MonoBehaviour
             // only update the main player's position if the player is not active
             if (!pModel.active && this.transform.position != newPosition) {
                 this.transform.position = newPosition;
-                this.MoveCameraToPlayer();
             }
         }
         // other player update
@@ -111,7 +117,7 @@ public class PlayerScript : MonoBehaviour
 
     // IMPLEMENTATION METHODS
 
-    private void HandleMovement()
+    private bool HandleMovement()
     {
         var targetPos = this.transform.position;
         if (Input.anyKey)
@@ -148,8 +154,10 @@ public class PlayerScript : MonoBehaviour
                 targetPos,
                 Time.deltaTime * this.moveSpeed
             );
-            this.MoveCameraToPlayer();
-            SceneManagerScript.instance.SyncPlayerPosition(this.playerModel);
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
@@ -195,6 +203,12 @@ public class PlayerScript : MonoBehaviour
         {
             this.currMoveDirIndex += 1;
         }
+    }
+
+    private void SyncMainPlayerPosition() {
+        this.playerModel.position.x = this.transform.position.x;
+        this.playerModel.position.y = this.transform.position.y;
+        SceneManagerScript.instance.SyncPlayerPosition(this.playerModel);
     }
 
 }

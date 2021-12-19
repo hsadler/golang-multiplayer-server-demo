@@ -39,15 +39,24 @@ TODO:
     - BUGS:
         X BUG: game-state update client handling not correct
         X BUG: other players grow when one player eats food
+        X BUG: other players position not updating correctly
     - implement full game features:
         X food respawning, consumption, and player size increase
+        X player respawn
         - player eat player and player respawn
         - name on player
-        - map grid
-        - time per round and game reset
+        - respawn count down
+        - round time left
+        - next round count down
         - winning player and other player ranking
-    - styling
+    - styling:
+        - player sprite
+        - food sprite
+        - mine sprite
+        - wall sprite
+        - map grid
     - polish:
+        - smooth other player movement
         - name entry UI scale with screen size
 
 INVESTIGATE:

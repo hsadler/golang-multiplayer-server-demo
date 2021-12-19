@@ -225,7 +225,7 @@ public class SceneManagerScript : MonoBehaviour
         var playerUpdateMessage = JsonUtility.FromJson<ServerMessagePlayerUpdate>(messageJSON);
         Player playerModel = playerUpdateMessage.player;
         // main player update
-        if (playerModel.id == this.mainPlayerModel.id)
+        if (this.mainPlayerModel != null && playerModel.id == this.mainPlayerModel.id)
         {
             //Debug.Log("updating main-player: " + playerModel.name);
             this.mainPlayerGO.GetComponent<PlayerScript>().UpdateFromPlayerModel(playerModel);
@@ -233,7 +233,7 @@ public class SceneManagerScript : MonoBehaviour
         // other players update
         else if (this.playerIdToOtherPlayerGO.ContainsKey(playerModel.id))
         {
-            //Debug.Log("updating other-player: " + playerModel.name);
+            Debug.Log("updating other-player: " + playerModel.name);
             this.playerIdToOtherPlayerGO[playerModel.id]
                 .GetComponent<PlayerScript>()
                 .UpdateFromPlayerModel(playerModel);
