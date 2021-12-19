@@ -153,9 +153,16 @@ func (cl *Client) HandlePlayerEatPlayer(mData map[string]interface{}) {
 	player := playerData.(Player)
 	otherPlayer := otherPlayerData.(Player)
 	// player who ate other grows in size
-	player.Size += otherPlayer.Size
+	eatReward := otherPlayer.Size / 3
+	if eatReward < 3 {
+		eatReward = 3
+	}
+	player.Size += eatReward
 	// player who got eaten respawns with size reset
-	otherPlayer.Respawn()
+	otherPlayer.Active = false
+	otherPlayer.Position = cl.GameState.GetNewSpawnPlayerPosition()
+	otherPlayer.Size = 1
+	otherPlayer.TimeUntilRespawn = PLAYER_RESPAWN_SECONDS
 	// datastore saves
 	cl.GameState.Players.Set(playerId, player)
 	cl.GameState.Players.Set(otherPlayerId, otherPlayer)
@@ -182,7 +189,10 @@ func (cl *Client) HandleMineDamagePlayer(mData map[string]interface{}) {
 	player.Size -= 3
 	// if damage taken kills player, reset size and respawn
 	if player.Size < 1 {
-		player.Respawn()
+		player.Active = false
+		player.Position = cl.GameState.GetNewSpawnPlayerPosition()
+		player.Size = 1
+		player.TimeUntilRespawn = PLAYER_RESPAWN_SECONDS
 	}
 	// mine position changes
 	mine.Position = cl.GameState.GetNewSpawnMinePosition()
