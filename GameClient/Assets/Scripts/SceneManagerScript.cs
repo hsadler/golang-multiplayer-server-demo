@@ -82,15 +82,7 @@ public class SceneManagerScript : MonoBehaviour
     public void InitMainPlayer(string playerName)
     {
         // create player game object and give random start position
-        float randX = Random.Range(
-            Functions.GetBound(this.gameState, Vector3.down),
-            Functions.GetBound(this.gameState, Vector3.up)
-        );
-        float randY = Random.Range(
-            Functions.GetBound(this.gameState, Vector3.left),
-            Functions.GetBound(this.gameState, Vector3.right)
-        );
-        var randStartPos = new Vector3(randX, randY, 0);
+        Vector3 randStartPos = Functions.GetRandomGamePosition(this.gameState);
         this.mainPlayerGO = Instantiate(this.playerPrefab, randStartPos, Quaternion.identity);
         // create player model
         this.mainPlayerModel = new Player(
@@ -98,7 +90,8 @@ public class SceneManagerScript : MonoBehaviour
             active: true,
             name: playerName,
             position: new Position(randStartPos.x, randStartPos.y),
-            size: 1
+            size: 1,
+            timeUntilRespawn: 0
         );
         var mainPlayerScript = this.mainPlayerGO.GetComponent<PlayerScript>();
         mainPlayerScript.playerModel = this.mainPlayerModel;
@@ -231,16 +224,16 @@ public class SceneManagerScript : MonoBehaviour
     {
         var playerUpdateMessage = JsonUtility.FromJson<ServerMessagePlayerUpdate>(messageJSON);
         Player playerModel = playerUpdateMessage.player;
+        // main player update
         if (playerModel.id == this.mainPlayerModel.id)
         {
-            // Debug.Log("updating main-player: " + playerModel.name);
-            bool updatePlayerPosition = !playerModel.active;
-            this.mainPlayerGO.GetComponent<PlayerScript>()
-                .UpdateFromPlayerModel(playerModel, updatePlayerPosition);
+            //Debug.Log("updating main-player: " + playerModel.name);
+            this.mainPlayerGO.GetComponent<PlayerScript>().UpdateFromPlayerModel(playerModel);
         }
+        // other players update
         else if (this.playerIdToOtherPlayerGO.ContainsKey(playerModel.id))
         {
-            // Debug.Log("updating other-player: " + playerModel.name);
+            //Debug.Log("updating other-player: " + playerModel.name);
             this.playerIdToOtherPlayerGO[playerModel.id]
                 .GetComponent<PlayerScript>()
                 .UpdateFromPlayerModel(playerModel);

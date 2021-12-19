@@ -88,14 +88,24 @@ public class PlayerScript : MonoBehaviour
 
     // INTERFACE METHODS
 
-    public void UpdateFromPlayerModel(Player pModel, bool updatePosition = true)
+    public void UpdateFromPlayerModel(Player pModel)
     {
         this.playerModel = pModel;
         this.transform.localScale = new Vector3(pModel.size, pModel.size, 1);
         this.gameObject.SetActive(pModel.active);
-        if (updatePosition)
+        var newPosition = new Vector3(pModel.position.x, pModel.position.y, 0);
+        // main player update
+        if (this.isMainPlayer)
         {
-            this.transform.position = new Vector3(pModel.position.x, pModel.position.y, 0);
+            // only update the main player's position if the player is not active
+            if (!pModel.active && this.transform.position != newPosition) {
+                this.transform.position = newPosition;
+                this.MoveCameraToPlayer();
+            }
+        }
+        // other player update
+        else {
+            this.transform.position = newPosition;
         }
     }
 

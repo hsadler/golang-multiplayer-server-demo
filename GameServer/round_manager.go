@@ -32,7 +32,11 @@ func (rm *RoundManager) RunRoundTicker() {
 					p := pData.(Player)
 					if !p.Active && p.TimeUntilRespawn > 0 {
 						p.TimeUntilRespawn -= 1
-						p.Active = p.TimeUntilRespawn == 0
+						if p.TimeUntilRespawn == 0 {
+							p.Active = true
+							p.Position = rm.GameState.GetNewSpawnPlayerPosition()
+						}
+						rm.GameState.Players.Set(p.Id, p)
 						SerializeAndScheduleServerMessage(
 							NewPlayerStateUpdateMessage(p),
 							rm.Hub.Broadcast,
