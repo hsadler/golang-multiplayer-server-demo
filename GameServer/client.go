@@ -160,7 +160,6 @@ func (cl *Client) HandlePlayerEatPlayer(mData map[string]interface{}) {
 	player.Size += eatReward
 	// player who got eaten respawns with size reset
 	otherPlayer.Active = false
-	otherPlayer.Position = cl.GameState.GetNewSpawnPlayerPosition()
 	otherPlayer.Size = 1
 	otherPlayer.TimeUntilRespawn = PLAYER_RESPAWN_SECONDS
 	// datastore saves
@@ -190,7 +189,6 @@ func (cl *Client) HandleMineDamagePlayer(mData map[string]interface{}) {
 	// if damage taken kills player, reset size and respawn
 	if player.Size < 1 {
 		player.Active = false
-		player.Position = cl.GameState.GetNewSpawnPlayerPosition()
 		player.Size = 1
 		player.TimeUntilRespawn = PLAYER_RESPAWN_SECONDS
 	}

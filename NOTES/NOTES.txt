@@ -40,7 +40,7 @@ TODO:
         X BUG: game-state update client handling not correct
         X BUG: other players grow when one player eats food
         X BUG: other players position not updating correctly
-        - BUG: random position on player respawn is not correct
+        X BUG: random position on player respawn is not correct
     - implement full game features:
         X food respawning, consumption, and player size increase
         X player respawn

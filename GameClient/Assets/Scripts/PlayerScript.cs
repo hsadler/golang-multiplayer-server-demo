@@ -9,7 +9,7 @@ public class PlayerScript : MonoBehaviour
 
     // movement
     private float moveSpeed = 5f;
-    // TESTING:
+    // TESTING MOVEMENT:
     // use for testing if you want to connect multiple players to the server and
     // see them moving
     private bool autopilotOn = false;
@@ -106,21 +106,25 @@ public class PlayerScript : MonoBehaviour
     public void UpdateFromPlayerModel(Player pModel)
     {
         this.playerModel = pModel;
-        this.gameObject.SetActive(pModel.active);
-        this.transform.localScale = new Vector3(pModel.size, pModel.size, 1);
-        var newPosition = new Vector3(pModel.position.x, pModel.position.y, 0);
-        // main player update
-        if (this.isMainPlayer)
+        // only update other player positions from server->client, keep
+        // main-player position client authoritative
+        if(this.isMainPlayer)
         {
-            // only update the main player's position if the player is not active
-            if (!pModel.active && this.transform.position != newPosition) {
-                this.transform.position = newPosition;
+            // if player is going from not active to active, give them a random position
+            if (!this.gameObject.activeSelf && this.playerModel.active) {
+                this.transform.position = Functions.GetRandomGamePosition(
+                    SceneManagerScript.instance.gameState
+                );
+                this.MoveCameraToPlayer();
+                this.SyncMainPlayerPosition();
             }
         }
-        // other player update
-        else {
-            this.transform.position = newPosition;
+        else
+        {
+            this.transform.position = new Vector3(pModel.position.x, pModel.position.y, 0);
         }
+        this.gameObject.SetActive(pModel.active);
+        this.transform.localScale = new Vector3(pModel.size, pModel.size, 1);
     }
 
     // IMPLEMENTATION METHODS

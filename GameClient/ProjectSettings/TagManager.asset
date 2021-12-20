@@ -43,3 +43,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Mine
+    uniqueID: 2965578969
+    locked: 0
+  - name: Food
+    uniqueID: 294134965
+    locked: 0
+  - name: Player
+    uniqueID: 139485675
+    locked: 0
+  - name: Wall
+    uniqueID: 623222671
+    locked: 0

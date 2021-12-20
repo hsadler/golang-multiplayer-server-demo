@@ -24,7 +24,7 @@ public class SceneManagerScript : MonoBehaviour
     //private string gameServerUrl = "ws://golang-multiplayer-server-demo.herokuapp.com/:80";
 
     // game state
-    private GameState gameState;
+    public GameState gameState;
     private bool gameStateInitialized = false;
 
     // main player state
