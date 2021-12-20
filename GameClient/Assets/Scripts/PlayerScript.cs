@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerScript : MonoBehaviour
 {
 
     public Player playerModel;
     public bool isMainPlayer;
+    public GameObject playerNameTextContainer;
+    public TMP_Text playerNameText;
 
     // movement
     private float moveSpeed = 5f;
@@ -39,12 +42,16 @@ public class PlayerScript : MonoBehaviour
             this.cam = this.camGO.GetComponent<Camera>();
             this.MoveCameraToPlayer();
             // autopilot movement for testing
-            InvokeRepeating("SetNextMoveDirectionIndex", 0f, 1f);
+            if (this.autopilotOn)
+            {
+                InvokeRepeating("SetNextMoveDirectionIndex", 0f, 1f);
+            }
         }
         else
         {
             this.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
         }
+        this.playerNameText.text = this.playerModel.name;
     }
 
     void Update()
@@ -61,6 +68,7 @@ public class PlayerScript : MonoBehaviour
             }
             this.HandleCameraZoom();
         }
+        this.MovePlayerNameUIToPlayer();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -204,6 +212,16 @@ public class PlayerScript : MonoBehaviour
         );
     }
 
+    private void MovePlayerNameUIToPlayer() {
+        this.playerNameTextContainer.transform.position = Camera.main.WorldToScreenPoint(this.transform.position);
+    }
+
+    private void SyncMainPlayerPosition() {
+        this.playerModel.position.x = this.transform.position.x;
+        this.playerModel.position.y = this.transform.position.y;
+        SceneManagerScript.instance.SyncPlayerPosition(this.playerModel);
+    }
+
     // autopilot movement for testing
     private void SetNextMoveDirectionIndex()
     {
@@ -215,12 +233,6 @@ public class PlayerScript : MonoBehaviour
         {
             this.currMoveDirIndex += 1;
         }
-    }
-
-    private void SyncMainPlayerPosition() {
-        this.playerModel.position.x = this.transform.position.x;
-        this.playerModel.position.y = this.transform.position.y;
-        SceneManagerScript.instance.SyncPlayerPosition(this.playerModel);
     }
 
 }

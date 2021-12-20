@@ -172,6 +172,12 @@ MonoBehaviour:
   wallPrefab: {fileID: 5428814374305344099, guid: 3fc4d5a0af9674d60b58aa30e646d488, type: 3}
   mainCameraGO: {fileID: 519420028}
   giveNameUI: {fileID: 941135092}
+  gameState:
+    mapHeight: 0
+    mapWidth: 0
+    players: []
+    foods: []
+    mines: []
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,10 +309,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3

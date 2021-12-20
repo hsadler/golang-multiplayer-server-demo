@@ -45,7 +45,7 @@ TODO:
         X food respawning, consumption, and player size increase
         X player respawn
         X player eat player and player respawn
-        - name on player
+        X name on player
         - respawn count down
         - round time left
         - next round count down
