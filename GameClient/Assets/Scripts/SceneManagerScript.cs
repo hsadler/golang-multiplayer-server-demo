@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using WebSocketSharp;
 
 public class SceneManagerScript : MonoBehaviour
@@ -16,6 +17,8 @@ public class SceneManagerScript : MonoBehaviour
     private GameObject mainPlayerGO;
     public GameObject mainCameraGO;
     public GameObject giveNameUI;
+    public GameObject respawnCountdownUI;
+    public TMP_Text respawnCountdownText;
 
     private WebSocket ws;
     // local game server
@@ -226,6 +229,19 @@ public class SceneManagerScript : MonoBehaviour
         // main player update
         if (this.mainPlayerModel != null && playerModel.id == this.mainPlayerModel.id)
         {
+            if (!playerModel.active)
+            {
+                this.respawnCountdownUI.SetActive(true);
+                if (playerModel.timeUntilRespawn > 5) {
+                    this.respawnCountdownText.text = "";
+                } else
+                {
+                    this.respawnCountdownText.text = playerModel.timeUntilRespawn.ToString();
+                }
+            }
+            else {
+                this.respawnCountdownUI.SetActive(false);
+            }
             //Debug.Log("updating main-player: " + playerModel.name);
             this.mainPlayerGO.GetComponent<PlayerScript>().UpdateFromPlayerModel(playerModel);
         }

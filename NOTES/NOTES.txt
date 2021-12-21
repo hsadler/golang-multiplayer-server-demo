@@ -41,12 +41,13 @@ TODO:
         X BUG: other players grow when one player eats food
         X BUG: other players position not updating correctly
         X BUG: random position on player respawn is not correct
+        - BUG: player name tag is jumping around when food eaten
     - implement full game features:
         X food respawning, consumption, and player size increase
         X player respawn
         X player eat player and player respawn
         X name on player
-        - respawn count down
+        X respawn count down
         - round time left
         - next round count down
         - winning player and other player ranking
