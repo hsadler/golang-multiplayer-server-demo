@@ -292,11 +292,13 @@ public class SceneManagerScript : MonoBehaviour
     private void HandleSecondsToNextRoundStartServerMessage(string messageJSON)
     {
         // stub
+        var m = JsonUtility.FromJson<ServerMessageSecondsToNextRoundStart>(messageJSON);
     }
 
     private void HandleSecondsToCurrentRoundEndServerMessage(string messageJSON)
     {
         // stub
+        var m = JsonUtility.FromJson<ServerMessageSecondsToCurrentRoundEnd>(messageJSON);
     }
 
     private void HandleRoundResultServerMessage(string messageJSON)

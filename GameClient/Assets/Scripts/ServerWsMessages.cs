@@ -47,3 +47,17 @@ public class ServerMessageMineUpdate
     public string messageType;
     public Mine mine;
 }
+
+[Serializable]
+public class ServerMessageSecondsToNextRoundStart
+{
+    public string messageType;
+    public int seconds;
+}
+
+[Serializable]
+public class ServerMessageSecondsToCurrentRoundEnd
+{
+    public string messageType;
+    public int seconds;
+}

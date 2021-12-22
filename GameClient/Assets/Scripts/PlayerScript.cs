@@ -68,7 +68,10 @@ public class PlayerScript : MonoBehaviour
             }
             this.HandleCameraZoom();
         }
-        this.MovePlayerNameUIToPlayer();
+        if(this.playerModel.active)
+        {
+            this.MovePlayerNameUIToPlayer();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -118,7 +121,7 @@ public class PlayerScript : MonoBehaviour
         // main-player position client authoritative
         if(this.isMainPlayer)
         {
-            // if player is going from not active to active, give them a random position
+            // main player respawn (inactive -> active)
             if (!this.gameObject.activeSelf && this.playerModel.active) {
                 this.transform.position = Functions.GetRandomGamePosition(
                     SceneManagerScript.instance.gameState
