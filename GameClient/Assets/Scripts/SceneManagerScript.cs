@@ -19,6 +19,7 @@ public class SceneManagerScript : MonoBehaviour
     public GameObject giveNameUI;
     public GameObject respawnCountdownUI;
     public TMP_Text respawnCountdownText;
+    public TMP_Text roundHeaderText;
     public TMP_Text roundTimerText;
 
     private WebSocket ws;
@@ -292,16 +293,20 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleSecondsToNextRoundStartServerMessage(string messageJSON)
     {
-        // stub
         var m = JsonUtility.FromJson<ServerMessageSecondsToNextRoundStart>(messageJSON);
+        this.roundHeaderText.text = "ROUND STARTS IN:";
+        this.roundHeaderText.color = Color.red;
         this.roundTimerText.text = m.seconds.ToString();
+        this.roundTimerText.color = Color.red;
     }
 
     private void HandleSecondsToCurrentRoundEndServerMessage(string messageJSON)
     {
-        // stub
         var m = JsonUtility.FromJson<ServerMessageSecondsToCurrentRoundEnd>(messageJSON);
+        this.roundHeaderText.text = "TIME LEFT:";
+        this.roundHeaderText.color = Color.blue;
         this.roundTimerText.text = m.seconds.ToString();
+        this.roundTimerText.color = Color.blue;
     }
 
     private void HandleRoundResultServerMessage(string messageJSON)

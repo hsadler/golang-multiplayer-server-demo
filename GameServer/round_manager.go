@@ -17,54 +17,78 @@ func (rm *RoundManager) RunRoundTicker() {
 		if rm.RoundIsInProgress {
 			// LogForce("Seconds left in round:", rm.SecondsToCurrentRoundEnd)
 			if rm.SecondsToCurrentRoundEnd == 0 {
-				// end the current round
-				rm.RoundIsInProgress = false
-				rm.SecondsToNextRoundStart = SECONDS_BETWEEN_ROUNDS
-				SerializeAndScheduleServerMessage(
-					NewRoundResultMessage(rm.GameState.GetRoundResult()),
-					rm.Hub.Broadcast,
-				)
+				rm.RoundEndProcs()
+				rm.CountNextRoundStart()
 			} else {
-				// count down to round end
-				rm.SecondsToCurrentRoundEnd -= 1
-				// count down to respawn for players who are waiting
-				for _, pData := range rm.GameState.Players.Values() {
-					p := pData.(Player)
-					if !p.Active && p.TimeUntilRespawn > 0 {
-						p.TimeUntilRespawn -= 1
-						if p.TimeUntilRespawn == 0 {
-							p.Active = true
-							p.Position = rm.GameState.GetNewSpawnPlayerPosition()
-						}
-						rm.GameState.Players.Set(p.Id, p)
-						SerializeAndScheduleServerMessage(
-							NewPlayerStateUpdateMessage(p),
-							rm.Hub.Broadcast,
-						)
-					}
-				}
+				rm.CountRoundInProgress()
+				rm.CountPlayerRespawns()
 			}
-			SerializeAndScheduleServerMessage(
-				NewSecondsToCurrentRoundEndMessage(rm.SecondsToCurrentRoundEnd),
-				rm.Hub.Broadcast,
-			)
 		} else {
 			// LogForce("Seconds until next round:", rm.SecondsToNextRoundStart)
 			if rm.SecondsToNextRoundStart == 0 {
-				// initialize game state for the new round and broadcast
-				rm.RoundIsInProgress = true
-				rm.SecondsToCurrentRoundEnd = SECONDS_PER_ROUND
-				rm.GameState.InitNewRoundGameState()
-				message := NewGameStateMessage(rm.GameState.GetSerializable())
-				SerializeAndScheduleServerMessage(message, rm.Hub.Broadcast)
+				rm.RoundStartProcs()
+				rm.CountRoundInProgress()
 			} else {
-				// count down to next round
-				rm.SecondsToNextRoundStart -= 1
+				rm.CountNextRoundStart()
 			}
+		}
+	}
+}
+
+func (rm *RoundManager) CountRoundInProgress() {
+	// count down to round end
+	SerializeAndScheduleServerMessage(
+		NewSecondsToCurrentRoundEndMessage(rm.SecondsToCurrentRoundEnd),
+		rm.Hub.Broadcast,
+	)
+	rm.SecondsToCurrentRoundEnd -= 1
+}
+
+func (rm *RoundManager) CountPlayerRespawns() {
+	// count down to respawn for players who are waiting
+	for _, pData := range rm.GameState.Players.Values() {
+		p := pData.(Player)
+		if !p.Active && p.TimeUntilRespawn > 0 {
+			p.TimeUntilRespawn -= 1
+			if p.TimeUntilRespawn == 0 {
+				p.Active = true
+				p.Position = rm.GameState.GetNewSpawnPlayerPosition()
+			}
+			rm.GameState.Players.Set(p.Id, p)
 			SerializeAndScheduleServerMessage(
-				NewSecondsToNextRoundStartMessage(rm.SecondsToNextRoundStart),
+				NewPlayerStateUpdateMessage(p),
 				rm.Hub.Broadcast,
 			)
 		}
 	}
+}
+
+func (rm *RoundManager) CountNextRoundStart() {
+	// count down to next round
+	SerializeAndScheduleServerMessage(
+		NewSecondsToNextRoundStartMessage(rm.SecondsToNextRoundStart),
+		rm.Hub.Broadcast,
+	)
+	rm.SecondsToNextRoundStart -= 1
+}
+
+func (rm *RoundManager) RoundStartProcs() {
+	// initialize game state for the new round and broadcast
+	rm.RoundIsInProgress = true
+	rm.SecondsToCurrentRoundEnd = SECONDS_PER_ROUND
+	rm.GameState.InitNewRoundGameState()
+	SerializeAndScheduleServerMessage(
+		NewGameStateMessage(rm.GameState.GetSerializable()),
+		rm.Hub.Broadcast,
+	)
+}
+
+func (rm *RoundManager) RoundEndProcs() {
+	// end the current round
+	rm.RoundIsInProgress = false
+	rm.SecondsToNextRoundStart = SECONDS_BETWEEN_ROUNDS
+	SerializeAndScheduleServerMessage(
+		NewRoundResultMessage(rm.GameState.GetRoundResult()),
+		rm.Hub.Broadcast,
+	)
 }
