@@ -48,8 +48,11 @@ TODO:
         X player eat player and player respawn
         X name on player
         X respawn count down
-        - round time left
-        - next round count down
+        X round time left
+        X next round count down
+        - player control deactivation upon round end and control reactivation 
+            upon new round start
+        - player respawn reset upon round end
         - winning player and other player ranking
     - styling:
         - player sprite

@@ -52,7 +52,6 @@ func (rm *RoundManager) CountPlayerRespawns() {
 			p.TimeUntilRespawn -= 1
 			if p.TimeUntilRespawn == 0 {
 				p.Active = true
-				p.Position = rm.GameState.GetNewSpawnPlayerPosition()
 			}
 			rm.GameState.Players.Set(p.Id, p)
 			SerializeAndScheduleServerMessage(
@@ -81,6 +80,7 @@ func (rm *RoundManager) RoundStartProcs() {
 		NewGameStateMessage(rm.GameState.GetSerializable()),
 		rm.Hub.Broadcast,
 	)
+	// TODO: activate all players
 }
 
 func (rm *RoundManager) RoundEndProcs() {
@@ -91,4 +91,5 @@ func (rm *RoundManager) RoundEndProcs() {
 		NewRoundResultMessage(rm.GameState.GetRoundResult()),
 		rm.Hub.Broadcast,
 	)
+	// TODO: deactivate all players
 }

@@ -54,12 +54,6 @@ func (gs *GameState) InitNewRoundGameState() {
 		}
 		gs.Mines.Set(m.Id, m)
 	}
-	// player placement
-	for _, pData := range gs.Players.Values() {
-		player := pData.(Player)
-		player.Position = gs.GetNewSpawnPlayerPosition()
-		gs.Players.Set(player.Id, player)
-	}
 }
 
 func (gs *GameState) GetNewSpawnMinePosition() Position {
@@ -71,12 +65,6 @@ func (gs *GameState) GetNewSpawnMinePosition() Position {
 func (gs *GameState) GetNewSpawnFoodPosition() Position {
 	// TODO: add randomization to food position and ensure it has space
 	// away from mines
-	return GenRandPosition(gs)
-}
-
-func (gs *GameState) GetNewSpawnPlayerPosition() Position {
-	// TODO: add randomization to player position and ensure it has space
-	// away from mines and other players
 	return GenRandPosition(gs)
 }
 
