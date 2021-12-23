@@ -5,8 +5,12 @@ import "github.com/gorilla/websocket"
 //////////////// MAIN MODELS ////////////////
 
 // round
+type PlayerScore struct {
+	PlayerId string `json:"playerId"`
+	Score    int    `json:"score"`
+}
 type Round struct {
-	PlayerIdToScore map[string]int `json:"playerIdToScore"`
+	PlayerScores []PlayerScore `json:"playerScores"`
 }
 
 // player

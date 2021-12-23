@@ -61,3 +61,10 @@ public class ServerMessageSecondsToCurrentRoundEnd
     public string messageType;
     public int seconds;
 }
+
+[Serializable]
+public class ServerMessageRoundResult
+{
+    public string messageType;
+    public Round round;
+}

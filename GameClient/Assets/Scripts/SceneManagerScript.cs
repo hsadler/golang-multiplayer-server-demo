@@ -19,6 +19,7 @@ public class SceneManagerScript : MonoBehaviour
     public GameObject giveNameUI;
     public GameObject respawnCountdownUI;
     public TMP_Text respawnCountdownText;
+    public TMP_Text roundTimerText;
 
     private WebSocket ws;
     // local game server
@@ -188,8 +189,8 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleGameStateServerMessage(string messageJSON)
     {
-        var gameStateMessage = JsonUtility.FromJson<ServerMessageGameState>(messageJSON);
-        this.gameState = gameStateMessage.gameState;
+        var m = JsonUtility.FromJson<ServerMessageGameState>(messageJSON);
+        this.gameState = m.gameState;
         // sequence of biz-logic for every full game state update
         this.DeleteEnvGameObjects();
         this.InitEnvRefs();
@@ -205,27 +206,27 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandlePlayerEnterServerMessage(string messageJSON)
     {
-        var playerEnterMessage = JsonUtility.FromJson<ServerMessagePlayerEnter>(messageJSON);
-        if (!this.PlayerIsMainPlayer(playerEnterMessage.player))
+        var m = JsonUtility.FromJson<ServerMessagePlayerEnter>(messageJSON);
+        if (!this.PlayerIsMainPlayer(m.player))
         {
-            this.AddOtherPlayerFromPlayerModel(playerEnterMessage.player);
+            this.AddOtherPlayerFromPlayerModel(m.player);
         }
     }
 
     private void HandlePlayerExitServerMessage(string messageJSON)
     {
-        var playerExitMessage = JsonUtility.FromJson<ServerMessagePlayerExit>(messageJSON);
-        if (this.playerIdToOtherPlayerGO.ContainsKey(playerExitMessage.playerId))
+        var m = JsonUtility.FromJson<ServerMessagePlayerExit>(messageJSON);
+        if (this.playerIdToOtherPlayerGO.ContainsKey(m.playerId))
         {
-            Object.Destroy(this.playerIdToOtherPlayerGO[playerExitMessage.playerId]);
-            this.playerIdToOtherPlayerGO.Remove(playerExitMessage.playerId);
+            Object.Destroy(this.playerIdToOtherPlayerGO[m.playerId]);
+            this.playerIdToOtherPlayerGO.Remove(m.playerId);
         }
     }
 
     private void HandlePlayerStateUpdateServerMessage(string messageJSON)
     {
-        var playerUpdateMessage = JsonUtility.FromJson<ServerMessagePlayerUpdate>(messageJSON);
-        Player playerModel = playerUpdateMessage.player;
+        var m = JsonUtility.FromJson<ServerMessagePlayerUpdate>(messageJSON);
+        Player playerModel = m.player;
         // main player update
         if (this.mainPlayerModel != null && playerModel.id == this.mainPlayerModel.id)
         {
@@ -261,8 +262,8 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleFoodStateUpdateServerMessage(string messageJSON)
     {
-        var foodUpdateMessage = JsonUtility.FromJson<ServerMessageFoodUpdate>(messageJSON);
-        Food foodModel = foodUpdateMessage.food;
+        var m = JsonUtility.FromJson<ServerMessageFoodUpdate>(messageJSON);
+        Food foodModel = m.food;
         if(this.foodIdToFoodGO.ContainsKey(foodModel.id))
         {
             this.foodIdToFoodGO[foodModel.id].GetComponent<FoodScript>()
@@ -276,8 +277,8 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleMineStateUpdateServerMessage(string messageJSON)
     {
-        var mineUpdateMessage = JsonUtility.FromJson<ServerMessageMineUpdate>(messageJSON);
-        Mine mineModel = mineUpdateMessage.mine;
+        var m = JsonUtility.FromJson<ServerMessageMineUpdate>(messageJSON);
+        Mine mineModel = m.mine;
         if (this.mineIdToMineGO.ContainsKey(mineModel.id))
         {
             this.mineIdToMineGO[mineModel.id].GetComponent<MineScript>()
@@ -293,17 +294,21 @@ public class SceneManagerScript : MonoBehaviour
     {
         // stub
         var m = JsonUtility.FromJson<ServerMessageSecondsToNextRoundStart>(messageJSON);
+        this.roundTimerText.text = m.seconds.ToString();
     }
 
     private void HandleSecondsToCurrentRoundEndServerMessage(string messageJSON)
     {
         // stub
         var m = JsonUtility.FromJson<ServerMessageSecondsToCurrentRoundEnd>(messageJSON);
+        this.roundTimerText.text = m.seconds.ToString();
     }
 
     private void HandleRoundResultServerMessage(string messageJSON)
     {
         // stub
+        var m = JsonUtility.FromJson<ServerMessageRoundResult>(messageJSON);
+        Debug.Log("HandleRoundResultServerMessage json: " + messageJSON);
     }
 
     // game data management

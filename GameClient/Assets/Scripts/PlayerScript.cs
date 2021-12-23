@@ -30,7 +30,7 @@ public class PlayerScript : MonoBehaviour
     private Camera cam;
     private float camZoomSpeed = 10f;
     private float minCamZoom = 2f;
-    private float maxCamZoom = 30f;
+    private float maxCamZoom = 100f;
 
     // UNITY HOOKS
 

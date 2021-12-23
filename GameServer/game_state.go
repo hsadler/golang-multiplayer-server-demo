@@ -14,13 +14,17 @@ type GameState struct {
 
 func (gs *GameState) GetRoundResult() Round {
 	// aggregate game state to round object
-	playerIdToScore := make(map[string]int)
+	playerScores := make([]PlayerScore, 0)
 	for _, playerData := range gs.Players.Values() {
-		player := playerData.(Player)
-		playerIdToScore[player.Id] = player.Size
+		p := playerData.(Player)
+		playerScore := PlayerScore{
+			PlayerId: p.Id,
+			Score:    p.Size,
+		}
+		playerScores = append(playerScores, playerScore)
 	}
 	r := Round{
-		PlayerIdToScore: playerIdToScore,
+		PlayerScores: playerScores,
 	}
 	res, _ := json.Marshal(r)
 	LogJson("round result:", res)
