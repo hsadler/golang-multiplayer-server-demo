@@ -83,13 +83,13 @@ public class PlayerScript : MonoBehaviour
             if (other.CompareTag("Food"))
             {
                 Food foodModel = other.GetComponent<FoodScript>().foodModel;
-                SceneManagerScript.instance.SyncPlayerEatFood(foodModel);
+                SceneManagerScript.instance.SyncPlayerEatFood(this.playerModel.id, foodModel);
             }
             // handle mine collisions
             if (other.CompareTag("Mine"))
             {
                 Mine mineModel = other.GetComponent<MineScript>().mineModel;
-                SceneManagerScript.instance.SyncPlayerHitMine(mineModel);
+                SceneManagerScript.instance.SyncPlayerHitMine(this.playerModel.id, mineModel);
             }
         }
     }
@@ -106,7 +106,7 @@ public class PlayerScript : MonoBehaviour
                 // other player is smaller, so eat
                 if (this.playerModel.size > otherPlayerModel.size)
                 {
-                    SceneManagerScript.instance.SyncPlayerEatPlayer(otherPlayerModel);
+                    SceneManagerScript.instance.SyncPlayerEatPlayer(this.playerModel.id, otherPlayerModel);
                 }
             }
         }

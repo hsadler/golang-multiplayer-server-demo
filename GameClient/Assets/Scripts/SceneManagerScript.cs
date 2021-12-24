@@ -78,6 +78,15 @@ public class SceneManagerScript : MonoBehaviour
         {
             this.HandleServerMessage(this.gameServerMessageQueue.Dequeue());
         }
+        // check if the respawn panel should be shown
+        if (this.mainPlayerModel != null && !this.mainPlayerModel.active && this.roundIsInProgress)
+        {
+            this.respawnCountdownUI.SetActive(true);
+        }
+        else
+        {
+            this.respawnCountdownUI.SetActive(false);
+        }
     }
 
     private void OnDestroy()
@@ -94,7 +103,7 @@ public class SceneManagerScript : MonoBehaviour
         Vector3 randStartPos = Functions.GetRandomGamePosition(this.gameState);
         this.mainPlayerGO = Instantiate(this.playerPrefab, randStartPos, Quaternion.identity);
         // create player model
-        this.mainPlayerModel = new Player(
+        var mainPlayerModel = new Player(
             id: System.Guid.NewGuid().ToString(),
             active: true,
             name: playerName,
@@ -102,11 +111,12 @@ public class SceneManagerScript : MonoBehaviour
             size: 1,
             timeUntilRespawn: 0
         );
+        this.mainPlayerModel = mainPlayerModel;
         var mainPlayerScript = this.mainPlayerGO.GetComponent<PlayerScript>();
-        mainPlayerScript.playerModel = this.mainPlayerModel;
+        mainPlayerScript.playerModel = mainPlayerModel;
         mainPlayerScript.isMainPlayer = true;
         // send "player enter" message to server
-        var m = new ClientMessagePlayerEnter(this.mainPlayerModel);
+        var m = new ClientMessagePlayerEnter(mainPlayerModel);
         this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
@@ -121,28 +131,28 @@ public class SceneManagerScript : MonoBehaviour
         this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
-    public void SyncPlayerEatFood(Food foodModel)
+    public void SyncPlayerEatFood(string playerId, Food foodModel)
     {
         var m = new ClientMessagePlayerEatFood(
-            this.mainPlayerModel.id,
+            playerId,
             foodModel.id
         );
         this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
-    public void SyncPlayerHitMine(Mine mindModel)
+    public void SyncPlayerHitMine(string playerId, Mine mindModel)
     {
         var m = new ClientMessageMineDamagePlayer(
-            this.mainPlayerModel.id,
+            playerId,
             mindModel.id
         );
         this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
     }
 
-    public void SyncPlayerEatPlayer(Player otherPlayerModel)
+    public void SyncPlayerEatPlayer(string playerId, Player otherPlayerModel)
     {
         var m = new ClientMessagePlayerEatPlayer(
-            this.mainPlayerModel.id,
+            playerId,
             otherPlayerModel.id
         );
         this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
@@ -233,28 +243,22 @@ public class SceneManagerScript : MonoBehaviour
         var m = JsonUtility.FromJson<ServerMessagePlayerUpdate>(messageJSON);
         Player playerModel = m.player;
         // main player update
-        if (this.mainPlayerModel != null && playerModel.id == this.mainPlayerModel.id)
+        if (playerModel.id == this.mainPlayerModel.id)
         {
-            if (!playerModel.active && this.roundIsInProgress)
+            this.mainPlayerModel = playerModel;
+            if (playerModel.timeUntilRespawn > 5)
             {
-                this.respawnCountdownUI.SetActive(true);
-                if (playerModel.timeUntilRespawn > 5) {
-                    this.respawnCountdownText.text = "";
-                } else
-                {
-                    this.respawnCountdownText.text = playerModel.timeUntilRespawn.ToString();
-                }
+                this.respawnCountdownText.text = "";
             }
-            else {
-                this.respawnCountdownUI.SetActive(false);
+            else
+            {
+                this.respawnCountdownText.text = playerModel.timeUntilRespawn.ToString();
             }
-            //Debug.Log("updating main-player: " + playerModel.name);
             this.mainPlayerGO.GetComponent<PlayerScript>().UpdateFromPlayerModel(playerModel);
         }
         // other players update
         else if (this.playerIdToOtherPlayerGO.ContainsKey(playerModel.id))
         {
-            //Debug.Log("updating other-player: " + playerModel.name);
             this.playerIdToOtherPlayerGO[playerModel.id]
                 .GetComponent<PlayerScript>()
                 .UpdateFromPlayerModel(playerModel);
@@ -297,6 +301,7 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleSecondsToNextRoundStartServerMessage(string messageJSON)
     {
+        Debug.Log("HandleSecondsToNextRoundStartServerMessage....");
         this.roundIsInProgress = false;
         var m = JsonUtility.FromJson<ServerMessageSecondsToNextRoundStart>(messageJSON);
         this.roundHeaderText.text = "ROUND STARTS IN:";
@@ -307,6 +312,7 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleSecondsToCurrentRoundEndServerMessage(string messageJSON)
     {
+        Debug.Log("HandleSecondsToCurrentRoundEndServerMessage....");
         this.roundIsInProgress = true;
         var m = JsonUtility.FromJson<ServerMessageSecondsToCurrentRoundEnd>(messageJSON);
         this.roundHeaderText.text = "TIME LEFT:";
