@@ -80,7 +80,16 @@ func (rm *RoundManager) RoundStartProcs() {
 		NewGameStateMessage(rm.GameState.GetSerializable()),
 		rm.Hub.Broadcast,
 	)
-	// TODO: activate all players
+	// activate all players
+	for _, pData := range rm.GameState.Players.Values() {
+		player := pData.(Player)
+		player.Active = true
+		rm.GameState.Players.Set(player.Id, player)
+		SerializeAndScheduleServerMessage(
+			NewPlayerStateUpdateMessage(player),
+			rm.Hub.Broadcast,
+		)
+	}
 }
 
 func (rm *RoundManager) RoundEndProcs() {
@@ -91,5 +100,16 @@ func (rm *RoundManager) RoundEndProcs() {
 		NewRoundResultMessage(rm.GameState.GetRoundResult()),
 		rm.Hub.Broadcast,
 	)
-	// TODO: deactivate all players
+	// deactivate and initialize all players, reset respawn times
+	for _, pData := range rm.GameState.Players.Values() {
+		player := pData.(Player)
+		player.Active = false
+		player.Size = 1
+		player.TimeUntilRespawn = 0
+		rm.GameState.Players.Set(player.Id, player)
+		SerializeAndScheduleServerMessage(
+			NewPlayerStateUpdateMessage(player),
+			rm.Hub.Broadcast,
+		)
+	}
 }

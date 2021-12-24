@@ -32,6 +32,9 @@ public class SceneManagerScript : MonoBehaviour
     public GameState gameState;
     private bool gameStateInitialized = false;
 
+    // round
+    private bool roundIsInProgress;
+
     // main player state
     private Player mainPlayerModel;
 
@@ -41,6 +44,7 @@ public class SceneManagerScript : MonoBehaviour
     private IDictionary<string, GameObject> foodIdToFoodGO;
     private IDictionary<string, GameObject> mineIdToMineGO;
 
+    // server message queue to be evaluated on UI thread
     private Queue<string> gameServerMessageQueue = new Queue<string>();
 
     // the static reference to the singleton instance
@@ -231,7 +235,7 @@ public class SceneManagerScript : MonoBehaviour
         // main player update
         if (this.mainPlayerModel != null && playerModel.id == this.mainPlayerModel.id)
         {
-            if (!playerModel.active)
+            if (!playerModel.active && this.roundIsInProgress)
             {
                 this.respawnCountdownUI.SetActive(true);
                 if (playerModel.timeUntilRespawn > 5) {
@@ -293,6 +297,7 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleSecondsToNextRoundStartServerMessage(string messageJSON)
     {
+        this.roundIsInProgress = false;
         var m = JsonUtility.FromJson<ServerMessageSecondsToNextRoundStart>(messageJSON);
         this.roundHeaderText.text = "ROUND STARTS IN:";
         this.roundHeaderText.color = Color.red;
@@ -302,6 +307,7 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleSecondsToCurrentRoundEndServerMessage(string messageJSON)
     {
+        this.roundIsInProgress = true;
         var m = JsonUtility.FromJson<ServerMessageSecondsToCurrentRoundEnd>(messageJSON);
         this.roundHeaderText.text = "TIME LEFT:";
         this.roundHeaderText.color = Color.blue;
