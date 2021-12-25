@@ -26,21 +26,18 @@ public class PlayerScript : MonoBehaviour
     private int currMoveDirIndex = 0;
 
     // camera
-    private GameObject camGO;
-    private Camera cam;
+    public GameObject camGO;
+    public Camera cam;
     private float camZoomSpeed = 10f;
     private float minCamZoom = 2f;
     private float maxCamZoom = 100f;
 
     // UNITY HOOKS
 
-    void Start()
-    {
+    void Start() {
         if (this.isMainPlayer)
         {
-            this.camGO = SceneManagerScript.instance.mainCameraGO;
-            this.cam = this.camGO.GetComponent<Camera>();
-            this.MoveCameraToPlayer();
+            this.MoveCameraToPlayer();    
             // autopilot movement for testing
             if (this.autopilotOn)
             {
@@ -101,8 +98,7 @@ public class PlayerScript : MonoBehaviour
         {
             // handle other player collisions
             if (collision.gameObject.CompareTag("Player")) {
-                Player otherPlayerModel = collision.gameObject
-                    .GetComponent<PlayerScript>().playerModel;
+                Player otherPlayerModel = collision.gameObject.GetComponent<PlayerScript>().playerModel;
                 // other player is smaller, so eat
                 if (this.playerModel.size > otherPlayerModel.size)
                 {

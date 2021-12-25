@@ -68,6 +68,8 @@ public class SceneManagerScript : MonoBehaviour
 
     private void Start()
     {
+        this.giveNameUI.SetActive(false);
+        this.respawnCountdownUI.SetActive(false);
         this.InitWebSocketClient();
     }
 
@@ -101,20 +103,24 @@ public class SceneManagerScript : MonoBehaviour
     {
         // create player game object and give random start position
         Vector3 randStartPos = Functions.GetRandomGamePosition(this.gameState);
-        this.mainPlayerGO = Instantiate(this.playerPrefab, randStartPos, Quaternion.identity);
+        bool playerActive = this.roundIsInProgress;
         // create player model
         var mainPlayerModel = new Player(
             id: System.Guid.NewGuid().ToString(),
-            active: true,
+            active: playerActive,
             name: playerName,
             position: new Position(randStartPos.x, randStartPos.y),
             size: 1,
             timeUntilRespawn: 0
         );
         this.mainPlayerModel = mainPlayerModel;
+        this.mainPlayerGO = Instantiate(this.playerPrefab, randStartPos, Quaternion.identity);
         var mainPlayerScript = this.mainPlayerGO.GetComponent<PlayerScript>();
         mainPlayerScript.playerModel = mainPlayerModel;
         mainPlayerScript.isMainPlayer = true;
+        mainPlayerScript.camGO = this.mainCameraGO;
+        mainPlayerScript.cam = mainPlayerScript.camGO.GetComponent<Camera>();
+        this.mainPlayerGO.SetActive(playerActive);
         // send "player enter" message to server
         var m = new ClientMessagePlayerEnter(mainPlayerModel);
         this.SendWebsocketClientMessage(JsonUtility.ToJson(m));
@@ -326,6 +332,7 @@ public class SceneManagerScript : MonoBehaviour
         // stub
         var m = JsonUtility.FromJson<ServerMessageRoundResult>(messageJSON);
         Debug.Log("HandleRoundResultServerMessage json: " + messageJSON);
+        var ps = m.round.playerScores;
     }
 
     // game data management

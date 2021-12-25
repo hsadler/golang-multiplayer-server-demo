@@ -25,7 +25,7 @@ public class PlayerScore
 [Serializable]
 public class Round
 {
-    List<PlayerScore> playerScores;
+    public List<PlayerScore> playerScores;
     public Round(List<PlayerScore> playerScores) {
         this.playerScores = playerScores;
     }
