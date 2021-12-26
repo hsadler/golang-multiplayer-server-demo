@@ -22,6 +22,9 @@ public class SceneManagerScript : MonoBehaviour
     public TMP_Text respawnCountdownText;
     public TMP_Text roundHeaderText;
     public TMP_Text roundTimerText;
+    public GameObject roundResultUI;
+    public TMP_Text roundResultNamesText;
+    public TMP_Text roundResultScoresText;
 
     private WebSocket ws;
     // local game server
@@ -71,6 +74,7 @@ public class SceneManagerScript : MonoBehaviour
     {
         this.giveNameUI.SetActive(false);
         this.respawnCountdownUI.SetActive(false);
+        this.roundResultUI.SetActive(false);
         this.InitWebSocketClient();
     }
 
@@ -330,15 +334,34 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleRoundResultServerMessage(string messageJSON)
     {
-        // TODO: stub
         var m = JsonUtility.FromJson<ServerMessageRoundResult>(messageJSON);
-        Debug.Log("HandleRoundResultServerMessage json: " + messageJSON);
-        m.round.playerScores = new List<PlayerScore>() {
-            new PlayerScore("player_id_1", 1),
-            new PlayerScore("player_id_2", 10),
-            new PlayerScore("player_id_3", 7),
-        };
         var sortedPlayerScores = m.round.playerScores.OrderByDescending(o => o.score).ToList();
+        this.roundResultNamesText.text = "NAME:\n";
+        this.roundResultScoresText.text = "SCORE:\n";
+        foreach(PlayerScore ps in sortedPlayerScores) {
+            Player player = null;
+            if(ps.playerId == this.mainPlayerModel.id)
+            {
+                player = this.mainPlayerModel;
+            }
+            if(this.playerIdToOtherPlayerGO.ContainsKey(ps.playerId))
+            {
+                player = this.playerIdToOtherPlayerGO[ps.playerId]
+                    .GetComponent<PlayerScript>().playerModel;
+            }
+            if(player != null)
+            {
+                this.roundResultNamesText.text += player.name + "\n";
+                this.roundResultScoresText.text += ps.score.ToString() + "\n";
+            }
+        }
+        this.roundResultUI.SetActive(true);
+        Invoke("DeactivateRoundResultUI", 20);
+    }
+
+    private void DeactivateRoundResultUI()
+    {
+        this.roundResultUI.SetActive(false);
     }
 
     // game data management
