@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 using WebSocketSharp;
@@ -329,10 +330,15 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleRoundResultServerMessage(string messageJSON)
     {
-        // stub
+        // TODO: stub
         var m = JsonUtility.FromJson<ServerMessageRoundResult>(messageJSON);
         Debug.Log("HandleRoundResultServerMessage json: " + messageJSON);
-        var ps = m.round.playerScores;
+        m.round.playerScores = new List<PlayerScore>() {
+            new PlayerScore("player_id_1", 1),
+            new PlayerScore("player_id_2", 10),
+            new PlayerScore("player_id_3", 7),
+        };
+        var sortedPlayerScores = m.round.playerScores.OrderByDescending(o => o.score).ToList();
     }
 
     // game data management

@@ -14,8 +14,8 @@ public class GameState
 [Serializable]
 public class PlayerScore
 {
-    string playerId;
-    int score;
+    public string playerId;
+    public int score;
     public PlayerScore(string playerId, int score)
     {
         this.playerId = playerId;
