@@ -11,7 +11,9 @@ public class PlayerScript : MonoBehaviour
     public TMP_Text playerNameText;
 
     // movement
-    private float moveSpeed = 5f;
+    private float maxPlayerSpeed = 15f;
+    private float minPlayerSpeed = 3f;
+    private float playerSpeedDropOff = 0.15f;
     private float otherPlayerMaxSpeed = 30f;
     // TESTING MOVEMENT:
     // use for testing if you want to connect multiple players to the server and
@@ -183,10 +185,16 @@ public class PlayerScript : MonoBehaviour
         }
         if (targetPos != this.transform.position)
         {
+            float speedMod = (this.playerModel.size - 1) * this.playerSpeedDropOff;
+            float playerSpeed = this.maxPlayerSpeed - speedMod;
+            if(playerSpeed < this.minPlayerSpeed)
+            {
+                playerSpeed = this.minPlayerSpeed;
+            }
             this.transform.position = Vector3.MoveTowards(
                 this.transform.position,
                 targetPos,
-                Time.deltaTime * this.moveSpeed
+                Time.deltaTime * playerSpeed
             );
             return true;
         }
