@@ -95,7 +95,14 @@ public class SceneManagerScript : MonoBehaviour
             this.respawnCountdownUI.SetActive(false);
         }
         // check if the round result UI should be shown
-        this.roundResultUI.SetActive(!this.roundIsInProgress);
+        if (this.mainPlayerModel != null && !this.roundIsInProgress)
+        {
+            this.roundResultUI.SetActive(true);
+        }
+        else
+        {
+            this.roundResultUI.SetActive(false);
+        }
     }
 
     private void OnDestroy()

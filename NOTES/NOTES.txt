@@ -43,7 +43,7 @@ TODO:
         X BUG: random position on player respawn is not correct
         X BUG: respawn panel is shown when between rounds (should be hidden)
         - BUG: player name tag is jumping around when food eaten
-    - implement full game features:
+    X implement full game features:
         X food respawning, consumption, and player size increase
         X player respawn
         X player eat player and player respawn
@@ -54,7 +54,7 @@ TODO:
         X player control deactivation upon round end and control reactivation 
             upon new round start
         X player respawn reset upon round end
-        - winning player and other player ranking
+        X winning player and other player ranking
     - styling:
         - player sprite
         - food sprite
