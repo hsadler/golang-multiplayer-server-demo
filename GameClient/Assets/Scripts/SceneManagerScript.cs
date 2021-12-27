@@ -263,7 +263,7 @@ public class SceneManagerScript : MonoBehaviour
         var m = JsonUtility.FromJson<ServerMessagePlayerUpdate>(messageJSON);
         Player playerModel = m.player;
         // main player update
-        if (playerModel.id == this.mainPlayerModel.id)
+        if (this.mainPlayerModel != null && playerModel.id == this.mainPlayerModel.id)
         {
             this.mainPlayerModel = playerModel;
             if (playerModel.timeUntilRespawn > 5)
@@ -321,7 +321,7 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleSecondsToNextRoundStartServerMessage(string messageJSON)
     {
-        Debug.Log("HandleSecondsToNextRoundStartServerMessage....");
+        //Debug.Log("HandleSecondsToNextRoundStartServerMessage....");
         this.roundIsInProgress = false;
         var m = JsonUtility.FromJson<ServerMessageSecondsToNextRoundStart>(messageJSON);
         this.roundHeaderText.text = "ROUND STARTS IN:";
@@ -332,7 +332,7 @@ public class SceneManagerScript : MonoBehaviour
 
     private void HandleSecondsToCurrentRoundEndServerMessage(string messageJSON)
     {
-        Debug.Log("HandleSecondsToCurrentRoundEndServerMessage....");
+        //Debug.Log("HandleSecondsToCurrentRoundEndServerMessage....");
         this.roundIsInProgress = true;
         var m = JsonUtility.FromJson<ServerMessageSecondsToCurrentRoundEnd>(messageJSON);
         this.roundHeaderText.text = "TIME LEFT:";
@@ -349,7 +349,7 @@ public class SceneManagerScript : MonoBehaviour
         this.roundResultScoresText.text = "SCORE:\n";
         foreach(PlayerScore ps in sortedPlayerScores) {
             Player player = null;
-            if(ps.playerId == this.mainPlayerModel.id)
+            if(this.mainPlayerModel != null && ps.playerId == this.mainPlayerModel.id)
             {
                 player = this.mainPlayerModel;
             }

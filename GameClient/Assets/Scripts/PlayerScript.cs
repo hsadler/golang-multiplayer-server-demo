@@ -12,6 +12,7 @@ public class PlayerScript : MonoBehaviour
 
     // movement
     private float moveSpeed = 5f;
+    private float otherPlayerMaxSpeed = 30f;
     // TESTING MOVEMENT:
     // use for testing if you want to connect multiple players to the server and
     // see them moving
@@ -114,7 +115,7 @@ public class PlayerScript : MonoBehaviour
     {
         this.playerModel = pModel;
         // only update other player positions from server->client, keep
-        // main-player position client authoritative
+        // main-player position is client authoritative
         if(this.isMainPlayer)
         {
             // main player respawn (inactive -> active)
@@ -128,7 +129,21 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
-            this.transform.position = new Vector3(pModel.position.x, pModel.position.y, 0);
+            var newPos = new Vector3(pModel.position.x, pModel.position.y, 0);
+            var d = Vector3.Distance(this.transform.position, newPos);
+            // smooth other player movements if short distances
+            if(d < 1f)
+            {
+                this.transform.position = Vector3.MoveTowards(
+                    this.transform.position,
+                    newPos,
+                    this.otherPlayerMaxSpeed * Time.deltaTime
+                );
+            }
+            else
+            {
+                this.transform.position = newPos;
+            }
         }
         this.gameObject.SetActive(pModel.active);
         this.transform.localScale = new Vector3(pModel.size, pModel.size, 1);
@@ -224,14 +239,7 @@ public class PlayerScript : MonoBehaviour
     // autopilot movement for testing
     private void SetNextMoveDirectionIndex()
     {
-        if (this.currMoveDirIndex == 3)
-        {
-            this.currMoveDirIndex = 0;
-        }
-        else
-        {
-            this.currMoveDirIndex += 1;
-        }
+        this.currMoveDirIndex = Random.Range(0, 4);
     }
 
 }
