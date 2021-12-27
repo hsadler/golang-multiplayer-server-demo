@@ -1,7 +1,7 @@
 package main
 
-const MAP_HEIGHT int = 500
-const MAP_WIDTH int = 500
+const MAP_HEIGHT int = 200
+const MAP_WIDTH int = 200
 
 const PLAYER_RESPAWN_SECONDS = 6
 const FOOD_COUNT int = MAP_HEIGHT
