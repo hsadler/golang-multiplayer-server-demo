@@ -185,7 +185,7 @@ func (cl *Client) HandleMineDamagePlayer(mData map[string]interface{}) {
 	player := playerData.(Player)
 	mine := mineData.(Mine)
 	// player loses size points
-	player.Size -= 3
+	player.Size -= MINE_DAMAGE
 	// if damage taken kills player, reset size and respawn
 	if player.Size < 1 {
 		player.Active = false
