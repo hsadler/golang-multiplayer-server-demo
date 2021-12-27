@@ -55,17 +55,15 @@ TODO:
             upon new round start
         X player respawn reset upon round end
         X winning player and other player ranking
-    - features:
-        - smaller players move faster than larger ones
-    - styling:
-        - player sprite
-        - food sprite
-        - mine sprite
-        - wall sprite
-        - map grid
-    - polish:
+    X features:
+        X smaller players move faster than larger ones
+    X styling:
+        X food sprite
+        X mine sprite
+        X wall sprite
+    X polish:
         X smooth other player movement
-        - name entry UI scale with screen size
+        X name entry UI scale with screen size
 
 INVESTIGATE:
     - load testing client connections
