@@ -85,7 +85,7 @@ public class SceneManagerScript : MonoBehaviour
         {
             this.HandleServerMessage(this.gameServerMessageQueue.Dequeue());
         }
-        // check if the respawn panel should be shown
+        // check if the respawn UI should be shown
         if (this.mainPlayerModel != null && !this.mainPlayerModel.active && this.roundIsInProgress)
         {
             this.respawnCountdownUI.SetActive(true);
@@ -94,6 +94,8 @@ public class SceneManagerScript : MonoBehaviour
         {
             this.respawnCountdownUI.SetActive(false);
         }
+        // check if the round result UI should be shown
+        this.roundResultUI.SetActive(!this.roundIsInProgress);
     }
 
     private void OnDestroy()
@@ -355,13 +357,6 @@ public class SceneManagerScript : MonoBehaviour
                 this.roundResultScoresText.text += ps.score.ToString() + "\n";
             }
         }
-        this.roundResultUI.SetActive(true);
-        Invoke("DeactivateRoundResultUI", 20);
-    }
-
-    private void DeactivateRoundResultUI()
-    {
-        this.roundResultUI.SetActive(false);
     }
 
     // game data management
