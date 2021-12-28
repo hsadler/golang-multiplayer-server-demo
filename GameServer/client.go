@@ -57,7 +57,7 @@ func (cl *Client) SendGameState() {
 	SerializeAndScheduleServerMessage(NewGameStateMessage(gameState), cl.Send)
 	// logging
 	j, _ := json.Marshal(gameState)
-	LogJsonForce("Sending game state:", j)
+	LogJson("Sending game state:", j)
 }
 
 func (cl *Client) HandlePlayerEnter(mData map[string]interface{}) {
@@ -137,7 +137,7 @@ func (cl *Client) HandlePlayerEatFood(mData map[string]interface{}) {
 	SerializeAndScheduleServerMessage(NewPlayerStateUpdateMessage(player), cl.Hub.Broadcast)
 	SerializeAndScheduleServerMessage(NewFoodStateUpdateMessage(food), cl.Hub.Broadcast)
 	// logging
-	LogForce("Handling player-eat-food-message with player:", player.Name, "and foodId:", foodId)
+	Log("Handling player-eat-food-message with player:", player.Name, "and foodId:", foodId)
 }
 
 func (cl *Client) HandlePlayerEatPlayer(mData map[string]interface{}) {
@@ -201,7 +201,7 @@ func (cl *Client) HandleMineDamagePlayer(mData map[string]interface{}) {
 	SerializeAndScheduleServerMessage(NewPlayerStateUpdateMessage(player), cl.Hub.Broadcast)
 	SerializeAndScheduleServerMessage(NewMineStateUpdateMessage(mine), cl.Hub.Broadcast)
 	// logging
-	LogForce("Handling mine-damage-player-message with player:", player.Name, "and mineId:", mineId)
+	Log("Handling mine-damage-player-message with player:", player.Name, "and mineId:", mineId)
 }
 
 func (cl *Client) SendMessages() {

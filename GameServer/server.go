@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-
 	log.SetFlags(log.LstdFlags)
 	// create hub and run the channel listeners
 	h := &Hub{
