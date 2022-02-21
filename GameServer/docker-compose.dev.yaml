@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: 'Dockerfile.dev'
-    image: golang-multiplayer-server:latest
+    image: golang-multiplayer-server:dev
     container_name: golang-multiplayer-server
     restart: always
     ports:

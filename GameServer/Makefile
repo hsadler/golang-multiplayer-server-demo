@@ -1,5 +1,5 @@
 
-build:
+build-image:
 	docker build -t golang-multiplayer-server:dev -f Dockerfile.dev .
 
 up:
